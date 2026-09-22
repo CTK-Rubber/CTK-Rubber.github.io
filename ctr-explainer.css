@@ -1,0 +1,96 @@
+/* ==========================================================================
+   ctr-explainer.css — CTR 顧問服務「分層說明文件」共用樣式
+   來源：木尼粘度計說明——從入門到判讀.html 內嵌 <style>（螢幕閱讀＋雙語切換設計）
+   用途：分層說明文件類交付物套用此 CSS；會議資料類文件用 ctr-consulting.css
+   ========================================================================== */
+
+:root {
+  --ink: #1f2933; --muted: #52606d; --accent: #2c5f8a; --accent2: #8a4a2c;
+  --line: #d9e2ec; --bg: #ffffff; --soft: #f5f7fa; --tag-bg: #e4ecf4;
+}
+* { box-sizing: border-box; }
+body { font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif; color: var(--ink); margin: 0; background: var(--bg); line-height: 1.75; }
+.page { max-width: 1150px; margin: 0 auto; padding: 40px 48px; }
+h1 { font-size: 1.9em; line-height: 1.3; margin: 0 0 8px; }
+h2 { font-size: 1.45em; margin: 2em 0 0.6em; padding-top: 0.6em; border-top: 3px solid var(--accent); }
+h3 { font-size: 1.15em; margin: 1.6em 0 0.4em; color: var(--accent); }
+p { margin: 0.7em 0; }
+ul, ol { margin: 0.5em 0; padding-left: 1.6em; }
+li { margin: 0.3em 0; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.95em; }
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: var(--soft); }
+figure { margin: 1.4em 0; text-align: center; }
+figure img { max-width: 100%; border: 1px solid var(--line); }
+figcaption { font-size: 0.85em; color: var(--muted); margin-top: 6px; }
+code, .term { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; background: var(--soft); padding: 1px 5px; border-radius: 3px; }
+sup.ref { color: var(--accent); font-size: 0.75em; }
+.lang-en { display: none; }
+body.show-en .lang-en { display: block; }
+body.show-en .lang-zh { display: none; }
+body.show-en span.lang-en, body.show-en td.lang-en, body.show-en th.lang-en, body.show-en li.lang-en { display: revert; }
+body.show-en span.lang-zh { display: none; }
+#langbar { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 0; text-align: right; max-width: 1150px; margin: 0 auto; padding-right: 48px; z-index: 10; }
+#langbar button { font-size: 0.9em; padding: 5px 16px; border: 1px solid var(--accent); background: var(--bg); color: var(--accent); border-radius: 4px; cursor: pointer; }
+#langbar button.on { background: var(--accent); color: #fff; }
+.toc { background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 20px 28px; }
+.toc ol { padding-left: 1.4em; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.cover { text-align: center; padding: 90px 48px 60px; }
+.cover .badge { display: inline-block; background: var(--accent); color: #fff; font-size: 0.85em; padding: 4px 18px; border-radius: 12px; letter-spacing: 2px; margin-bottom: 24px; }
+.cover .sub { color: var(--muted); font-size: 1.05em; margin-top: 10px; }
+.refs { font-size: 0.88em; color: var(--muted); }
+.q { font-weight: 600; color: var(--accent); margin: 1.2em 0 0.35em; }
+.case { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 16px 10px 14px; margin: 1.2em 0; border-radius: 0 6px 6px 0; break-inside: avoid; page-break-inside: avoid; }
+.case .s { margin-bottom: 0.3em; }
+.case .q { margin-top: 0; }
+.case p:last-child { margin-bottom: 0; }
+.case.hook { background: var(--tag-bg); border-left-width: 5px; padding: 16px 22px 14px 18px; margin: 1.5em 0; }
+.case.hook .s { font-size: 1.3em; font-weight: 600; line-height: 1.55; }
+.case.hook .q { font-size: 1.08em; }
+.refs li { margin: 0.45em 0; }
+.footer-note { text-align: center; color: var(--muted); font-size: 0.85em; margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line); }
+.deep { display: none; }
+body.show-deep .deep { display: block; }
+.deep h2 { border-top-color: var(--accent2); }
+.deep h3 { color: var(--accent2); }
+.deep .tag { display: inline-block; background: var(--tag-bg); color: var(--accent2); font-size: 0.78em; padding: 1px 8px; border-radius: 10px; margin-right: 6px; }
+.deep .src { font-size: 0.82em; color: var(--muted); border-top: 1px dashed var(--line); margin-top: 1.4em; padding-top: 0.5em; }
+.deep .topicmeta { font-size: 0.85em; color: var(--muted); border-left: 3px solid var(--accent2); padding-left: 10px; margin: 0.3em 0 1em; }
+.deep .topicend { font-size: 0.82em; color: var(--muted); margin-top: 1.2em; }
+.topicnav { margin: 0.9em 0 0.3em; }
+.topicnav a { display: inline-block; border: 1px solid var(--accent2); color: var(--accent2); border-radius: 12px; padding: 2px 12px; margin: 0 5px 5px 0; text-decoration: none; font-size: 0.85em; }
+.topicnav a:hover { background: var(--accent2); color: #fff; }
+#langbar .barlabel { color: var(--muted); font-size: 0.82em; margin: 0 4px 0 12px; }
+#langbar button.tb { border-color: var(--accent2); color: var(--accent2); }
+#langbar button.tb.on { background: var(--accent2); color: #fff; }
+@media screen and (max-width: 480px) {
+  .page { padding: 24px 20px; }
+  .cover { padding: 56px 20px 40px; }
+  #langbar { padding-right: 20px; }
+  #langbar button { padding: 4px 10px; font-size: 0.82em; }
+  table { font-size: 0.78em; }
+  th, td { padding: 4px 5px; }
+}
+@media print {
+  body.show-deep .deep { display: block; }
+  body.show-deep .deep h2 { page-break-before: always; }
+  body.show-deep .deep .topic { page-break-before: always; }
+  body[class*="pm-"] .page:not(:has(.deep)) { display: none; }
+  body[class*="pm-"] .page > *:not(.deep) { display: none; }
+  body[class*="pm-"] .deep { display: block; }
+  body[class*="pm-"] .deep h2 { page-break-before: avoid; }
+  body.pm-a .deep .topic, body.pm-b .deep .topic, body.pm-c .deep .topic, body.pm-d .deep .topic { display: none; }
+  body.pm-a .deep .topic-a, body.pm-b .deep .topic-b, body.pm-c .deep .topic-c, body.pm-d .deep .topic-d { display: block; }
+  #langbar { display: none; }
+  body { font-size: 10.5pt; }
+  .page { padding: 0; max-width: none; }
+  .cover { padding: 120px 0 60px; page-break-after: always; }
+  h2 { page-break-after: avoid; }
+  h3 { page-break-after: avoid; }
+  figure { page-break-inside: avoid; }
+  table { page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+  .toc { margin-bottom: 2em; }
+}
