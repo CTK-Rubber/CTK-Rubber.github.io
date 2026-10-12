@@ -1,7 +1,11 @@
-/* mw-viscosity-pour.js — §2「粘度＝抵抗流動」傾倒演示
+/* mw-viscosity-pour.js — §2「粘度＝抵抗流動」傾倒演示（canvas＋liquidfun-wasm 真實粒子流體）
    故事：同一個傾倒動作，水一秒流光、蜂蜜慢慢爬——粘度就是抵抗流動的程度。
-   互動：播放鍵＝傾倒（單段 8 秒，用 u 推進液面）；拉桿改右杯粘度——
-        1≈水、85≈蜂蜜、100＝橡膠（重力推不動，標語提示要加熱加壓）。 */
+   互動：播放鍵＝傾倒（單段 8 秒）；拉桿改右杯粘度——1≈水、85≈蜂蜜、100＝橡膠。
+   引擎：liquidfun-wasm（Box2D＋LiquidFun，zlib）——粒子旗標對應液性：
+        水＝water|powder（攤開）、糖漿＝water|tensile、蜂蜜＝water|viscous|tensile、
+        橡膠＝solid|rigid 粒子群（剛體不流）。
+   世界：y 朝下、50px/m；杯＝kinematic 三面盒牆繞杯緣旋轉；盤＝static；重播＝重建世界。
+   載入：進視窗才動態載 lf/entry.js（失敗或 reduced-motion → 靜態示意備援）。 */
 MW.register('viscosity-pour', {
   vb: [520, 300],
   alwaysTick: true,
@@ -19,10 +23,9 @@ MW.register('viscosity-pour', {
       fmt: function (v) { return v >= 99.5 ? '橡膠 rubber' : (v < 3 ? '≈水 water' : String(v)); } }
   ],
 
-  /* 倒完秒數（教學近似）：水 1 秒、蜂蜜(85)約 6 秒；100＝橡膠級→重力推不動 */
+  /* 倒完秒數（教學近似，供讀數顯示；實際傾倒由粒子模擬決定） */
   _pourTime: function (v) { return v >= 99.5 ? Infinity : 1 + (v - 1) * 5 / 84; },
 
-  /* 右杯名稱＋顏色 */
   _fluid: function (v, P) {
     if (v < 3) return { nm: ['水', 'water'], col: P.acc };
     if (v >= 99.5) return { nm: ['橡膠', 'rubber'], col: P.acc2 };
@@ -30,200 +33,324 @@ MW.register('viscosity-pour', {
     return { nm: ['糖漿', 'syrup'], col: P.rub };
   },
 
+  /* ---- liquidfun 載入（全站共享一份 promise；失敗記 failed 走備援） ---- */
+  _lf: null, _lfFailed: false,
+  _loadLF: function () {
+    var self = this;
+    if (this._lf || this._lfFailed) return;
+    var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (REDUCED) { this._lfFailed = true; return; }
+    this._lf = new Promise(function (res) {
+      var s = document.createElement('script');
+      s.src = 'lf/entry.js';
+      s.setAttribute('data-box2d-dir', 'lf');
+      s.onload = function () {
+        window.Box2D().then(function (b2) { self._b2 = b2; res(b2); },
+          function () { self._lfFailed = true; res(null); });
+      };
+      s.onerror = function () { self._lfFailed = true; res(null); };
+      document.head.appendChild(s);
+    });
+  },
+
+  /* ---- 場景幾何（canvas px，y 朝下）---- */
+  S: 50,                       /* px per meter */
+  TILT: 118,                   /* 最大傾角——真物理下杯口要過水平線才倒得出來（支點＝遠側底角） */
+  TILT_T: 1.5,                 /* 傾倒時間（秒）——1.5s＋damp1.2 水花最收斂（node 調參） */
+  CUPL: { cx: 135 }, CUPR: { cx: 355 },
+  TXL: 203, TXR: 423,
+
+  /* 傾角（度）：1.2s ease-out 傾倒、最後 1s 回正 */
+  _tilt: function (e) {
+    var tu = Math.min(1, e / this.TILT_T);
+    var m = e > 7 ? Math.max(0, 8 - e) : 1;
+    return this.TILT * tu * (2 - tu) * m;
+  },
+
+  /* 粘度→右杯粒子組態（水＝純 water；powder 水花四散不採用） */
+  _rconf: function (v, b2) {
+    var W = b2.b2_waterParticle, F = { f: W, g: 0, damp: 1.2, vs: 0.4 };
+    if (v >= 3 && v < 60)  F = { f: W | b2.b2_tensileParticle, g: 0, damp: 1.4, vs: 0.8 };
+    if (v >= 60 && v < 99.5) F = { f: W | b2.b2_viscousParticle | b2.b2_tensileParticle, g: 0, damp: 3.2, vs: 1.6 };
+    if (v >= 99.5) F = { f: W | b2.b2_viscousParticle | b2.b2_tensileParticle,
+      g: b2.b2_solidParticleGroup | b2.b2_rigidParticleGroup, damp: 1, vs: 1 };
+    return F;
+  },
+
+  /* 建世界：杯（kinematic 三牆盒繞杯緣）＋盤＋底＋粒子 */
+  _buildSim: function (b2) {
+    var S = this.S, m = 1 / S;
+    var g = new b2.b2Vec2(0, 9.8);
+    var w = new b2.b2World(g);
+    g.__destroy__();
+    var sim = { w: w, b2: b2, t: 0 };
+
+    /* 暫存向量（用完即毀） */
+    var V = function (x, y) { return new b2.b2Vec2(x, y); };
+    var trash = [];
+    var T = function (o) { trash.push(o); return o; };
+
+    /* ── 杯：pivot＝遠側底角 (cx-34,148)，往前傾倒；
+          杯內緣 pivot-rel x 4..64、y -104..-4；牆厚 8px 防穿隧。
+          lid＝杯口隱形擋板（僅橡膠）：倒置時膠塊頂住不脫落——
+          生膠本來就黏，模擬成「黏在杯裡不流」比「整塊掉出」更貼近教學敘事 ── */
+    function mkCup(cx, lid) {
+      var bd = T(new b2.b2BodyDef());
+      bd.type = b2.b2_kinematicBody;
+      bd.position.Set((cx - 34) * m, 148 * m);
+      var body = w.CreateBody(bd);
+      var parts = [
+        [34, -1, 36, 3, 0],      /* 底 */
+        [2, -54, 4, 54, 0],      /* 左牆（遠側） */
+        [66, -54, 4, 54, 0],     /* 右牆（倒側） */
+        [74, -100, 6, 2, 0.588]  /* 杯嘴斜唇 */
+      ];
+      if (lid) parts.push([40, -100, 38, 3, 0]);
+      parts.forEach(function (p) {
+        var sh = T(new b2.b2PolygonShape());
+        sh.SetAsBox(p[2] * m, p[3] * m, T(V(p[0] * m, p[1] * m)), p[4]);
+        body.CreateFixture(sh, 0);
+      });
+      return body;
+    }
+    sim.cupL = mkCup(this.CUPL.cx, false);
+    sim.cupR = mkCup(this.CUPR.cx, this._curVisc >= 99.5);
+    sim.pivL = [(this.CUPL.cx - 34) * m, 148 * m];
+    sim.pivR = [(this.CUPR.cx - 34) * m, 148 * m];
+
+    /* ── 盤：底＋左右斜壁（加厚防穿隧） ── */
+    function mkTray(tx) {
+      var bd = T(new b2.b2BodyDef());
+      bd.position.Set(tx * m, 268 * m);
+      var body = w.CreateBody(bd);
+      var bt = T(new b2.b2PolygonShape());
+      bt.SetAsBox(53 * m, 5 * m, T(V(0, 7 * m)), 0);
+      body.CreateFixture(bt, 0);
+      var sl = T(new b2.b2PolygonShape());
+      sl.SetAsBox(12 * m, 4 * m, T(V(-57 * m, -8 * m)), 0.93);
+      body.CreateFixture(sl, 0);
+      var sr = T(new b2.b2PolygonShape());
+      sr.SetAsBox(12 * m, 4 * m, T(V(57 * m, -8 * m)), 2.21);
+      body.CreateFixture(sr, 0);
+      return body;
+    }
+    mkTray(this.TXL); mkTray(this.TXR);
+
+    /* ── 隱形地板＋左右牆（接住飛濺，畫面外） ── */
+    var fd = T(new b2.b2BodyDef()); fd.position.Set(260 * m, 320 * m);
+    var fl = w.CreateBody(fd);
+    var fb = T(new b2.b2PolygonShape()); fb.SetAsBox(300 * m, 10 * m);
+    fl.CreateFixture(fb, 0);
+    [[-6, 150], [526, 150]].forEach(function (p) {
+      var sd = T(new b2.b2BodyDef()); sd.position.Set(p[0] * m, p[1] * m);
+      var sb = w.CreateBody(sd);
+      var sw = T(new b2.b2PolygonShape()); sw.SetAsBox(6 * m, 160 * m);
+      sb.CreateFixture(sw, 0);
+    });
+
+    /* ── 粒子系統：左水右液各自一組（強度參數是系統級） ── */
+    function mkPS(damp, vs) {
+      var d = T(new b2.b2ParticleSystemDef());
+      d.radius = 0.055;
+      d.dampingStrength = damp;
+      d.viscousStrength = vs;
+      d.surfaceTensionPressureStrength = 0.4;
+      return w.CreateParticleSystem(d);
+    }
+    sim.psL = mkPS(1.2, 0.4);
+
+    /* 粒子群：杯內矩形（pivot 相對座標） */
+    function mkGroup(ps, piv, flags, gflags) {
+      var d = T(new b2.b2ParticleGroupDef());
+      var sh = T(new b2.b2PolygonShape());
+      sh.SetAsBox(26 * m, 34 * m, T(V(34 * m, -54 * m)), 0);
+      d.shape = sh;
+      d.flags = flags;
+      if (gflags) d.groupFlags = gflags;
+      d.position.Set(piv[0], piv[1]);
+      return ps.CreateParticleGroup(d);
+    }
+    mkGroup(sim.psL, sim.pivL, b2.b2_waterParticle, 0);
+
+    var rc = this._rconf(this._curVisc, b2);
+    sim.psR = mkPS(rc.damp, rc.vs);
+    mkGroup(sim.psR, sim.pivR, rc.f, rc.g);
+    sim.visc = this._curVisc;
+
+    trash.forEach(function (o) { o.__destroy__(); });
+    return sim;
+  },
+
+  /* 世界推進到目標秒（cap 每幀步數；落後太多先重建再補） */
+  _sync: function (sim, target, v) {
+    var H = 1 / 30, b2 = sim.b2, self = this;
+    if (target < sim.t - 0.06) { this._destroy(sim); sim = this._buildSim(b2); }
+    if (v !== sim.visc) {
+      if ((v >= 99.5) !== (sim.visc >= 99.5) || !sim._deb || performance.now() - sim._deb > 150) {
+        sim._deb = performance.now();
+        this._destroy(sim); sim = this._buildSim(b2);
+      }
+    }
+    var steps = 0;
+    while (sim.t < target - 1e-6 && steps < 8) {
+      var h = Math.min(1 / 60, target - sim.t);
+      /* 只設角速度讓 kinematic 體自己積分（SetTransform 瞬移會把粒子彈飛）；
+         ω 用「目標角−當前角」反饋，順便修正漂移 */
+      var aT = this._tilt(sim.t + h) * Math.PI / 180;
+      [sim.cupL, sim.cupR].forEach(function (c) {
+        c.SetAngularVelocity((aT - c.GetAngle()) / h);
+      });
+      sim.w.Step(h, 8, 3, 8);   /* 粒子迭代固定 8——預設 1 次解不開旋轉容器裡的粒子床 */
+      sim.t += h; steps++;
+    }
+    /* 越界清理：只殺真正走失的——穿過側牆或沉到地板下（穿隧）。
+       噴到畫面上方的粒子不殺：重力會帶它們落回盤/地板，殺了反而讓水變少 */
+    sim._sweep = (sim._sweep || 0) + 1;
+    if (sim._sweep >= 30) {
+      sim._sweep = 0;
+      [sim.psL, sim.psR].forEach(function (ps) {
+        var n = ps.GetParticleCount();
+        var buf = ps.GetPositionBuffer(), fp = b2.getPointer(buf) >> 2, a = b2.HEAPF32;
+        for (var i = n - 1; i >= 0; i--) {
+          var x = a[fp + i * 2], y = a[fp + i * 2 + 1];
+          if (x < -0.35 || x > 10.75 || y > 6.8) ps.DestroyParticle(i);
+        }
+      });
+    }
+    return sim;
+  },
+
+  _destroy: function (sim) { if (sim && sim.w) sim.w.__destroy__(); },
+
+  /* ---- 建構：canvas 取代 svg（面板內容＝canvas；svg 退役移除） ---- */
   build: function (svgs, U) {
-    var svg = svgs[0], P = U.PAL, r = { TILT: 72, PIVX: 31, PIVY: 52 };
-    U.el('rect', { x: 0, y: 0, width: 520, height: 300, fill: '#fff' }, svg);
+    var svg = svgs[0], panel = svg.parentElement;
+    var cv = document.createElement('canvas');
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = 520 * dpr; cv.height = 300 * dpr;
+    cv.className = 'mw-svg mw-pourcv';
+    panel.appendChild(cv);
+    panel.removeChild(svg);
 
-    /* 杯組：杯體繞右下緣（杯嘴側底部）傾倒——真實傾倒的支點在杯緣不在中心。
-       液面永遠水平：液體畫在「世界座標」裡、用旋轉後的杯內緣當 clip——
-       杯子斜、液面不斜（CT 2026-10-12 指出前版液面跟著杯斜＝物理錯誤）。 */
-    function cup(cx, col) {
-      var c = { cx: cx };
-      c.clip = U.el('clipPath', { id: 'cupclip' + U.uid + cx }, svg);
-      c.clipPath = U.path('', {}, c.clip);
-      c.g = U.el('g', {}, svg);
-      U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: '#fff', stroke: 'none', opacity: 0.85 }, c.g);
-      U.path('M30 -56 L46 -48 L33 -40', { fill: '#fff', opacity: 0.85 }, c.g);            /* 杯嘴體 */
-      /* 液體：世界座標水平面矩形，被旋轉杯內緣裁切 */
-      c.liquid = U.el('rect', { x: cx - 80, y: 0, width: 160, height: 0, fill: col, 'clip-path': 'url(#cupclip' + U.uid + cx + ')' }, svg);
-      /* 杯體描線＋嘴 */
-      U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: 'none', stroke: P.mut, 'stroke-width': 2.2 }, c.g);
-      U.path('M30 -56 L46 -48 L33 -40', { fill: 'none', stroke: P.mut, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, c.g);
-      /* 杯內液面高光（同 clip——液面線被杯內緣裁成水平線段） */
-      c.sheen = U.el('line', { stroke: '#fff', 'stroke-width': 1.2, opacity: 0,
-        'clip-path': 'url(#cupclip' + U.uid + cx + ')' }, svg);
-      /* 噴流：9 段短線逐段變細（連續性 v↑→截面↓，Mariotte 變細律）＋斷點滴＋捲繩 */
-      c.segs = [];
-      for (var si = 0; si < 9; si++) c.segs.push(U.el('line', { stroke: col, 'stroke-linecap': 'round', opacity: 0 }, svg));
-      c.drops = [];
-      for (var i = 0; i < 4; i++) c.drops.push(U.el('circle', { r: 2.6, fill: col, opacity: 0 }, svg));
-      c.coil = U.path('', { fill: 'none', stroke: col, 'stroke-width': 2, 'stroke-linecap': 'round', opacity: 0 }, svg);
-      c.puddle = U.el('ellipse', { cx: 0, cy: 259, rx: 5, ry: 2.4, fill: col, opacity: 0 }, svg);
-      c.puddleIn = U.el('ellipse', { cx: 0, cy: 258, rx: 3, ry: 1.6, fill: col, opacity: 0 }, svg);
-      c.blob = U.el('circle', { cx: 0, cy: 0, r: 4.5, fill: col, opacity: 0 }, svg);
-      return c;
-    }
-
-    /* 接盤 */
-    function tray(tx) {
-      U.path('M' + (tx - 56) + ' 252 L' + (tx + 56) + ' 252 L' + (tx + 44) + ' 268 L' + (tx - 44) + ' 268 Z',
-        { fill: P.soft, stroke: P.mut, 'stroke-width': 1.6, 'stroke-linejoin': 'round' }, svg);
-    }
-    r.txL = 203; r.txR = 423;
-    tray(r.txL); tray(r.txR);
-
-    r.cupL = cup(135, P.acc); r.cupR = cup(355, P.rub);
-    r.cupL.puddle.setAttribute('cx', r.txL); r.cupL.puddleIn.setAttribute('cx', r.txL);
-    r.cupR.puddle.setAttribute('cx', r.txR); r.cupR.puddleIn.setAttribute('cx', r.txR);
-
-    /* 杯名 */
-    U.bi({ x: 135, y: 26, 'font-size': 12.5, 'text-anchor': 'middle', fill: P.mut, 'font-weight': 600 }, '水', 'water', svg);
-    r.nmRzh = U.txt({ x: 355, y: 26, 'font-size': 12.5, 'text-anchor': 'middle', fill: P.mut, 'font-weight': 600 }, '蜂蜜', svg, 'zh');
-    r.nmRen = U.txt({ x: 355, y: 26, 'font-size': 12.5, 'text-anchor': 'middle', fill: P.mut, 'font-weight': 600 }, 'honey', svg, 'en');
-
-    /* 橡膠標語 */
-    r.note = U.el('g', { opacity: 0 }, svg);
-    U.bi({ x: r.txR, y: 235, 'font-size': 11, 'text-anchor': 'middle', fill: P.warn, 'font-weight': 700 }, '不會自己流', 'won’t flow on its own', r.note);
-
+    var r = { cv: cv, cx2d: cv.getContext('2d'), dpr: dpr, sim: null };
+    var self = this;
+    /* 進視窗才載 wasm */
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { self._loadLF(); io.disconnect(); } });
+      }, { threshold: 0.2 });
+      io.observe(panel);
+    } else this._loadLF();
     return r;
   },
 
-  /* 局部座標→世界座標（杯組 transform＝translate(cx,96)·rotate(tilt,31,52)） */
-  _w: function (cx, tilt, x, y) {
-    var rad = tilt * Math.PI / 180, cos = Math.cos(rad), sin = Math.sin(rad);
-    return [cx + 31 + (x - 31) * cos - (y - 52) * sin,
-            96 + 52 + (x - 31) * sin + (y - 52) * cos];
-  },
-
+  /* ---- 每幀 ---- */
   apply: function (r, ctx) {
-    var P = MW.PAL, v = ctx.params.visc;
-    var elapsed = ctx.u * 8;
-    var tu = Math.min(1, elapsed / 0.8);
-    /* 收尾回正：最後 1 秒杯身回直立，循環重播不是「兩個空杯掛半空」 */
-    var tiltMul = elapsed > 7 ? Math.max(0, 8 - elapsed) : 1;
-    var tilt = r.TILT * tu * (2 - tu) * tiltMul;
-    var ptR = this._pourTime(v);
+    var P = MW.PAL, v = ctx.params.visc, self = this;
+    this._curVisc = v;
+    var g = r.cx2d, S = this.S, dpr = r.dpr;
+    var target = ctx.u * 8;
+
+    /* 模擬就緒判定 */
+    if (!r.sim && this._b2 && !this._lfFailed) r.sim = this._buildSim(this._b2);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, 520, 300);
+    g.fillStyle = '#fff'; g.fillRect(0, 0, 520, 300);
+
     var fl = this._fluid(v, P);
+    if (r.sim) r.sim = this._sync(r.sim, target, v);
+    /* 驗收偵錯掛點 */
+    r.cv._dbg = { sim: !!r.sim, t: r.sim ? +r.sim.t.toFixed(2) : null,
+      nL: r.sim ? r.sim.psL.GetParticleCount() : 0,
+      nR: r.sim ? r.sim.psR.GetParticleCount() : 0,
+      b2: !!this._b2, failed: this._lfFailed, v: v };
+    if (r.sim) {
+      var bb = r.sim.psL.GetPositionBuffer(), np = r.sim.psL.GetParticleCount();
+      var fp = r.sim.b2.getPointer(bb) >> 2;
+      var a = r.sim.b2.HEAPF32;
+      var xs = [], ys = [];
+      for (var di = 0; di < np; di++) { xs.push(a[fp + di * 2]); ys.push(a[fp + di * 2 + 1]); }
+      r.cv._dbg.xr = [Math.min.apply(0, xs).toFixed(2), Math.max.apply(0, xs).toFixed(2)];
+      r.cv._dbg.yr = [Math.min.apply(0, ys).toFixed(2), Math.max.apply(0, ys).toFixed(2)];
+      r.cv._dbg.p0 = [a[fp].toFixed(2), a[fp + 1].toFixed(2)];
+    }
 
-    r.nmRzh.textContent = fl.nm[0]; r.nmRen.textContent = fl.nm[1];
-    r.note.setAttribute('opacity', v >= 99.5 ? 1 : 0);
+    /* ── 盤面 ── */
+    [this.TXL, this.TXR].forEach(function (tx) {
+      g.beginPath();
+      g.moveTo(tx - 63, 252); g.lineTo(tx + 63, 252); g.lineTo(tx + 51, 268); g.lineTo(tx - 51, 268); g.closePath();
+      g.fillStyle = P.soft; g.fill();
+      g.strokeStyle = P.mut; g.lineWidth = 1.6; g.lineJoin = 'round'; g.stroke();
+    });
 
-    /* 杯內緣四角（局部）＋杯嘴出水點 */
-    var CORNERS = [[-29, -48], [28, -48], [28, 48], [-29, 48]];
-    var LIP = [40, -47];
-
-    var cups = [
-      [r.cupL, 1,   P.acc,  r.txL, 1],
-      [r.cupR, ptR, fl.col, r.txR, v]
-    ];
-    for (var ci = 0; ci < 2; ci++) {
-      var c = cups[ci][0], pt = cups[ci][1], col = cups[ci][2], tx = cups[ci][3], vv = cups[ci][4];
-      c.g.setAttribute('transform', 'translate(' + c.cx + ' 96) rotate(' + tilt.toFixed(1) + ' ' + r.PIVX + ' ' + r.PIVY + ')');
-
-      /* 旋轉後杯內緣多邊形（世界座標）→ 更新 clip */
-      var dclip = '', minY = 1e9, maxY = -1e9;
-      for (var k = 0; k < 4; k++) {
-        var w = this._w(c.cx, tilt, CORNERS[k][0], CORNERS[k][1]);
-        dclip += (k ? 'L' : 'M') + w[0].toFixed(1) + ' ' + w[1].toFixed(1);
-        if (w[1] < minY) minY = w[1];
-        if (w[1] > maxY) maxY = w[1];
+    var tiltRad = r.sim ? this._tilt(r.sim.t) * Math.PI / 180 : this._tilt(target) * Math.PI / 180;
+    /* ── 杯體：先畫半透明填充（粒子前），描線最後蓋（玻璃在液體前） ── */
+    var cupPath = function () {
+      g.beginPath();
+      g.roundRect ? g.roundRect(-2, -108, 72, 110, 9) : g.rect(-2, -108, 72, 110);
+      g.moveTo(64, -108); g.lineTo(80, -100); g.lineTo(67, -92); g.closePath();
+    };
+    [this.CUPL.cx, this.CUPR.cx].forEach(function (cx) {
+      g.save(); g.translate(cx - 34, 148); g.rotate(tiltRad);
+      cupPath(); g.fillStyle = 'rgba(255,255,255,0.55)'; g.fill();
+      g.restore();
+    });
+    /* ── 粒子（真實模擬）或靜態液體（備援） ── */
+    var drawParts = function (ps, col) {
+      var n = ps.GetParticleCount(); if (!n) return;
+      var buf = ps.GetPositionBuffer();
+      var ptr = r.sim.b2.getPointer(buf);
+      var f32 = r.sim.b2.HEAPF32.subarray(ptr >> 2, (ptr >> 2) + n * 2);
+      g.fillStyle = col; g.globalAlpha = 0.85;
+      g.beginPath();
+      for (var i = 0; i < n; i++) {
+        var x = f32[i * 2] * S, y = f32[i * 2 + 1] * S;
+        g.moveTo(x + 4.2, y); g.arc(x, y, 4.2, 0, 6.2832);
       }
-      c.clipPath.setAttribute('d', dclip + 'Z');
+      g.fill(); g.globalAlpha = 1;
+    };
 
-      /* 剩餘量 f → 世界水平液面 y（液面永遠水平，clip 決定它在杯內的形狀） */
-      var p = pt === Infinity ? 0 : Math.max(0, Math.min(1, (elapsed - 0.8) / pt));
-      var f = pt === Infinity ? 0.9 : Math.max(0, 1 - p * 0.97);
-      var surfY = maxY - f * (maxY - minY);
-      c.liquid.setAttribute('y', surfY.toFixed(1));
-      c.liquid.setAttribute('height', (300 - surfY).toFixed(1));
-      c.liquid.setAttribute('fill', col);
-      c.sheen.setAttribute('x1', (c.cx - 80).toFixed(1));
-      c.sheen.setAttribute('x2', (c.cx + 80).toFixed(1));
-      c.sheen.setAttribute('y1', surfY.toFixed(1));
-      c.sheen.setAttribute('y2', surfY.toFixed(1));
-      c.sheen.setAttribute('opacity', f > 0.02 ? 0.5 : 0);
+    if (r.sim) {
+      drawParts(r.sim.psL, P.acc);
+      drawParts(r.sim.psR, fl.col);
+    } else {
+      /* 備援靜態示意：杯內液量＋盤中積液近似（載入中／wasm 失敗／reduced-motion） */
+      var ptR = this._pourTime(v);
+      var p = ptR === Infinity ? 0 : Math.max(0, Math.min(1, (target - 0.8) / ptR));
+      [[this.CUPL.cx, 1, P.acc, this.TXL], [this.CUPR.cx, ptR, fl.col, this.TXR]].forEach(function (c) {
+        var f = c[1] === Infinity ? 0.9 : Math.max(0, 1 - p * 0.97);
+        g.save(); g.translate(c[0] - 34, 148); g.rotate(tiltRad);
+        g.beginPath(); g.rect(4, -104, 60, 100); g.clip();
+        g.fillStyle = c[2];
+        g.fillRect(4, -4 - 100 * f, 60, 100 * f);
+        g.restore();
+        var spr = 46 * Math.pow(p, 0.7), md = 2.4 + Math.pow(p, 0.8) * 4;
+        if (p > 0.01 && c[1] !== Infinity) {
+          g.fillStyle = c[2]; g.globalAlpha = 0.8;
+          g.beginPath(); g.ellipse(c[3], 261 - md, 5 + spr, md, 0, 0, 6.2832); g.fill();
+          g.globalAlpha = 1;
+        }
+      });
+    }
+    [this.CUPL.cx, this.CUPR.cx].forEach(function (cx) {
+      g.save(); g.translate(cx - 34, 148); g.rotate(tiltRad);
+      cupPath(); g.strokeStyle = P.mut; g.lineWidth = 2.2; g.stroke();
+      g.restore();
+    });
 
-      /* 杯嘴出水點（世界座標） */
-      var lip = this._w(c.cx, tilt, LIP[0], LIP[1]);
-      var sx = lip[0], sy = lip[1];
-
-      /* ── 噴流物理（AJP / PRL 正本）──
-         軌跡：離唇拋物線 x∝s、y∝s²（水平初速＋重力加速下彎）
-         粗細：連續性截面∝1/v——v(s)=√(vx²+(2g₂s)²)，黏的下限高、稀的細到幾乎斷
-         斷點：稀液 Rayleigh 半路散成滴；黏液柱拉長不斷（delayed capillary breakup）
-         落地：蜂蜜級在盤面捲繩（liquid rope coiling）——小圈擺動示意 */
-      var flowOn = pt !== Infinity && p > 0.005 && p < 0.985 && tilt > 30;
-      var sEnd = p > 0.9 ? Math.max(0.04, (1 - p) / 0.1) : Math.min(1, p / 0.06 + 0.15);
-      var breakS = vv >= 60 ? 2 : (vv < 25 ? 0.45 : 0.8);
-      var thick0 = 1.6 + 4.6 * Math.min(1, vv / 100);
-      var vx = tx - sx, g2 = 258 - sy, spd0 = Math.max(30, Math.abs(vx));
-      var minFrac = vv >= 60 ? 0.5 : 0.12;
-      for (var sj = 0; sj < 9; sj++) {
-        var seg = c.segs[sj];
-        if (!flowOn || sj / 9 >= Math.min(sEnd, breakS)) { seg.setAttribute('opacity', 0); continue; }
-        var sa = sj / 9 * sEnd, sb = (sj + 1) / 9 * sEnd;
-        var sm = (sa + sb) / 2;
-        var spd = Math.sqrt(vx * vx + (2 * g2 * sm) * (2 * g2 * sm));
-        var wseg = thick0 * Math.max(minFrac, spd0 / spd);
-        seg.setAttribute('x1', (sx + vx * sa).toFixed(1));
-        seg.setAttribute('y1', (sy + g2 * sa * sa).toFixed(1));
-        seg.setAttribute('x2', (sx + vx * sb).toFixed(1));
-        seg.setAttribute('y2', (sy + g2 * sb * sb).toFixed(1));
-        seg.setAttribute('stroke', col);
-        seg.setAttribute('stroke-width', wseg.toFixed(1));
-        seg.setAttribute('opacity', 0.92);
-      }
-
-      /* 斷點下段＋收尾回縮滴：稀液在 breakS 後散開成小滴（帶抖動）；
-         末段液線退回唇邊時，殘段化成慢滴（黏的拖長絲） */
-      var dripPh = flowOn && (p > 0.88 || breakS < sEnd);
-      for (var di = 0; di < 4; di++) {
-        var dr = c.drops[di];
-        if (dripPh) {
-          var span = p > 0.88 ? [0.5, sEnd] : [breakS, sEnd];
-          var ph = ((ctx.t * (vv > 60 ? 1.3 : 3.4)) + di * 0.29) % 1;
-          var ds = span[0] + (span[1] - span[0]) * ph;
-          var jit = vv > 60 ? 0 : Math.sin(di * 7 + ctx.t * 11) * 3;
-          dr.setAttribute('cx', (sx + vx * ds + jit).toFixed(1));
-          dr.setAttribute('cy', (sy + g2 * ds * ds).toFixed(1));
-          dr.setAttribute('r', (1.8 + Math.min(1, vv / 100) * 1.8 + ph).toFixed(1));
-          dr.setAttribute('opacity', (0.85 * (1 - ph * 0.45)).toFixed(2));
-          dr.setAttribute('fill', col);
-        } else dr.setAttribute('opacity', 0);
-      }
-
-      /* 蜂蜜捲繩：落點小圈左右擺（液繩在盤面盤卷的招牌外觀） */
-      var coilOn = flowOn && vv >= 60 && sEnd > 0.85;
-      if (coilOn) {
-        var cw = Math.sin(ctx.t * 9 + c.cx) * 5;
-        var cyT = 258 - (2.4 + Math.pow(Math.min(1, p), 0.8) * (2 + vv / 9));
-        c.coil.setAttribute('d', 'M' + (tx - 7 + cw * 0.3).toFixed(1) + ' ' + cyT.toFixed(1) +
-          ' q3.5 -4 7 0 q-3.5 4 -7 0 M' + (tx + cw * 0.6 - 5).toFixed(1) + ' ' + (cyT - 4.5).toFixed(1) +
-          ' q2.5 -3.5 5 0 q-2.5 3.5 -5 0');
-        c.coil.setAttribute('stroke', col);
-        c.coil.setAttribute('opacity', 0.65);
-      } else c.coil.setAttribute('opacity', 0);
-
-      /* 盤中積液：水攤平薄、蜜堆高成丘 */
-      var spread = 46 * Math.pow(p, 0.7) * (1 - Math.min(0.55, vv / 180));
-      var mound = 2.4 + Math.pow(p, 0.8) * (2 + vv / 9);
-      c.puddle.setAttribute('rx', (5 + spread).toFixed(1));
-      c.puddle.setAttribute('ry', mound.toFixed(1));
-      c.puddle.setAttribute('cy', (261 - mound).toFixed(1));
-      c.puddle.setAttribute('opacity', Math.min(1, p * 5) * 0.8);
-      c.puddle.setAttribute('fill', col);
-      c.puddleIn.setAttribute('cx', tx);
-      c.puddleIn.setAttribute('rx', (3 + spread * 0.55).toFixed(1));
-      c.puddleIn.setAttribute('ry', (mound * 0.55).toFixed(1));
-      c.puddleIn.setAttribute('cy', (260 - mound).toFixed(1));
-      c.puddleIn.setAttribute('opacity', Math.min(1, p * 5) * 0.35);
-      c.puddleIn.setAttribute('fill', '#fff');
-
-      /* 橡膠：杯口掛一顆不走的膠（回正後藏起——留在杯裡看起來像滿杯膠） */
-      var hang = pt === Infinity && elapsed > 1.0 && tilt > 20;
-      c.blob.setAttribute('cx', sx.toFixed(1));
-      c.blob.setAttribute('cy', (sy + 4).toFixed(1));
-      c.blob.setAttribute('opacity', hang ? 0.9 : 0);
+    /* ── 標註（canvas 文字依當前語言） ── */
+    var en = document.body.classList.contains('show-en');
+    var FAM = '"PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif';
+    g.fillStyle = P.mut; g.font = '600 12.5px ' + FAM; g.textAlign = 'center';
+    g.fillText(en ? 'water' : '水', 135, 26);
+    g.fillText(en ? fl.nm[1] : fl.nm[0], 355, 26);
+    if (v >= 99.5) {
+      g.fillStyle = P.warn; g.font = '700 11px ' + FAM;
+      g.fillText(en ? 'won’t flow on its own' : '不會自己流', this.TXR, 235);
+    }
+    if (!r.sim && !this._lfFailed) {
+      g.fillStyle = P.mut; g.font = '12px ' + FAM;
+      g.fillText(en ? 'loading fluid engine…' : '流體引擎載入中…', 260, 150);
     }
   },
 
