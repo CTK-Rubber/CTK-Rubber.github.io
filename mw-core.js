@@ -96,7 +96,7 @@ window.MW = (function () {
         '<button class="mw-btn" data-a="next"><span class="lang-zh">' + UI.next[0] + '</span><span class="lang-en">' + UI.next[1] + '</span></button>' +
         '<button class="mw-btn" data-a="replay"><span class="lang-zh">' + UI.replay[0] + '</span><span class="lang-en">' + UI.replay[1] + '</span></button>' +
         '<button class="mw-btn" data-a="loop"><span class="lang-zh">' + UI.loop[0] + '</span><span class="lang-en">' + UI.loop[1] + '</span></button>' +
-        '<button class="mw-btn" data-a="speed"><span class="lang-zh">' + UI.speed[0] + ' 1×</span><span class="lang-en">' + UI.speed[1] + ' 1×</span></button>' +
+        '<button class="mw-btn" data-a="speed"><span class="lang-zh">' + UI.speed[0] + ' 0.5×</span><span class="lang-en">' + UI.speed[1] + ' 0.5×</span></button>' +
         '<span class="mw-dots"></span>' : '') +
       '<span class="mw-hint"></span>' +
       '</div></div>';
@@ -124,7 +124,7 @@ window.MW = (function () {
       u: hasStages ? 0 : 1, playing: false,
       started: false, holdUntil: 0, lastStage: -1, t: 0,
       params: {}, arg: arg, dirty: true,
-      speed: 1, loop: true, autoOff: false, autoPlaying: false,
+      speed: 0.5, loop: true, autoOff: false, autoPlaying: false,
       wiggled: false, wig: null
     };
     (def.params || []).forEach(function (p) { st.params[p.key] = p.def; });
@@ -256,7 +256,7 @@ window.MW = (function () {
       syncLoop();
       loopBtn.addEventListener('click', function () { st.loop = !st.loop; syncLoop(); });
       var speedBtn = root.querySelector('[data-a="speed"]');
-      var SPEEDS = [1, 2, 0.5];
+      var SPEEDS = [0.25, 0.5, 1, 2];
       speedBtn.addEventListener('click', function () {
         var i = (SPEEDS.indexOf(st.speed) + 1) % SPEEDS.length;
         st.speed = SPEEDS[i];
