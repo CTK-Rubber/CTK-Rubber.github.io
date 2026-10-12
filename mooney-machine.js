@@ -511,6 +511,7 @@
 
     /* 曲線 hover → 機器狀態跟隨 */
     C.hit.addEventListener('pointermove', function (e) {
+      if (state.playing && !e.buttons) return;   /* 播放中滑過不打斷；按住拖曳才算接管 */
       var b = cSvg.getBoundingClientRect();
       var t = (e.clientX - b.left) / b.width * 340;
       var tm = Math.max(0, Math.min(T_END, (t - PX0) / (PX1 - PX0) * T_END));

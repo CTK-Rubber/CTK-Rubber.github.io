@@ -285,6 +285,7 @@ window.MW = (function () {
       var hit = el('rect', { x: 0, y: 0, width: vb[0], height: vb[1], fill: '#fff', opacity: 0 }, svgEl);
       svgEl.style.cursor = 'crosshair';
       hit.addEventListener('pointermove', function (e) {
+        if (st.playing && !e.buttons) return;   /* 播放中滑過不打斷；按住拖曳才算接管 */
         var b = svgEl.getBoundingClientRect();
         if (!(b.width > 0)) return;   /* 隱藏語言副本寬度為 0，不算位移 */
         var xvb = (e.clientX - b.left) / b.width * vb[0];
