@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="mw-widgets.css">
 <link rel="icon" href="data:,">
 </head>
-<body>
+<body class="show-deep">
 
 <div id="langbar">
   <button id="btn-deep" class="tb" onclick="setDeep()"><span class="lang-zh">深入專案討論</span><span class="lang-en">Deep Dive</span></button>
@@ -119,9 +119,9 @@
 
   <div class="lang-zh">
     <h3>「粘度」到底是什麼？</h3>
-    <p>「粘度（viscosity）」講的是流體抵抗流動的程度。蜂蜜比水黏，所以倒得慢——蜂蜜的粘度高。橡膠也是一種會流動的材料，只是慢得多、而且需要在加熱與加壓下才流得動。木尼粘度計量的就是「這團膠在規定溫度下，抵抗被轉子攪動的程度」。</p>
+    <p>「粘度（viscosity）」講的是流體抵抗流動的程度。濃稠的液體比水黏，所以倒得慢——它的粘度高。橡膠也是一種會流動的材料，只是慢得多、而且需要在加熱與加壓下才流得動。木尼粘度計量的就是「這團膠在規定溫度下，抵抗被轉子攪動的程度」。</p>
     <figure class="mw-fig"><div class="mw" data-mw="viscosity-pour" tabindex="0"></div>
-      <img class="mw-print" src="figures/fig-pour.svg" alt=""><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：左邊是水、右邊是蜂蜜——按播放傾倒，再拖「粘度」拉桿看流速怎麼變。橡膠粘度比蜂蜜高幾萬倍，常溫下根本不會自己流。</span><span class="lang-en">: Water on the left, honey on the right — press play to pour, then drag the viscosity slider. Rubber is tens of thousands of times more viscous — it will not flow on its own at room temperature.</span></figcaption></figure>
+      <img class="mw-print" src="figures/fig-pour.svg" alt=""><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：三杯同樣倒法：水一秒流光、濃稠液體還是液體只是慢、史萊姆拉出來一整團不斷——黏度是抵抗流動的程度；史萊姆那種高分子液的黏彈性，是後面木尼章節要接的故事。</span><span class="lang-en">: Same pour on three cups: water is gone in a second, the thick liquid is still a liquid — just slow — and slime stretches out as one unbroken blob. Viscosity is resistance to flow; the viscoelasticity of a polymer liquid is a story picked up in the Mooney chapters.</span></figcaption></figure>
     <h3>木尼值是什麼意思？</h3>
     <p>轉子在膠裡轉動時受到的阻力（扭矩，torque）會被換算成一個數字，單位叫「木尼單位（Mooney unit, MU）」。這是一個<strong>相對指標</strong>，不是物理學定義的真粘度。實務上只要記住：數字越大，膠越「黏」、越難加工。<sup class="ref">[3]</sup></p>
     <figure class="mw-fig"><div class="mw" data-mw="rotovisc" tabindex="0"></div>
@@ -130,9 +130,9 @@
   </div>
   <div class="lang-en">
     <h3>What is viscosity, really?</h3>
-    <p>Viscosity describes how much a fluid resists flowing. Honey is more viscous than water, so it pours slowly. Rubber also flows — just far more slowly, and only under heat and pressure. The Mooney viscometer measures how much the rubber resists being sheared by a rotor at a specified temperature.</p>
+    <p>Viscosity describes how much a fluid resists flowing. A thicker liquid is more viscous than water, so it pours slowly. Rubber also flows — just far more slowly, and only under heat and pressure. The Mooney viscometer measures how much the rubber resists being sheared by a rotor at a specified temperature.</p>
     <figure class="mw-fig"><div class="mw" data-mw="viscosity-pour" tabindex="0"></div>
-      <img class="mw-print" src="figures/fig-pour.svg" alt=""><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：左邊是水、右邊是蜂蜜——按播放傾倒，再拖「粘度」拉桿看流速怎麼變。橡膠粘度比蜂蜜高幾萬倍，常溫下根本不會自己流。</span><span class="lang-en">: Water on the left, honey on the right — press play to pour, then drag the viscosity slider. Rubber is tens of thousands of times more viscous — it will not flow on its own at room temperature.</span></figcaption></figure>
+      <img class="mw-print" src="figures/fig-pour.svg" alt=""><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：三杯同樣倒法：水一秒流光、濃稠液體還是液體只是慢、史萊姆拉出來一整團不斷——黏度是抵抗流動的程度；史萊姆那種高分子液的黏彈性，是後面木尼章節要接的故事。</span><span class="lang-en">: Same pour on three cups: water is gone in a second, the thick liquid is still a liquid — just slow — and slime stretches out as one unbroken blob. Viscosity is resistance to flow; the viscoelasticity of a polymer liquid is a story picked up in the Mooney chapters.</span></figcaption></figure>
     <h3>What does the Mooney value mean?</h3>
     <p>The resistance (torque) the rotor feels is converted into a number expressed in Mooney units (MU). It is a <strong>relative index</strong>, not a true physical viscosity. For practical purposes: the higher the number, the more viscous and harder to process the rubber.<sup class="ref">[3]</sup></p>
     <figure class="mw-fig"><div class="mw" data-mw="rotovisc" tabindex="0"></div>
@@ -1620,11 +1620,13 @@ function setLang(l) {
   document.documentElement.lang = l === 'en' ? 'en' : 'zh-Hant';
 }
 function setDeep() {
-  var on = document.body.classList.toggle('show-deep');
-  document.getElementById('btn-deep').classList.toggle('on', on);
-  if (on) document.getElementById('deep').scrollIntoView({ behavior: 'smooth' });
+  document.body.classList.add('show-deep');
+  document.getElementById('deep').scrollIntoView({ behavior: 'smooth' });
 }
 (function () {
+  /* 語言自動偵測：瀏覽器首選語言不是中文 → 預設英文（讀者可隨時手動切回） */
+  var langs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'zh']);
+  if (!langs.some(function (l) { return /^zh/i.test(l); })) setLang('en');
   var m = location.hash.match(/^#pdf-(a|b|c|d)$/);
   if (m) {
     document.body.classList.add('pm-' + m[1]);

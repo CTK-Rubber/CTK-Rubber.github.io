@@ -76,6 +76,16 @@ details.mw-faq summary { cursor: pointer; font-weight: 600; color: var(--accent)
 details.mw-faq summary:hover { text-decoration: underline; }
 details.mw-faq p { margin: 6px 0 4px; }
 
+/* 傾倒模擬的粒子層：疊在主 canvas 下，SVG gooey 濾鏡把圓點融合成液面；
+   濾鏡不支援的瀏覽器退回未融合圓點（仍可讀） */
+.mw-blobcv {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; border-radius: 8px;
+  filter: url(#mw-goo);
+}
+/* 傾倒模擬主 canvas 透明底，讓下層液面透出（卡片本體即白底） */
+canvas.mw-pourcv { background: transparent; }
+
 /* 靜態備援：JS 掛載後螢幕藏原圖；列印一律顯示原圖、藏互動 */
 .mw-live .mw-print { display: none; }
 @media print {

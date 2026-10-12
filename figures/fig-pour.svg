@@ -1,33 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" font-family="sans-serif">
-  <rect width="520" height="300" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" font-family="sans-serif">
+  <rect width="520" height="340" fill="#fff"/>
   <defs>
-    <clipPath id="cupR">
-      <!-- 右杯內緣：傾斜 72° 後的世界座標（同互動版算式） -->
-      <path d="M462.6 60 L480.2 114.3 L388.9 143.9 L371.3 89.7 Z"/>
+    <clipPath id="cupH">
+      <!-- 濃稠液體杯內緣：傾斜 88° 後的世界座標（cx=260） -->
+      <path d="M367.6 68 L385.2 122.3 L293.9 151.9 L276.3 97.7 Z"/>
+    </clipPath>
+    <clipPath id="cupG">
+      <!-- 史萊姆杯內緣：同傾斜（cx=432） -->
+      <path d="M539.6 68 L557.2 122.3 L465.9 151.9 L448.3 97.7 Z"/>
     </clipPath>
   </defs>
-  <!-- 左杯水：已倒空，盤裡一攤薄水 -->
-  <g transform="translate(135 96) rotate(72 31 52)">
+  <!-- 水杯：已倒空，細流斷成滴，盤裡一攤薄水 -->
+  <g transform="translate(88 104) rotate(72 31 52)">
     <rect x="-34" y="-56" width="68" height="108" rx="9" fill="none" stroke="#52606d" stroke-width="2.2"/>
     <path d="M30 -56 L46 -48 L33 -40" fill="none" stroke="#52606d" stroke-width="2.2" stroke-linejoin="round"/>
   </g>
-  <path d="M263 126 Q238 190 203 255" fill="none" stroke="#3b82c4" stroke-width="1.8" opacity="0.35" stroke-linecap="round" stroke-dasharray="3 7"/>
-  <ellipse cx="203" cy="259" rx="48" ry="3" fill="#3b82c4" opacity="0.75"/>
-  <ellipse cx="203" cy="258" rx="26" ry="1.6" fill="#fff" opacity="0.35"/>
-  <!-- 右杯蜂蜜：半杯、液面水平（clip 杯內緣）、粗液線、盤裡堆成丘 -->
-  <rect x="330" y="102" width="190" height="200" fill="#c98a3d" opacity="0.8" clip-path="url(#cupR)"/>
-  <line x1="352" y1="102" x2="470" y2="102" stroke="#fff" stroke-width="1.4" opacity="0.6"/>
-  <g transform="translate(355 96) rotate(72 31 52)">
+  <path d="M148 130 Q120 210 92 292" fill="none" stroke="#3b82c4" stroke-width="1.8" opacity="0.35" stroke-linecap="round" stroke-dasharray="3 7"/>
+  <!-- 濃稠液體杯：半杯、液面水平（clip 杯內緣）、粗液線、盤裡堆成丘 -->
+  <rect x="235" y="110" width="190" height="200" fill="#c98a3d" opacity="0.8" clip-path="url(#cupH)"/>
+  <line x1="257" y1="110" x2="375" y2="110" stroke="#fff" stroke-width="1.4" opacity="0.6"/>
+  <g transform="translate(260 104) rotate(72 31 52)">
     <rect x="-34" y="-56" width="68" height="108" rx="9" fill="none" stroke="#52606d" stroke-width="2.2"/>
     <path d="M30 -56 L46 -48 L33 -40" fill="none" stroke="#52606d" stroke-width="2.2" stroke-linejoin="round"/>
   </g>
-  <path d="M483 126 Q455 190 423 255" fill="none" stroke="#c98a3d" stroke-width="5.5" stroke-linecap="round" opacity="0.9"/>
-  <ellipse cx="423" cy="253" rx="22" ry="10" fill="#c98a3d" opacity="0.8"/>
-  <ellipse cx="423" cy="248" rx="11" ry="5" fill="#c98a3d" opacity="0.55"/>
-  <!-- 接盤 -->
-  <path d="M147 252 L259 252 L247 268 L159 268 Z" fill="#f5f7fa" stroke="#52606d" stroke-width="1.6" stroke-linejoin="round"/>
-  <path d="M367 252 L479 252 L467 268 L379 268 Z" fill="#f5f7fa" stroke="#52606d" stroke-width="1.6" stroke-linejoin="round"/>
-  <text x="135" y="26" font-size="12.5" text-anchor="middle" fill="#52606d" font-weight="600">水 water</text>
-  <text x="355" y="26" font-size="12.5" text-anchor="middle" fill="#52606d" font-weight="600">蜂蜜 honey</text>
-  <text x="265" y="292" font-size="11" text-anchor="middle" fill="#52606d">水約 1 秒倒完、攤平；蜂蜜慢慢爬、堆成丘——粘度＝抵抗流動的程度</text>
+  <path d="M320 130 Q295 210 263 292" fill="none" stroke="#c98a3d" stroke-width="5.5" stroke-linecap="round" opacity="0.9"/>
+  <!-- 史萊姆杯：多數還在杯裡，整團拉出來不斷（粗連體），盤裡收成一坨 -->
+  <rect x="405" y="86" width="190" height="230" fill="#4a7a4a" opacity="0.8" clip-path="url(#cupG)"/>
+  <line x1="427" y1="86" x2="545" y2="86" stroke="#fff" stroke-width="1.4" opacity="0.6"/>
+  <g transform="translate(432 104) rotate(72 31 52)">
+    <rect x="-34" y="-56" width="68" height="108" rx="9" fill="none" stroke="#52606d" stroke-width="2.2"/>
+    <path d="M30 -56 L46 -48 L33 -40" fill="none" stroke="#52606d" stroke-width="2.2" stroke-linejoin="round"/>
+  </g>
+  <path d="M492 128 Q470 210 440 296" fill="none" stroke="#4a7a4a" stroke-width="15" stroke-linecap="round" opacity="0.85"/>
+  <!-- 大淺盤（一個寬盤接全部）：三流各成一段、相接處相融 -->
+  <path d="M22 290 L498 290 L488 306 L32 306 Z" fill="#f5f7fa" stroke="#52606d" stroke-width="1.6" stroke-linejoin="round"/>
+  <ellipse cx="106" cy="299" rx="62" ry="3" fill="#3b82c4" opacity="0.75"/>
+  <ellipse cx="106" cy="298" rx="34" ry="1.6" fill="#fff" opacity="0.35"/>
+  <ellipse cx="300" cy="293" rx="24" ry="10" fill="#c98a3d" opacity="0.8"/>
+  <ellipse cx="300" cy="287" rx="12" ry="5" fill="#c98a3d" opacity="0.55"/>
+  <ellipse cx="462" cy="294" rx="22" ry="11" fill="#4a7a4a" opacity="0.8"/>
+  <text x="88" y="26" font-size="12.5" text-anchor="middle" fill="#52606d" font-weight="600">水 water</text>
+  <text x="260" y="26" font-size="12.5" text-anchor="middle" fill="#52606d" font-weight="600">濃稠液體 thick liquid</text>
+  <text x="432" y="26" font-size="12.5" text-anchor="middle" fill="#52606d" font-weight="600">史萊姆 slime</text>
+  <text x="260" y="330" font-size="11" text-anchor="middle" fill="#52606d">水約 1 秒流光；濃稠液體還是液體只是慢；史萊姆拉出來一整團——黏度＝抵抗流動的程度</text>
 </svg>
