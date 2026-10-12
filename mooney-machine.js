@@ -46,7 +46,7 @@
     stage: ['階段', 'Stage'],
     prev: ['◀ 上一段', '◀ Prev'], next: ['下一段 ▶', 'Next ▶'],
     play: ['▶ 播放', '▶ Play'], pause: ['❚❚ 暫停', '❚❚ Pause'], replay: ['⟲ 重播', '⟲ Replay'],
-    modeSelf: ['自讀模式', 'Self-read'], modePres: ['講者模式', 'Presenter'],
+    /* 模式字串已隨切換鈕退役（單一自讀行為） */
     loop: ['⟳ 循環', '⟳ Loop'], speed: ['速度', 'Speed'],
     hint: ['滑到曲線任一點，看機器當下的狀態 · ← → 鍵步進', 'Hover the curve to see the machine’s state at that moment · ← → to step'],
     idle: ['轉子靜止', 'rotor idle'], spin: ['轉子 2 rpm', 'rotor 2 rpm']
@@ -325,7 +325,6 @@
       '    <button class="mm-btn" data-a="loop"><span class="lang-zh">' + UI.loop[0] + '</span><span class="lang-en">' + UI.loop[1] + '</span></button>' +
       '    <button class="mm-btn" data-a="speed"><span class="lang-zh">' + UI.speed[0] + ' 1×</span><span class="lang-en">' + UI.speed[1] + ' 1×</span></button>' +
       '    <span class="mm-dots"></span>' +
-      '    <button class="mm-btn" data-a="mode"><span class="lang-zh">' + UI.modePres[0] + '</span><span class="lang-en">' + UI.modePres[1] + '</span></button>' +
       '    <span class="mm-hint"><span class="lang-zh">' + UI.hint[0] + '</span><span class="lang-en">' + UI.hint[1] + '</span></span>' +
       '  </div>' +
       '</div>';
@@ -348,14 +347,14 @@
       })(i);
     }
 
-    var state = { t: -0.5, playing: false, mode: 'self', holdUntil: 0, started: false, rotor: 0,
+    var state = { t: -0.5, playing: false, holdUntil: 0, started: false, rotor: 0,
       speed: 1, loop: true, autoOff: false, autoPlaying: false };
     var tEl = root.querySelector('.mm-t'), mEl = root.querySelector('.mm-m');
     var nEl = root.querySelector('.mm-n'), rsEl = root.querySelector('[data-s="rs"]');
     var t0El = root.querySelector('[data-s="t0"]'), t1El = root.querySelector('[data-s="t1"]');
     var g0El = root.querySelector('[data-s="g0"]'), g1El = root.querySelector('[data-s="g1"]');
     var playBtn = root.querySelector('[data-a="play"]');
-    var modeBtn = root.querySelector('[data-a="mode"]');
+    /* 單一自讀行為——不提供模式切換（CT 2026-10-12 裁示） */
     var lastStage = -1;
 
     function spinning(t) { return t >= 1 && t < 5; }
@@ -419,7 +418,7 @@
     function r_set(line, x) { line.setAttribute('x1', x); line.setAttribute('x2', x); }
 
     /* 轉子角度由連續時間推進 */
-    var lastNow = 0;
+    var lastNow = 0, lastDraw = 0;
     function frame(now) {
       requestAnimationFrame(frame);
       var dt = Math.min(0.05, (now - lastNow) / 1000 || 0); lastNow = now;
@@ -430,7 +429,7 @@
         var step = dt * state.speed * (stg.t1 - stg.t0) / stg.dur;
         var nt = state.t + step;
         var ns = stageOf(nt);
-        if (ns !== s && state.mode === 'self' && nt < T_END) {
+        if (ns !== s && nt < T_END) {
           state.t = STAGES[ns].t0;
           state.holdUntil = now + 900 / state.speed;
         } else {
@@ -448,6 +447,8 @@
         advanced = true;
       }
       if (!advanced) return;   /* 閒置不重繪——rAF 迴圈保留但零渲染成本 */
+      if (now - lastDraw < 30) return;   /* 播放中限 ~30fps——手機 CPU 減半，肉眼差異有限 */
+      lastDraw = now;
       applySpin();
       apply(state.t);
     }
@@ -489,14 +490,7 @@
     root.querySelector('[data-a="replay"]').addEventListener('click', function () {
       state.t = -0.5; state.rotor = 0; state.playing = true; state.started = true; syncPlay();
     });
-    modeBtn.addEventListener('click', function () {
-      state.mode = state.mode === 'self' ? 'pres' : 'self';
-      card.classList.toggle('mm-presenter', state.mode === 'pres');
-      modeBtn.classList.toggle('on', state.mode === 'pres');
-      modeBtn.innerHTML = '<span class="lang-zh">' + (state.mode === 'pres' ? UI.modeSelf[0] : UI.modePres[0]) + '</span><span class="lang-en">' + (state.mode === 'pres' ? UI.modeSelf[1] : UI.modePres[1]) + '</span>';
-      if (state.mode === 'pres') state.playing = false;
-      syncPlay();
-    });
+    /* 單一自讀行為——不提供模式切換 */
     var loopBtn = root.querySelector('[data-a="loop"]');
     var syncLoop = function () { loopBtn.classList.toggle('on', state.loop); };
     syncLoop();
@@ -532,7 +526,7 @@
       new IntersectionObserver(function (es) {
         es.forEach(function (e) {
           if (e.isIntersecting) {
-            if (state.autoOff || state.mode !== 'self') return;
+            if (state.autoOff) return;
             if (state.t >= T_END) state.t = -0.5;
             state.started = true; state.playing = true; state.autoPlaying = true; syncPlay();
           } else if (state.autoPlaying) {
@@ -542,6 +536,7 @@
       }, { threshold: 0.45 }).observe(root);
     }
 
+    if (REDUCED) state.t = T_END;   /* 減少動態：直接停在完成態（全曲線＋開模） */
     apply(state.t);
     requestAnimationFrame(frame);
   }

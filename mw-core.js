@@ -61,7 +61,7 @@ window.MW = (function () {
     stage: ['階段', 'Stage'],
     prev: ['◀ 上一段', '◀ Prev'], next: ['下一段 ▶', 'Next ▶'],
     play: ['▶ 播放', '▶ Play'], pause: ['❚❚ 暫停', '❚❚ Pause'], replay: ['⟲ 重播', '⟲ Replay'],
-    modeSelf: ['自讀模式', 'Self-read'], modePres: ['講者模式', 'Presenter'],
+    /* 模式字串已隨切換鈕退役（單一自讀行為） */
     hintDef: ['拖動參數或滑到圖上看變化 · ← → 鍵步進', 'Drag a parameter or hover the chart · ← → to step'],
     show: ['顯示說明', 'Show answer'], hide: ['收起說明', 'Hide answer'],
     loop: ['⟳ 循環', '⟳ Loop'], speed: ['速度', 'Speed']
@@ -98,7 +98,6 @@ window.MW = (function () {
         '<button class="mw-btn" data-a="loop"><span class="lang-zh">' + UI.loop[0] + '</span><span class="lang-en">' + UI.loop[1] + '</span></button>' +
         '<button class="mw-btn" data-a="speed"><span class="lang-zh">' + UI.speed[0] + ' 1×</span><span class="lang-en">' + UI.speed[1] + ' 1×</span></button>' +
         '<span class="mw-dots"></span>' : '') +
-      '<button class="mw-btn" data-a="mode"><span class="lang-zh">' + UI.modePres[0] + '</span><span class="lang-en">' + UI.modePres[1] + '</span></button>' +
       '<span class="mw-hint"></span>' +
       '</div></div>';
     root.innerHTML = html;
@@ -122,7 +121,7 @@ window.MW = (function () {
 
     /* state */
     var st = {
-      u: hasStages ? 0 : 1, playing: false, mode: 'self',
+      u: hasStages ? 0 : 1, playing: false,
       started: false, holdUntil: 0, lastStage: -1, t: 0,
       params: {}, arg: arg, dirty: true,
       speed: 1, loop: !!def.loop, autoOff: false, autoPlaying: false,
@@ -264,14 +263,7 @@ window.MW = (function () {
         speedBtn.innerHTML = '<span class="lang-zh">' + UI.speed[0] + ' ' + st.speed + '×</span><span class="lang-en">' + UI.speed[1] + ' ' + st.speed + '×</span>';
       });
     }
-    var modeBtn = root.querySelector('[data-a="mode"]');
-    modeBtn.addEventListener('click', function () {
-      st.mode = st.mode === 'self' ? 'pres' : 'self';
-      card.classList.toggle('mw-presenter', st.mode === 'pres');
-      modeBtn.classList.toggle('on', st.mode === 'pres');
-      modeBtn.innerHTML = '<span class="lang-zh">' + (st.mode === 'pres' ? UI.modeSelf[0] : UI.modePres[0]) + '</span><span class="lang-en">' + (st.mode === 'pres' ? UI.modeSelf[1] : UI.modePres[1]) + '</span>';
-      if (st.mode === 'pres') { st.playing = false; syncPlay(); }
-    });
+    /* 單一自讀行為——不提供模式切換（CT 2026-10-12 裁示：消費者不會切，過度操作） */
     root.addEventListener('keydown', function (e) {
       if (!hasStages) return;
       userTouch();
@@ -342,7 +334,7 @@ window.MW = (function () {
           var step = dt * st.speed / total;
           var nu = st.u + step;
           var ns = stageOf(nu);
-          if (ns !== s && st.mode === 'self' && nu < 1) {
+          if (ns !== s && nu < 1) {
             st.u = cum[ns] / total + 1e-4;
             st.holdUntil = now + 900 / st.speed;
           } else st.u = Math.min(nu, 1);
@@ -366,7 +358,7 @@ window.MW = (function () {
           }
           st.dirty = true;
         }
-        if (st.playing || def.alwaysTick) { st.t += dt * st.speed; st.dirty = true; }
+        if (st.playing || (def.alwaysTick && !REDUCED)) { st.t += dt * st.speed; st.dirty = true; }
         if (st.dirty) apply();
       }
     };
@@ -380,7 +372,7 @@ window.MW = (function () {
       new IntersectionObserver(function (es) {
         es.forEach(function (e) {
           if (e.isIntersecting) {
-            if (st.autoOff || st.mode !== 'self') return;
+            if (st.autoOff) return;
             if (hasStages) {
               if (st.u >= 1) st.u = 0;
               st.started = true; st.playing = true; st.autoPlaying = true;
@@ -396,6 +388,7 @@ window.MW = (function () {
       }, { threshold: 0.45 }).observe(root);
     }
 
+    if (REDUCED && hasStages) st.u = 1;   /* 減少動態：直接停在完成態——讀者看到完整成品圖非空白起點 */
     apply();
   }
 

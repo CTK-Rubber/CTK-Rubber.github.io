@@ -17,7 +17,6 @@
   padding: 2px 9px; border-radius: 999px; white-space: nowrap;
 }
 .mw-stagename { font-size: 15px; font-weight: 700; color: var(--ink); }
-.mw-presenter .mw-stagename { font-size: 19px; }
 
 .mw-panels { display: flex; gap: 12px; margin-top: 10px; }
 .mw-panel { flex: 1; min-width: 0; }
@@ -28,13 +27,11 @@
 @media (max-width: 700px) { .mw-panels { flex-direction: column; } }
 
 .mw-guide { font-size: 14px; line-height: 1.6; color: var(--ink); margin-top: 10px; min-height: 1.6em; }
-.mw-presenter .mw-guide { font-size: 17px; }
 .mw-readout {
   display: flex; gap: 22px; margin-top: 4px; flex-wrap: wrap;
   font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums;
 }
 .mw-readout b { color: var(--ink); font-weight: 700; }
-.mw-presenter .mw-readout { font-size: 19px; }
 .mw-readout:empty { display: none; }
 
 .mw-params { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 10px; }
@@ -45,8 +42,6 @@
 .mw-param input[type=range] { width: 160px; accent-color: var(--accent); }
 .mw-choice { display: inline-flex; gap: 6px; flex-wrap: wrap; }
 .mw-cb.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-.mw-presenter .mw-param { font-size: 16px; }
-.mw-presenter .mw-plabel { font-size: 16px; }
 
 .mw-controls { display: flex; align-items: center; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
 .mw-btn {

@@ -16,7 +16,6 @@
   padding: 2px 9px; border-radius: 999px; white-space: nowrap;
 }
 .mm-stagename { font-size: 15px; font-weight: 700; color: var(--ink); }
-.mm-presenter .mm-stagename { font-size: 19px; }
 
 .mm-panels { display: flex; gap: 12px; margin-top: 10px; }
 .mm-svg {
@@ -29,13 +28,11 @@
 @media (max-width: 700px) { .mm-panels { flex-direction: column; } }
 
 .mm-guide { font-size: 14px; line-height: 1.6; color: var(--ink); margin-top: 10px; min-height: 2.8em; }
-.mm-presenter .mm-guide { font-size: 17px; }
 .mm-readout {
   display: flex; gap: 22px; margin-top: 4px;
   font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums;
 }
 .mm-readout b { color: var(--ink); font-weight: 700; }
-.mm-presenter .mm-readout { font-size: 19px; }
 
 .mm-controls { display: flex; align-items: center; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
 .mm-btn {
