@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>木尼粘度計說明——從入門到判讀 / Mooney Viscometer — From Basics to Interpretation</title>
+<link rel="stylesheet" href="ctr-explainer.css">
+<link rel="stylesheet" href="mooney-machine.css">
+<link rel="stylesheet" href="mw-widgets.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+
+<div id="langbar">
+  <button id="btn-deep" class="tb" onclick="setDeep()"><span class="lang-zh">深入專案討論</span><span class="lang-en">Deep Dive</span></button>
+  <button id="btn-zh" class="on" onclick="setLang('zh')">繁體中文</button>
+  <button id="btn-en" onclick="setLang('en')">English</button>
+</div>
+
+<div class="page cover">
+  <div class="badge"><span class="lang-zh">說明文件</span><span class="lang-en">EXPLAINER</span></div>
+  <h1><span class="lang-zh">木尼粘度計說明<br>——從入門到判讀</span><span class="lang-en">The Mooney Viscometer<br>From Basics to Interpretation</span></h1>
+  <div class="sub"><span class="lang-zh">給第一次接觸橡膠檢測的讀者</span><span class="lang-en">For readers new to rubber testing</span></div>
+  <div class="sub"><span class="lang-zh">郭權德橡膠技術工作室 · 2026 年 9 月</span><span class="lang-en">Kuo Rubber Technology Studio · September 2026</span></div>
+</div>
+
+<div class="page">
+  <div class="lang-zh">
+    <div class="case hook">
+      <p class="s">新一批膠到貨，等著進混煉。進料檢驗打下去——ML 測出 72，規格寫的是 50±5。倉庫在等、產線也在等。</p>
+      <figure>
+        <div class="mw" data-mw="spec-band" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-spec-band.svg" alt="ML 72 超出 50±5 規格帶的粘度曲線">
+        <figcaption>綠色帶是規格範圍（45–55），這批膠的曲線平穩在 72——整條墊在規格帶之上，超出上限 17 個單位。</figcaption>
+      </figure>
+      <p class="q">這批收還是不收？</p>
+    </div>
+    <div class="case hook">
+      <p class="s">產線反映：「昨天那批料特別難做，押出來尺寸一直跑。」品保翻進料檢驗紀錄——同牌號、ML 全部在規格內、跟平常沒兩樣。</p>
+      <p class="q">現場說難做、數據說正常——哪裡出了問題？</p>
+    </div>
+    <div class="case hook">
+      <p class="s">資深師傅捏一把新到的膠，搖搖頭：「這批不一樣。」檢驗數據攤開來——合格。師傅說不上哪裡不對，數據也挑不出毛病。</p>
+      <p class="q">摸出來的判斷和量出來的數字，誰說的算？</p>
+    </div>
+  </div>
+  <div class="lang-en">
+    <div class="case hook">
+      <p class="s">A new lot arrives, waiting to be mixed. The test comes back — ML 72 against a spec of 50±5. The warehouse is waiting; so is the line.</p>
+      <figure>
+        <div class="mw" data-mw="spec-band" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-spec-band.svg" alt="Viscosity curve of ML 72 sitting above the 50±5 spec band">
+        <figcaption>The green band is the spec window (45–55); this lot's curve settles at 72 — the whole line rides above the band, 17 units over the upper limit.</figcaption>
+      </figure>
+      <p class="q">Accept it or reject it?</p>
+    </div>
+    <div class="case hook">
+      <p class="s">Production reports yesterday's lot was unusually hard to run — extruded dimensions kept drifting. QA pulls the inspection records — same grade, every ML within spec, nothing unusual.</p>
+      <p class="q">The floor says it is hard to run; the data says it is normal — where is the problem?</p>
+    </div>
+    <div class="case hook">
+      <p class="s">A senior operator squeezes the new rubber and shakes his head: "This lot is different." The inspection data disagrees — it passed. He cannot say what is off, and the numbers show nothing wrong.</p>
+      <p class="q">A judgment made by hand, a number made by machine — which one counts?</p>
+    </div>
+  </div>
+
+  <div class="toc">
+    <strong><span class="lang-zh">目錄</span><span class="lang-en">Contents</span></strong>
+    <ol>
+      <li><a href="#s1"><span class="lang-zh">憑什麼知道這批膠好不好加工？</span><span class="lang-en">How do you know whether a batch is easy to process?</span></a></li>
+      <li><a href="#s2"><span class="lang-zh">「難不難推」怎麼變成數字？</span><span class="lang-en">How does "hard to push" become a number?</span></a></li>
+      <li><a href="#s3"><span class="lang-zh">機器怎麼把阻力讀成「50」？</span><span class="lang-en">How does the machine read resistance as "50"?</span></a></li>
+      <li><a href="#s4"><span class="lang-zh">同一團膠，還能問什麼？</span><span class="lang-en">What else can you ask of the same rubber?</span></a></li>
+      <li><a href="#s5"><span class="lang-zh">木尼值 50，算高還是算低？</span><span class="lang-en">A Mooney value of 50 — high or low?</span></a></li>
+      <li><a href="#s6"><span class="lang-zh">ML 看不到的那一面是什麼？</span><span class="lang-en">What does ML fail to show?</span></a></li>
+      <li><a href="#s7"><span class="lang-zh">那它做不到什麼？</span><span class="lang-en">What can't it do?</span></a></li>
+      <li><a href="#s8"><span class="lang-zh">那三個問題，現在有答案了嗎？</span><span class="lang-en">Those three questions — do they have answers now?</span></a></li>
+      <li><a href="#app"><span class="lang-zh">附錄：名詞對照・常見問答・參考文獻</span><span class="lang-en">Appendix: glossary, FAQ, references</span></a></li>
+      <li><a href="#deep"><span class="lang-zh">深入專案討論（四份專題文件）</span><span class="lang-en">Deep Project Discussions (four topic documents)</span></a></li>
+    </ol>
+  </div>
+
+  <h2 id="s1"><span class="lang-zh">一、憑什麼知道這批膠好不好加工？</span><span class="lang-en">1. How do you know whether a batch is easy to process?</span></h2>
+
+  <div class="lang-zh">
+    <p class="q">膠太硬會發生什麼事？</p>
+    <p>擠壓機推不動、模具填不滿——做出來的東西缺角、尺寸不對，直接報廢。</p>
+    <p class="q">那太軟呢？</p>
+    <p>尺寸控制不住——膠撐不住自己的形狀，做什麼都不對。</p>
+    <p class="q">為什麼同一種膠，不同批次的手感會不一樣？</p>
+    <p>因為原料本身就會變。橡膠在做成輪胎、密封圈之前，是一團又黏又有彈性的原料——分子量、支化、成分差一點，「軟硬手感」就差一截。所以工廠每天面對的問題是：<strong>這批膠好不好加工？</strong></p>
+    <p class="q">靠師傅的手感不行嗎？</p>
+    <p>手感當然有用，但它有兩個問題：沒辦法寫進規格書，也沒辦法拿去跟供應商對帳。你需要的是一個誰測、在哪測都一樣的數字。</p>
+    <p class="q">有沒有辦法在進料前就先知道？</p>
+    <p>有——這就是木尼粘度計（Mooney viscometer）在做的事。它在 1930 年代由物理學家 Melvin Mooney 發明<sup class="ref">[1]</sup>，做法很直觀：把膠料塞進一個加熱的模腔，放一個圓盤狀的轉子（rotor）進去轉，量「要多少力才轉得動」。轉動越費力，代表膠越黏稠、越難加工。</p>
+    <p class="q">為什麼一百年了還在用同一台機器？</p>
+    <p>因為它量測快速、結果穩定。進料檢驗、批次一致性確認、混煉膠的加工安全評估，都靠它當第一道關卡。<sup class="ref">[2]</sup></p>
+    <p><strong>木尼粘度計 = 用「轉動阻力」替橡膠的「難加工程度」打分數的機器。</strong>分數越高，膠越黏、越難加工。</p>
+    <p>需要一個數字、也有了打分的機器——那這個分數量的到底是什麼？</p>
+  </div>
+  <div class="lang-en">
+    <p class="q">What happens if the rubber is too stiff?</p>
+    <p>Extruders can't push it and molds can't fill — parts come out short or out of spec.</p>
+    <p class="q">And too soft?</p>
+    <p>Dimensions can't be controlled — the rubber can't hold its own shape.</p>
+    <p class="q">Why does the same grade feel different from batch to batch?</p>
+    <p>Because the raw material itself varies. Before rubber becomes a tire or a seal, it is a sticky, elastic raw material — small differences in molecular weight, branching, or composition change the "feel". So the question on the factory floor every day is: <strong>is this batch easy to process?</strong></p>
+    <p class="q">Why not just trust an experienced hand?</p>
+    <p>Feel works, but it has two problems: it cannot be written into a spec sheet, and it cannot be taken to a supplier for comparison. What you need is a number that reads the same whoever measures it, wherever it is measured.</p>
+    <p class="q">Can you know that before accepting the material?</p>
+    <p>Yes — that is what the Mooney viscometer does. Invented in the 1930s by physicist Melvin Mooney<sup class="ref">[1]</sup>, the idea is intuitive: pack the rubber into a heated cavity, rotate a disk-shaped rotor inside it, and measure how much force it takes to turn. The harder it is to turn, the more viscous — and harder to process — the rubber is.</p>
+    <p class="q">Why has the same machine survived a century?</p>
+    <p>Because the test is fast and repeatable. Incoming inspection, batch-to-batch consistency, and processing-safety assessment of compounds all rely on it as the first checkpoint.<sup class="ref">[2]</sup></p>
+    <p><strong>A Mooney viscometer scores how "hard to process" a rubber is by measuring rotational resistance.</strong> Higher number = more viscous = harder to process.</p>
+    <p>You need a number, and there is a machine that produces one — but what does that number actually measure?</p>
+  </div>
+
+  <h2 id="s2"><span class="lang-zh">二、「難不難推」怎麼變成數字？</span><span class="lang-en">2. How does "hard to push" become a number?</span></h2>
+
+  <div class="lang-zh">
+    <h3>「粘度」到底是什麼？</h3>
+    <p>「粘度（viscosity）」講的是流體抵抗流動的程度。蜂蜜比水黏，所以倒得慢——蜂蜜的粘度高。橡膠也是一種會流動的材料，只是慢得多、而且需要在加熱與加壓下才流得動。木尼粘度計量的就是「這團膠在規定溫度下，抵抗被轉子攪動的程度」。</p>
+    <figure class="mw-fig"><div class="mw" data-mw="viscosity-pour" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：左邊是水、右邊是蜂蜜——按播放傾倒，再拖「粘度」拉桿看流速怎麼變。橡膠粘度比蜂蜜高幾萬倍，常溫下根本不會自己流。</span><span class="lang-en">: Water on the left, honey on the right — press play to pour, then drag the viscosity slider. Rubber is tens of thousands of times more viscous — it will not flow on its own at room temperature.</span></figcaption></figure>
+    <h3>木尼值是什麼意思？</h3>
+    <p>轉子在膠裡轉動時受到的阻力（扭矩，torque）會被換算成一個數字，單位叫「木尼單位（Mooney unit, MU）」。這是一個<strong>相對指標</strong>，不是物理學定義的真粘度。實務上只要記住：數字越大，膠越「黏」、越難加工。<sup class="ref">[3]</sup></p>
+    <p>阻力會換算成數字了——那機器是怎麼把阻力量出來的？</p>
+  </div>
+  <div class="lang-en">
+    <h3>What is viscosity, really?</h3>
+    <p>Viscosity describes how much a fluid resists flowing. Honey is more viscous than water, so it pours slowly. Rubber also flows — just far more slowly, and only under heat and pressure. The Mooney viscometer measures how much the rubber resists being sheared by a rotor at a specified temperature.</p>
+    <figure class="mw-fig"><div class="mw" data-mw="viscosity-pour" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：左邊是水、右邊是蜂蜜——按播放傾倒，再拖「粘度」拉桿看流速怎麼變。橡膠粘度比蜂蜜高幾萬倍，常溫下根本不會自己流。</span><span class="lang-en">: Water on the left, honey on the right — press play to pour, then drag the viscosity slider. Rubber is tens of thousands of times more viscous — it will not flow on its own at room temperature.</span></figcaption></figure>
+    <h3>What does the Mooney value mean?</h3>
+    <p>The resistance (torque) the rotor feels is converted into a number expressed in Mooney units (MU). It is a <strong>relative index</strong>, not a true physical viscosity. For practical purposes: the higher the number, the more viscous and harder to process the rubber.<sup class="ref">[3]</sup></p>
+    <p>Resistance becomes a number — so how does the machine actually measure that resistance?</p>
+  </div>
+
+  <h2 id="s3"><span class="lang-zh">三、機器怎麼把阻力讀成「50」？</span><span class="lang-en">3. How does the machine read resistance as "50"?</span></h2>
+
+  <div class="lang-zh">
+    <h3>機器裡面長什麼樣？</h3>
+    <p>木尼粘度計的核心部件：<sup class="ref">[3]</sup></p>
+    <ul>
+      <li><strong>模腔（die cavity）</strong>：上下兩片模具夾出一個圓柱形密閉空間，膠料就塞在裡面。模具由工具鋼製成，表面有溝紋防止膠打滑</li>
+      <li><strong>轉子（rotor）</strong>：圓盤狀金屬片，表面有鋸齒（serrations）抓住膠料。分大轉子（直徑 38.10 mm）與小轉子（30.48 mm）兩種</li>
+      <li><strong>加熱系統</strong>：讓模腔維持在指定溫度（常用 100°C），溫控精度要求 ±0.5°C 以內</li>
+      <li><strong>扭矩量測</strong>：轉子以固定速度（標準 2 rpm，約 1.6 s⁻¹ 剪切速率）旋轉，機器記錄所需的扭矩</li>
+      <li><strong>閉模壓力</strong>：測試時模腔以約 11.5 kN 的力閉合，防止膠溢出</li>
+    </ul>
+    <figure>
+      <img class="mm-print" src="figures/fig-die-cross-section.svg" alt="木尼粘度計模腔與轉子剖面示意">
+      <div class="mooney-machine" data-mm tabindex="0" aria-label="木尼粘度計測試流程互動演示"></div>
+      <figcaption><strong>互動演示</strong>：左邊機器剖面、右邊扭矩曲線——按播放看 ML(1+4) 整趟怎麼跑；滑到曲線上任一點，看機器當下的狀態。列印／匯出 PDF 時顯示原剖面圖。<sup class="ref">[3]</sup></figcaption>
+    </figure>
+    <h3>測試怎麼跑？（以 ML(1+4)100°C 為例）</h3>
+    <ol>
+      <li>模腔預熱到 100°C</li>
+      <li>放入試片，閉模，預熱 1 分鐘讓膠料達到測試溫度</li>
+      <li>轉子開始以 2 rpm 旋轉，機器連續記錄扭矩</li>
+      <li>第 4 分鐘讀取數值，即為木尼粘度</li>
+    </ol>
+    <h3>試片怎麼準備？</h3>
+    <p>試片的一致性直接影響數據的可重複性。一般做法：<sup class="ref">[4]</sup></p>
+    <ul>
+      <li>膠料先在滾筒機（mill）上以固定間隙通過數次（例如 10 次），壓成均勻薄片</li>
+      <li>裁出圓形試片，中央打孔讓轉子軸通過</li>
+      <li>試片重量有規範——以聚氨酯混煉膠為例，大轉子試片約 34 ± 3 g</li>
+      <li>裁好後放置 30–60 分鐘冷卻回穩再測</li>
+    </ul>
+    <h3>報告上那串密碼怎麼讀？</h3>
+    <p>測完之後，結果會寫成類似 <span class="term">ML(1+4)100°C = 50</span> 這樣一串——把它當密碼來拆：<sup class="ref">[3]</sup></p>
+    <ul>
+      <li><strong>M</strong>：Mooney 測試</li>
+      <li><strong>L</strong>：用大轉子（Large rotor，直徑約 38 mm）；S 則是小轉子（Small，約 30 mm），用於較軟的膠</li>
+      <li><strong>(1+4)</strong>：預熱 1 分鐘後，轉子轉 4 分鐘時讀值——正是上面的測試流程</li>
+      <li><strong>100°C</strong>：測試溫度</li>
+      <li><strong>= 50</strong>：木尼值 50 MU</li>
+    </ul>
+    <figure class="mw-fig"><div class="mw" data-mw="code-decoder" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：點碼串的任何一段，看那一格代表什麼；右上角換個例子再拆一次。</span><span class="lang-en">: Click any segment of the code to see what it means; switch the example and decode it again.</span></figcaption></figure>
+    <p>所以「ML(1+4)100°C = 50」的白話是：<em>用大轉子、在 100°C、預熱 1 分鐘後轉 4 分鐘，量到的阻力是 50 個木尼單位。</em></p>
+    <p>之所以要寫得這麼細，是因為換一個條件（轉子大小、時間、溫度），數字就會不一樣。只有寫法完全相同的兩個木尼值才能直接比較——這是判讀時最重要的規則。</p>
+    <p>機器怎麼量、數字怎麼寫都清楚了——但「難不難推」，是這台機器唯一能回答的問題嗎？</p>
+  </div>
+  <div class="lang-en">
+    <h3>What is inside the machine?</h3>
+    <p>The core parts of a Mooney viscometer:<sup class="ref">[3]</sup></p>
+    <ul>
+      <li><strong>Die cavity</strong>: two dies form a sealed cylindrical chamber holding the rubber. Made of tool steel, with grooved surfaces to prevent slippage</li>
+      <li><strong>Rotor</strong>: a disk-shaped metal piece with serrated surfaces that grip the rubber. Two sizes: large (38.10 mm) and small (30.48 mm)</li>
+      <li><strong>Heating system</strong>: keeps the cavity at the set temperature (commonly 100°C), controlled within ±0.5°C</li>
+      <li><strong>Torque measurement</strong>: the rotor turns at a fixed speed (standard 2 rpm, ≈1.6 s⁻¹ shear rate) while torque is recorded</li>
+      <li><strong>Die closure</strong>: the dies are held closed at about 11.5 kN during the test to prevent rubber from leaking out</li>
+    </ul>
+    <figure>
+      <img class="mm-print" src="figures/fig-die-cross-section.svg" alt="Cross-section of Mooney die cavity and rotor">
+      <div class="mooney-machine" data-mm tabindex="0" aria-label="Interactive Mooney viscometer test demo"></div>
+      <figcaption><strong>Interactive demo</strong>: machine cross-section on the left, torque curve on the right — press play to watch a full ML(1+4) run; hover any point on the curve to see the machine's state at that moment. Print/PDF shows the original cross-section figure.<sup class="ref">[3]</sup></figcaption>
+    </figure>
+    <h3>How does a test run? (ML(1+4)100°C example)</h3>
+    <ol>
+      <li>Preheat the cavity to 100°C</li>
+      <li>Insert the specimen, close the dies, preheat 1 minute so the rubber reaches test temperature</li>
+      <li>The rotor turns at 2 rpm while torque is recorded continuously</li>
+      <li>The value at minute 4 is the Mooney viscosity</li>
+    </ol>
+    <h3>How should the specimen be prepared?</h3>
+    <p>Repeatability depends heavily on specimen consistency. Typical practice:<sup class="ref">[4]</sup></p>
+    <ul>
+      <li>Pass the rubber through a mill at a fixed nip several times (e.g. 10 passes) to make a uniform sheet</li>
+      <li>Die-cut a round specimen with a center hole for the rotor shaft</li>
+      <li>Specimen mass is specified — for millable polyurethane, about 34 ± 3 g for large-rotor tests</li>
+      <li>Rest cut specimens 30–60 minutes to stabilize before testing</li>
+    </ul>
+    <h3>How do you read ML(1+4)100°C?</h3>
+    <p>After the test, the result is written as something like <span class="term">ML(1+4)100°C = 50</span> — read it like a code:<sup class="ref">[3]</sup></p>
+    <ul>
+      <li><strong>M</strong>: Mooney test</li>
+      <li><strong>L</strong>: large rotor (~38 mm diameter); S means the small rotor (~30 mm), used for softer rubbers</li>
+      <li><strong>(1+4)</strong>: read after 1 minute of preheating plus 4 minutes of rotation — exactly the procedure above</li>
+      <li><strong>100°C</strong>: test temperature</li>
+      <li><strong>= 50</strong>: the reading, 50 MU</li>
+    </ul>
+    <figure class="mw-fig"><div class="mw" data-mw="code-decoder" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：點碼串的任何一段，看那一格代表什麼；右上角換個例子再拆一次。</span><span class="lang-en">: Click any segment of the code to see what it means; switch the example and decode it again.</span></figcaption></figure>
+    <p>So "ML(1+4)100°C = 50" means: <em>with the large rotor at 100°C, after 1 minute of preheating and 4 minutes of rotation, the measured resistance is 50 Mooney units.</em></p>
+    <p>This notation is so specific because any change in rotor size, timing, or temperature changes the number. Only two Mooney values written in exactly the same notation are directly comparable — the single most important rule when reading results.</p>
+    <p>How the machine measures and how the number is written are clear — but is "how hard to push" the only question it can answer?</p>
+  </div>
+
+  <h2 id="s4"><span class="lang-zh">四、同一團膠，還能問什麼？</span><span class="lang-en">4. What else can you ask of the same rubber?</span></h2>
+
+  <div class="lang-zh">
+    <p>同一台機器能做三種測試，各回答一個不同的實務問題。<sup class="ref">[2][3][9]</sup></p>
+    <table>
+      <tr><th><span class="lang-zh">測試</span></th><th><span class="lang-zh">回答的問題</span></th><th><span class="lang-zh">工廠用途</span></th></tr>
+      <tr>
+        <td><strong>木尼粘度</strong><br>Mooney viscosity</td>
+        <td>這批膠好不好加工？</td>
+        <td>進料檢驗、批次一致性、押出/成型難易預估</td>
+      </tr>
+      <tr>
+        <td><strong>木尼焦燒</strong><br>Mooney scorch</td>
+        <td>這批膠還剩多少安全加工時間？</td>
+        <td>含硫化劑混煉膠的儲存與加工安全評估，防止「提前硫化」（膠在機台裡就先硫化報廢）</td>
+      </tr>
+      <tr>
+        <td><strong>應力鬆弛</strong><br>Stress relaxation</td>
+        <td>這批膠的「彈性成分」多還是「黏性成分」多？</td>
+        <td>判斷押出膨脹、回彈等彈性行為；補粘度值看不到的部分</td>
+      </tr>
+    </table>
+    <h3>粘度測試</h3>
+    <p>就是前面講過的標準測法：預熱後轉 4 分鐘讀值。曲線怎麼看：<sup class="ref">[5][8]</sup></p>
+    <ul>
+      <li><strong>0–1 分鐘</strong>：預熱段，轉子還沒轉，扭矩為 0</li>
+      <li><strong>第 1 分鐘</strong>：轉子啟動，扭矩瞬間衝上<strong>初期峰值（Mooney peak）</strong>——跟膠的生膠強度（green strength）有關</li>
+      <li><strong>1–4 分鐘</strong>：膠料受熱與剪切軟化，扭矩下降後趨於平穩</li>
+      <li><strong>第 4 分鐘的平穩值</strong>：才是報告上的木尼值</li>
+      <li><strong>第 5 分鐘之後</strong>：轉子停止，進入下面講的應力鬆弛段（虛線）</li>
+    </ul>
+    <figure>
+      <div class="mw" data-mw="viscosity-curve" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-viscosity-curve.svg" alt="木尼粘度測試曲線示意">
+      <figcaption>木尼粘度測試的扭矩—時間曲線示意（依測試原理重繪）。初期峰值後下降，第 4 分鐘的平穩值即為 ML(1+4)。<sup class="ref">[3][5]</sup></figcaption>
+    </figure>
+    <p class="q">實務上什麼時候會用到這個數字？</p>
+    <div class="case">
+      <p class="s">新一批膠到貨，等著進混煉。規格給的驗收依據只有一個數字：ML(1+4)100°C = 50±5——實測卻是 72，超出上限。</p>
+      <p class="q">這批到底能不能收？</p>
+      <p>木尼值是轉動阻力的相對指標，值越高膠越黏、越難推——超出上限表示這批照原定製程跑會吃力，直接收下來用，後面混煉、押出都會出問題。<sup class="ref">[3]</sup>接下來拿數據找供應商：先確認是量測條件差異還是膠本身的問題，再決定退貨或協議放行；放行的話要同步告訴產線「這批偏硬」——塑煉時間得拉長。進料時的一個數字，決定了後面整條動線怎麼調。</p>
+    </div>
+    <div class="case">
+      <p class="s">同牌號的膠想開第二來源，採購在問能不能換。同條件各測一次：舊供應商 48、新來源 65——同牌號差了 17 個單位。</p>
+      <p class="q">新來源的膠能直接替換嗎？</p>
+      <p>同牌號為什麼會差這麼多？原料來源與聚合條件不同，分子量與支化就不同，「軟硬手感」自然不一樣。65 的那家進線要多花塑煉時間與能耗——這些成本得算進採購決策，不是只比單價。測值讓「好不好加工」變成可以量化、可以拿去談的東西。</p>
+    </div>
+    <div class="case">
+      <p class="s">早上進料檢驗，這批的值偏高，但仍在規格內，已收下來準備上線。</p>
+      <p class="q">今天排產要注意什麼？</p>
+      <p>值高代表膠黏、難推動，塑煉不夠的話後面混煉、押出都會吃力，所以排產時多留一段塑煉時間。反過來值偏低，要留意的就換成尺寸控制與強度——膠太軟撐不住形狀。數字在進線之前先告訴你要準備什麼，而不是等廢品出來才回頭查原因。</p>
+    </div>
+    <div class="case">
+      <p class="s">進料檢驗每批都合格。但翻這幾個月的紀錄，發現數值一批一批慢慢往上爬。</p>
+      <p class="q">都還在規格內——有沒有問題？</p>
+      <p>單批合格不代表沒事，趨勢在動表示上游有什麼正在改變：可能是原料端的變化，也可能是供應商製程在偏移。這時候拿趨勢資料找供應商談，在還沒超規格之前把問題攔下來，比等產線出問題再處理便宜得多。</p>
+    </div>
+    <h3>焦燒測試（scorch）</h3>
+    <p>含了硫化劑的膠，等於一直在「慢慢熟」——只是不知道什麼時候熟過頭。這個測試把膠放進高溫裡一直轉，看它幾分鐘開始熟：那個時間點，就是安全加工的底線。</p>
+    <ul>
+      <li><strong>做法</strong>：已混入硫化劑的膠料，在較高溫度（例如 125°C）下持續轉動觀察<sup class="ref">[3]</sup></li>
+      <li><strong>曲線走法</strong>：起初粘度緩降或持平；膠開始「提前硫化」時粘度回升</li>
+      <li><strong>關鍵讀點</strong>：最低粘度點、上升 5 單位的時間（t5，通稱焦燒時間）、上升 35 單位的時間（t35）</li>
+      <li><strong>怎麼用</strong>：t5 越短 = 越早開始硫化 = 安全加工時間越少</li>
+    </ul>
+    <figure>
+      <div class="mw" data-mw="scorch-curve" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-scorch-curve.svg" alt="木尼焦燒測試曲線示意">
+      <figcaption>木尼焦燒測試的粘度—時間曲線示意（依測試原理重繪）。最低點後粘度回升代表開始硫化；t5 是實務上的焦燒時間指標。<sup class="ref">[3]</sup></figcaption>
+    </figure>
+    <p class="q">實務上什麼情況會用到？</p>
+    <div class="case">
+      <p class="s">一批含硫化劑的混煉膠在倉庫放了三週，現在要拿來生產。</p>
+      <p class="q">放這麼久，膠料會不會有異常變化？</p>
+      <p>回測 t5，發現從入庫時的 18 分鐘縮到 12 分鐘。為什麼會縮短？含了硫化劑的膠在儲存期間會緩慢繼續反應，離提前硫化越來越近——安全加工時間正在流失。<sup class="ref">[3]</sup>所以對策是：優先出掉這批舊料、檢查儲存溫度；往後入庫標日期、定期回測 t5，把庫存膠的「剩餘壽命」變成看得見的數字。</p>
+      <figure>
+        <div class="mw" data-mw="scorch-t5" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-scorch-t5-compare.svg" alt="同一批膠入庫與存放三週後的焦燒曲線比對">
+        <figcaption>同一批膠的兩次焦燒測試疊在同一張圖上：藍線是入庫時（t5 = 18 分鐘），棕虛線是存放三週後（t5 = 12 分鐘）——最低點差不多，但回升早了 6 分鐘，安全加工時間正在流失。</figcaption>
+      </figure>
+    </div>
+    <div class="case">
+      <p class="s">新配方準備上線，排產的加工流程估計要 15 分鐘——測出 t5 只有 8 分鐘。</p>
+      <p class="q">來不來得及做完？</p>
+      <p>8 分鐘是什麼意思？膠在測試溫度下大約 8 分鐘就開始硫化——照原計畫跑，膠會在機台裡就先硫化報廢。要調的方向有幾個：降排膠溫度、硫化劑移到最後一段加、或改用遲效性促進劑。t5 在上線之前就告訴你這個配方來不來得及。</p>
+    </div>
+    <div class="case">
+      <p class="s">押出機裡清出一塊已經硫化的膠，產線停下來清料。</p>
+      <p class="q">是不是焦燒造成的？</p>
+      <p>拿同批剩料一測，t5 只剩 6 分鐘，而事發當時機台停了 10 分鐘。為什麼停機會出事？膠在熱機台裡繼續受熱，停越久離 t5 越近——停 10 分鐘早已超過 6 分鐘的安全上限，膠就在機台裡硫化了。接下來把「停機超過幾分鐘就要清料」寫進作業程序，事故就變成一條可以執行的規則。</p>
+    </div>
+    <div class="case">
+      <p class="s">這批混煉膠今天上線，中間有換模、等料的空檔。</p>
+      <p class="q">膠能在熱機台裡放多久？</p>
+      <p>t5 就是上限：排產時把最長等待時間壓在 t5 之內，任何空檔超過就先清料再說。</p>
+    </div>
+    <h3>應力鬆弛測試（stress relaxation）</h3>
+    <p>用手指捏一塊膠再放開——彈回來快的彈性強、彈得慢的偏黏。這個測試做的是同一件事，只是把場景搬進模腔裡。</p>
+    <p>轉子轉的時候，膠被轉子拖著走，在腔裡被拗成彎彎扭扭的形狀——膠頂回去的力，就是機器量到的扭矩。轉子突然停住，被拗開的膠還卡在腔裡。接下來只看一件事：<strong>膠還推不推轉子？</strong></p>
+    <ul>
+      <li><strong>彈性強的膠</strong>：形狀不容易被改變——被拗開的膠一直想擠回原來的樣子，於是一直擠壓轉子。轉子停了，膠對它的推擠還撐很久，扭矩衰減慢、曲線平</li>
+      <li><strong>黏性強的膠</strong>：形狀容易被改變——被拗開的膠很快順著新形狀定下來，不再推擠轉子。沒人推了，扭矩很快掉到底、曲線陡</li>
+    </ul>
+    <p>所以斜率差異的來源是「<strong>膠推擠轉子的力撐多久</strong>」：撐得久＝彈性成分多，變形被記住、出模口才回彈——押出膨脹的來源；撐不久＝黏性成分多，變形留不住、出模尺寸穩。</p>
+    <ul>
+      <li><strong>做法</strong>：接在粘度測試後做——轉子突然停止，膠內累積的應力慢慢衰減，機器記錄扭矩下降速度<sup class="ref">[3]</sup></li>
+      <li><strong>衰減快</strong> = 黏性為主的膠；<strong>衰減慢</strong> = 彈性為主的膠</li>
+      <li><strong>為什麼重要</strong>：押出膨脹、成型後回彈這類彈性行為，單看粘度值看不出來——實際用在哪？下面的案例就是答案</li>
+    </ul>
+    <p><strong>圖怎麼看（左圖）：</strong></p>
+    <ul>
+      <li>0–1 分鐘：預熱，扭矩為 0；第 1 分鐘轉子啟動跳上峰值</li>
+      <li>1–5 分鐘：粘度測試段（平穩值 = ML）</li>
+      <li><strong>第 5 分鐘轉子停止後才是鬆弛段</strong>：藍線衰減快（黏性膠）、棕虛線衰減慢（彈性膠）</li>
+    </ul>
+    <p><strong>圖怎麼看（右圖）：</strong>把鬆弛段畫在 log–log 座標上會接近直線，<strong>斜率 a 就是鬆弛指數</strong>——越平越彈、越陡越黏。斜率量的是「膠對轉子的推擠力撐多久」：一直推著轉子的膠，應力散得慢（平）；很快不再推的膠，應力散得快（陡）。</p>
+    <figure>
+      <div class="mw" data-mw="relaxation" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-stress-relaxation.svg" alt="應力鬆弛曲線示意">
+      <figcaption>應力鬆弛測試曲線（依測試原理重繪）。左：轉子於第 5 分鐘停止後，黏性膠的扭矩快速衰減、彈性膠衰減慢；右：log–log 圖上衰減呈直線，斜率 a 即鬆弛指數。<sup class="ref">[3][5]</sup></figcaption>
+    </figure>
+    <p class="q">實務上什麼時候會用到？</p>
+    <div class="case">
+      <p class="s">兩個產地的天然膠 ML 差不多，做出來的產品回彈卻一直不一樣。</p>
+      <p class="q">差在哪？</p>
+      <p>比鬆弛指數：產地 B 的膠衰減較慢、彈性明顯較強。為什麼同樣的 ML 彈性會不同？ML 只反映黏度這一面，分子結構（支化、凝膠含量）造成的彈性差異它看不到——這就是配方一直調不穩的原因。<sup class="ref">[5]</sup>開發階段用鬆弛指數篩原膠，比只盯 ML 多一層保障。</p>
+    </div>
+    <div class="case">
+      <p class="s">手上這個案子要做尺寸精度要求高的密封件。</p>
+      <p class="q">選膠時該看什麼？</p>
+      <p>鬆弛快的膠膨脹小、尺寸好控制，但生膠強度可能較低、半成品拿取易變形；鬆弛慢的膠剛好相反。依產品需求取捨，「手感好不好」變成可以拿數據討論的決定。</p>
+    </div>
+    <p>三種測試、三個問題——那測出來的數字，怎麼判讀？</p>
+  </div>
+  <div class="lang-en">
+    <p>One instrument performs three tests, each answering a different practical question.<sup class="ref">[2][3][9]</sup></p>
+    <table>
+      <tr><th>Test</th><th>Question it answers</th><th>Factory use</th></tr>
+      <tr>
+        <td><strong>Mooney viscosity</strong></td>
+        <td>Is this batch easy to process?</td>
+        <td>Incoming inspection, batch consistency, predicting extrusion/molding behavior</td>
+      </tr>
+      <tr>
+        <td><strong>Mooney scorch</strong></td>
+        <td>How much safe processing time remains?</td>
+        <td>Safety assessment of compounds containing curatives — preventing premature vulcanization (rubber curing inside the machine and scrapping the batch)</td>
+      </tr>
+      <tr>
+        <td><strong>Stress relaxation</strong></td>
+        <td>Is this rubber dominated by elastic or viscous behavior?</td>
+        <td>Predicting elastic behaviors like die swell and recovery; captures what the viscosity value alone cannot</td>
+      </tr>
+    </table>
+    <h3>Viscosity test</h3>
+    <p>The standard method covered earlier: preheat, then read at 4 minutes of rotation. Reading the curve:<sup class="ref">[5][8]</sup></p>
+    <ul>
+      <li><strong>0–1 min</strong>: preheating, rotor not turning, torque is 0</li>
+      <li><strong>At 1 min</strong>: the rotor starts and torque jumps to an <strong>initial peak (Mooney peak)</strong> — related to green strength</li>
+      <li><strong>1–4 min</strong>: the rubber softens under heat and shear; torque decays toward a plateau</li>
+      <li><strong>The plateau at minute 4</strong>: the reported Mooney viscosity</li>
+      <li><strong>After minute 5</strong>: the rotor stops and the stress-relaxation segment begins (dashed)</li>
+    </ul>
+    <figure>
+      <div class="mw" data-mw="viscosity-curve" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-viscosity-curve.svg" alt="Mooney viscosity test curve">
+      <figcaption>Torque–time curve of a viscosity test (redrawn from test principles). After the initial peak the value decays; the plateau at minute 4 is reported as ML(1+4).<sup class="ref">[3][5]</sup></figcaption>
+    </figure>
+    <p class="q">Where does this number get used?</p>
+    <div class="case">
+      <p class="s">A new lot has arrived and is waiting to go into the mixer. The spec gives only one acceptance number: ML(1+4)100°C = 50±5 — the test comes back at 72, over the limit.</p>
+      <p class="q">Can this lot be accepted?</p>
+      <p>The Mooney value is a relative index of turning resistance — the higher it is, the stiffer and harder to push the rubber, so a lot over the limit will struggle under the standard process.<sup class="ref">[3]</sup> Next: take the data to the supplier, confirm whether it is a test-condition difference or the rubber itself, then decide rejection or conditional release. If released, the line needs to know "this lot is stiff" — mastication time has to go up. One number at receiving sets the tone for everything downstream.</p>
+    </div>
+    <div class="case">
+      <p class="s">Purchasing wants to qualify a second source for the same grade. Both are tested under identical conditions: current supplier 48, new source 65 — same grade, 17 units apart.</p>
+      <p class="q">Can the new source be dropped in as a direct replacement?</p>
+      <p>Why would the same grade differ that much? Different feedstock and polymerization conditions mean different molecular weight and branching — the "stiffness feel" naturally differs. The 65 rubber costs extra mastication time and energy on the line, which belongs in the purchasing calculation — not just the unit price. The number turns "easy to process" into something you can quantify and negotiate.</p>
+    </div>
+    <div class="case">
+      <p class="s">This morning's incoming lot tested high — still inside spec, accepted, and scheduled for the line.</p>
+      <p class="q">What should production watch for today?</p>
+      <p>A high value means stiff, hard-to-push rubber: without extra mastication, downstream mixing and extrusion will struggle, so the schedule keeps an extra breakdown pass. If it reads low instead, the concern flips to dimensional control and strength — soft rubber cannot hold its shape. The number tells you what to prepare before the rubber hits the line, instead of tracing causes after scrap appears.</p>
+    </div>
+    <div class="case">
+      <p class="s">Every lot passes incoming inspection — but the records show values creeping up lot after lot.</p>
+      <p class="q">Still inside spec — is that a problem?</p>
+      <p>A passing single lot doesn't mean nothing is changing; a moving trend means something upstream is shifting — a raw-material change or a drifting supplier process. Take the trend data to the supplier now: catching it before it goes out of spec is far cheaper than catching it on the production line.</p>
+    </div>
+    <h3>Scorch test</h3>
+    <p>A compound with curatives in it is "cooking" slowly all the time — the only question is when it overcooks. This test keeps the rubber turning at high temperature to see when the cooking starts: that point is the limit of safe processing time.</p>
+    <ul>
+      <li><strong>Method</strong>: a compound already containing curatives is sheared continuously at a higher temperature (e.g. 125°C)<sup class="ref">[3]</sup></li>
+      <li><strong>Curve</strong>: viscosity first falls or holds steady; it rises again when the rubber begins curing prematurely</li>
+      <li><strong>Key points</strong>: the viscosity minimum, the time to rise 5 units (t5, commonly the scorch time), and the time to rise 35 units (t35)</li>
+      <li><strong>Use</strong>: shorter t5 = earlier cure onset = less safe processing time</li>
+    </ul>
+    <figure>
+      <div class="mw" data-mw="scorch-curve" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-scorch-curve.svg" alt="Mooney scorch curve">
+      <figcaption>Viscosity–time curve of a scorch test (redrawn from test principles). The rise after the minimum marks the onset of vulcanization; t5 is the practical scorch-time indicator.<sup class="ref">[3]</sup></figcaption>
+    </figure>
+    <p class="q">Where does this get used?</p>
+    <div class="case">
+      <p class="s">A curative-containing compound sat in the warehouse for three weeks and is now needed for production.</p>
+      <p class="q">Could it have changed in that time?</p>
+      <p>Retest t5: it has dropped from 18 minutes at intake to 12. Why did it shorten? Once curatives are in, the compound keeps reacting slowly during storage — creeping closer to premature vulcanization, so the safe processing window is draining away.<sup class="ref">[3]</sup> The follow-up: run this old lot first and check storage temperature; from now on, date every lot and retest t5 periodically, so the "remaining life" of stored compound becomes a visible number.</p>
+      <figure>
+        <div class="mw" data-mw="scorch-t5" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-scorch-t5-compare.svg" alt="Scorch curves of the same compound at intake and after three weeks">
+        <figcaption>Two scorch tests of the same lot overlaid: blue at intake (t5 = 18 min), brown dashed after three weeks (t5 = 12 min) — nearly the same minimum, but the rise came 6 minutes earlier: the safe processing window is draining.</figcaption>
+      </figure>
+    </div>
+    <div class="case">
+      <p class="s">A new formulation is about to go on the line; the planned processing takes 15 minutes — the measured t5 is only 8.</p>
+      <p class="q">Can it be processed in time?</p>
+      <p>What does 8 minutes mean? At the test temperature the rubber starts curing after roughly 8 minutes — run as planned and it vulcanizes inside the machine. Options: lower the dump temperature, add curatives in the final stage, or switch to a delayed-action accelerator. t5 tells you whether the formulation can make it before it reaches production.</p>
+    </div>
+    <div class="case">
+      <p class="s">A chunk of already-cured rubber is cleaned out of the extruder; the line is down for cleaning.</p>
+      <p class="q">Was it scorch?</p>
+      <p>Testing the remaining compound shows t5 of only 6 minutes, and the line had been stopped for 10. Why does a stop cause trouble? Rubber sitting in a hot machine keeps heating — every minute brings it closer to t5, and a 10-minute stop far exceeded the 6-minute margin. The follow-up: write "purge the compound if stopped beyond a set time" into the operating procedure, turning an accident into an executable rule.</p>
+    </div>
+    <div class="case">
+      <p class="s">Today's compound is going on the line, with material waits and die changes in between.</p>
+      <p class="q">How long can it sit in the hot machine?</p>
+      <p>t5 is the upper limit: schedule the longest allowable wait inside it, and if any gap runs over, purge first.</p>
+    </div>
+    <h3>Stress relaxation test</h3>
+    <p>Pinch a piece of rubber and let go — a quick spring-back means more elasticity, a slow one means a more viscous character. This test does the same thing, just moved inside the die cavity.</p>
+    <p>While the rotor turns, it drags the rubber around and twists it out of shape inside the cavity — the force the rubber pushes back with is the torque the instrument reads. When the rotor stops suddenly, the twisted rubber is still wedged in the cavity. Only one question matters now: <strong>does the rubber keep pressing on the rotor?</strong></p>
+    <ul>
+      <li><strong>Elastic rubber</strong>: hard to reshape — the twisted rubber keeps trying to squeeze back to its old shape, so it keeps pressing on the rotor. The pressing lasts long after the rotor stops: torque decays slowly and the curve stays flat</li>
+      <li><strong>Viscous rubber</strong>: easy to reshape — the twisted rubber quickly settles into its new shape and stops pressing on the rotor. With nothing pushing, torque drops fast and the curve falls steeply</li>
+    </ul>
+    <p>So the slope difference comes down to <strong>how long the rubber keeps pressing on the rotor</strong>: lasting pressure = more elastic content — the deformation is remembered and released at the die exit (the source of die swell); pressure that dies quickly = more viscous content — the deformation is not retained and the extrudate holds its size.</p>
+    <ul>
+      <li><strong>Method</strong>: run right after the viscosity test on the same specimen — the rotor stops abruptly and the stored stress decays gradually while torque is recorded<sup class="ref">[3]</sup></li>
+      <li><strong>Fast decay</strong> = viscous-dominated rubber; <strong>slow decay</strong> = elastic-dominated rubber</li>
+      <li><strong>Why it matters</strong>: elastic behaviors like die swell and recovery are invisible in a viscosity number — where does it pay off? The cases below answer that</li>
+    </ul>
+    <p><strong>Reading the figure (left):</strong></p>
+    <ul>
+      <li>0–1 min: preheat at zero torque; the rotor starts at minute 1 and torque jumps to a peak</li>
+      <li>Minutes 1–5: the viscosity-test segment (plateau = ML)</li>
+      <li><strong>The relaxation segment starts when the rotor stops at minute 5</strong>: the blue line decays fast (viscous rubber), the brown dashed line decays slowly (elastic rubber)</li>
+    </ul>
+    <p><strong>Reading the figure (right):</strong> plotted on log–log axes the decay is nearly a straight line — <strong>its slope a is the relaxation index</strong>: flatter = more elastic, steeper = more viscous. The slope measures how long the rubber keeps pressing on the rotor: rubber that keeps pressing sheds stress slowly (flat); rubber that quickly stops pressing sheds it fast (steep).</p>
+    <figure>
+      <div class="mw" data-mw="relaxation" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-stress-relaxation.svg" alt="Stress relaxation curve">
+      <figcaption>Stress relaxation test (redrawn from test principles). Left: after the rotor stops at minute 5, torque decays fast for a viscous rubber and slowly for an elastic one. Right: on log–log axes the decay is a straight line whose slope a is the relaxation index.<sup class="ref">[3][5]</sup></figcaption>
+    </figure>
+    <p class="q">Where does this get used?</p>
+    <div class="case">
+      <p class="s">Two NR origins read nearly the same ML, yet the finished product keeps rebounding differently.</p>
+      <p class="q">Where is the difference?</p>
+      <p>Compare relaxation indices: origin B decays more slowly and is markedly more elastic. Why can equal ML hide different elasticity? ML only reflects the viscosity side — elastic differences from molecular structure (branching, gel content) are invisible to it, which is why the formulation never stabilized.<sup class="ref">[5]</sup> Screening raw rubber by relaxation index during development adds a layer of assurance that ML alone misses.</p>
+    </div>
+    <div class="case">
+      <p class="s">The job at hand is a seal with tight dimensional tolerance.</p>
+      <p class="q">What should you look at when choosing the rubber?</p>
+      <p>Fast-relaxing rubber swells less and holds size better, but may have lower green strength and deform when handled; slow-relaxing rubber is the opposite. Choose per product needs — "how it feels" becomes a decision made with data.</p>
+    </div>
+    <p>Three tests, three questions — now how do you read the numbers they produce?</p>
+  </div>
+
+  <h2 id="s5"><span class="lang-zh">五、木尼值 50，算高還是算低？</span><span class="lang-en">5. A Mooney value of 50 — high or low?</span></h2>
+
+  <div class="lang-zh">
+    <h3>高低值各代表什麼？</h3>
+    <table>
+      <tr><th>木尼值</th><th>代表</th><th>加工上的含義</th></tr>
+      <tr><td>偏低（如 < 30）</td><td>膠很軟、易流動</td><td>好加工但要注意尺寸控制與強度；可能是低分子量或配方軟化劑多</td></tr>
+      <tr><td>中間（約 40–70）</td><td>一般加工範圍</td><td>多數混煉膠落在這裡</td></tr>
+      <tr><td>偏高（如 > 80）</td><td>膠很黏、難推動</td><td>押出/成型吃力、生熱多；可能是高分子量或填充高</td></tr>
+    </table>
+    <figure>
+      <div class="mw" data-mw="mooney-level" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-mooney-high-low.svg" alt="高、中、低三種木尼值的粘度曲線疊加比對">
+      <figcaption>同樣的測試、三種不同的膠疊在同一張圖上：峰值和平穩值的高度直接反映木尼值高低——ML ≈ 85 的膠整條曲線墊高（難推），ML ≈ 25 的膠整條壓低（軟、好推）。「算高還是算低」看的就是第 4 分鐘平穩值落在哪一層。</figcaption>
+    </figure>
+    <h3>判讀有哪三個基本規則？</h3>
+    <ol>
+      <li><strong>同條件才能比</strong>：轉子、溫度、時間寫法不同，數字不能直接比</li>
+      <li><strong>看趨勢比看單點重要</strong>：同一種膠的批次間漂移（上升或下降趨勢）比單次數值更有意義——上升可能代表膠料變化或開始提前硫化</li>
+      <li><strong>木尼值不是強度</strong>：它只說「難不難加工」，不保證成品強度好壞</li>
+    </ol>
+    <h3>容易踩哪些陷阱？</h3>
+    <ul>
+      <li>拿 ML 和 MS 的數字互比（轉子不同，基準不同）</li>
+      <li>忘記木尼值會隨測試時間下降（橡膠有觸變性 thixotropy，剪越久越軟）——所以標準才規定固定的讀值時間<sup class="ref">[5]</sup></li>
+      <li>以為木尼值高 = 品質差。高粘度只是「難加工」，可能正是產品需要的高分子量特性</li>
+    </ul>
+    <figure class="mw-fig"><div class="mw" data-mw="trap-quiz" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：互動練習：判斷「這兩個數字能不能直接比」——答錯會告訴你卡在哪個陷阱。</span><span class="lang-en">: Practice: decide whether these two numbers can be compared directly — a wrong answer shows which trap it is.</span></figcaption></figure>
+    <p>判讀規則都有了——但為什麼同 ML 的兩批膠，做起來手感還是不同？</p>
+  </div>
+  <div class="lang-en">
+    <h3>What do high and low values mean?</h3>
+    <table>
+      <tr><th>Mooney value</th><th>Meaning</th><th>Processing implication</th></tr>
+      <tr><td>Low (e.g. &lt; 30)</td><td>Soft, flows easily</td><td>Easy to process but watch dimensional control and strength; may indicate low molecular weight or high plasticizer content</td></tr>
+      <tr><td>Mid-range (~40–70)</td><td>Typical processing range</td><td>Most compounds fall here</td></tr>
+      <tr><td>High (e.g. &gt; 80)</td><td>Very viscous, hard to push</td><td>Extrusion/molding is strenuous with more heat buildup; may indicate high molecular weight or heavy filler loading</td></tr>
+    </table>
+    <figure>
+      <div class="mw" data-mw="mooney-level" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-mooney-high-low.svg" alt="Overlaid viscosity curves for high, mid, and low Mooney values">
+      <figcaption>The same test on three different rubbers overlaid: peak and plateau heights track the Mooney value directly — ML ≈ 85 sits high throughout (hard to push), ML ≈ 25 sits low (soft). "High or low" is read off where the minute-4 plateau lands.</figcaption>
+    </figure>
+    <h3>What are the three basic rules?</h3>
+    <ol>
+      <li><strong>Compare like with like</strong>: numbers with different rotor, temperature, or timing notations are not directly comparable</li>
+      <li><strong>Trend beats single point</strong>: drift between batches of the same compound matters more than any single reading — a rising trend may indicate material change or incipient cure</li>
+      <li><strong>Mooney is not strength</strong>: it only says how hard the rubber is to process, not how strong the finished product is</li>
+    </ol>
+    <h3>What traps are easy to fall into?</h3>
+    <ul>
+      <li>Comparing ML and MS values directly (different rotors, different baselines)</li>
+      <li>Forgetting that the value decays during the test (rubber is thixotropic — it softens under shear), which is why the standard fixes the reading time<sup class="ref">[5]</sup></li>
+      <li>Assuming high Mooney = poor quality. High viscosity only means "harder to process" — it may be exactly the high-molecular-weight character the product needs</li>
+    </ul>
+    <figure class="mw-fig"><div class="mw" data-mw="trap-quiz" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：互動練習：判斷「這兩個數字能不能直接比」——答錯會告訴你卡在哪個陷阱。</span><span class="lang-en">: Practice: decide whether these two numbers can be compared directly — a wrong answer shows which trap it is.</span></figcaption></figure>
+    <p>The reading rules are in place — so why do two batches with the same ML still process differently?</p>
+  </div>
+
+  <h2 id="s6"><span class="lang-zh">六、ML 看不到的那一面是什麼？</span><span class="lang-en">6. What does ML fail to show?</span></h2>
+
+  <div class="lang-zh">
+    <div class="case">
+      <p class="s">兩批膠 ML 同為 50、進料檢驗都合格。押出時 A 批正常，B 批卻膨脹到尺寸失控。</p>
+      <p class="q">同樣的數字，為什麼做起來不一樣？</p>
+      <p>補做鬆弛測試：A 衰減快、B 衰減慢。衰減快慢代表什麼？扭矩掉得快表示膠以黏性為主——形狀流掉就流掉了；掉得慢表示彈性成分多——膠記得住形狀、押出後會回彈。<sup class="ref">[5]</sup>B 批就是彈性太強才膨脹失控。接下來的動線：B 批調口型間隙或降押速；並把鬆弛指數加進這類產品的進料檢驗——光靠 ML 擋不住這種問題。</p>
+      <figure>
+        <div class="mw" data-mw="relax-ab" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-relaxation-ab.svg" alt="同 ML 的 A、B 兩批膠鬆弛曲線比對">
+        <figcaption>兩批膠在轉子停止時扭矩同是 50（同一個 ML），但衰減速度完全不同：A 批快速掉到底（黏性主導、押出穩定），B 批撐著不散（彈性主導、出模回漲）——同 ML 不同手感的來源就在這個落差裡。</figcaption>
+      </figure>
+    </div>
+
+    <h3>應力鬆弛測試在實務上做什麼？</h3>
+    <p>粘度值只說「膠有多黏」；應力鬆弛說的是「膠的彈性有多強」。橡膠同時有黏性與彈性，兩批木尼值相同的膠，彈性成分可能差很多——上面 B 批踩中的正是這個盲區。<sup class="ref">[3]</sup></p>
+    <p><strong>實務用途：</strong></p>
+    <ul>
+      <li><strong>押出膨脹（die swell）預估</strong>：彈性成分高的膠，出模口後尺寸回漲較大；鬆弛慢的批次，口模與速度設定要留更多餘量<sup class="ref">[3]</sup></li>
+      <li><strong>比木尼值更敏感的批次指標</strong>：凝膠含量、支化度、分子量分布的差異不一定反映在木尼值上，但會改變鬆弛速率——ML 相同的兩批膠，用鬆弛曲線能先篩出差異<sup class="ref">[3][5]</sup></li>
+      <li><strong>解釋 NR 與合成膠的手感差</strong>：天然膠彈性成分高、鬆弛慢；多數合成膠黏性成分高、鬆弛快。同木尼值做起來感覺不同，原因常在這裡</li>
+      <li><strong>配方與混煉開發</strong>：比較不同配方或混煉條件下彈性成分的變化，是開發階段評估加工性的工具之一</li>
+    </ul>
+    <p><strong>數值怎麼讀（冪次定律 M = k·t<sup>a</sup>）：</strong></p>
+    <ul>
+      <li><strong>k</strong>：與木尼粘度高度相關——資訊重疊，不是新情報<sup class="ref">[3][5]</sup></li>
+      <li><strong>斜率 a</strong>：鬆弛速率指數。越接近 0（衰減線越平）= 應力留得越久 = 彈性越強；越負（越陡）= 黏性越強</li>
+      <li><strong>彈性能量保持指數 (a+1)</strong>：由鬆弛指數 a 推出的彈性成分讀法（這個結構本就在 ASTM 面積公式裡，由來見深入專案討論的〈彈性指數〉篇），彈性越弱值越低——是粘度值看不到的獨立資訊<sup class="ref">[3][5]</sup></li>
+    </ul>
+    <figure>
+      <div class="mw" data-mw="power-law" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-power-law-d1646.svg" alt="冪次定律擬合示意（log–log 圖）">
+      <figcaption>冪次定律擬合（依 ASTM D1646 原理重繪）：log–log 圖上，實測鬆弛響應線（藍實線）用一條直線 M = k·t<sup>a</sup>（棕虛線）擬合——轉子停後 1 秒的扭矩即 k 值，擬合線的斜率即鬆弛指數 a。<sup class="ref">[3][5]</sup></figcaption>
+    </figure>
+
+    <h3>除了平穩值，原膠測試還能看什麼？</h3>
+    <p>同一段粘度測試曲線其實有三組資訊，但多數報表只摘平穩值：</p>
+    <figure class="mw-fig"><div class="mw" data-mw="curve-regions" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：滑到曲線任一區，看那段告訴你什麼——峰＝生膠強度、平台＝加工性、衰減＝彈性。</span><span class="lang-en">: Hover any region of the curve to see what it tells you — peak = green strength, plateau = processability, decay = elasticity.</span></figcaption></figure>
+    <ul>
+      <li><strong>初期峰值（Mooney peak）</strong>：轉子啟動瞬間的最高扭矩，與生膠強度（green strength）相關——膠在開煉初期抱不抱得住、好不好操作的指標<sup class="ref">[5]</sup></li>
+      <li><strong>峰值到平穩的下降幅度</strong>：掉得越多代表觸變性（thixotropy）越強——剪切軟化明顯的膠，進機台後會越轉越軟<sup class="ref">[5]</sup></li>
+      <li><strong>鬆弛指數 (a+1)</strong>：前面鬆弛段提過的彈性成分指標</li>
+    </ul>
+    <p>實務上，進料檢驗若只收 ML 一個數字，等於丟掉曲線前半段的資訊；跟供應商或實驗室要完整曲線（峰值＋鬆弛數據），同一筆測試能看到更多。</p>
+
+    <h3>為什麼不同實驗室的數字會對不上？</h3>
+    <ul>
+      <li><strong>它量的不是真粘度</strong>：橡膠是非牛頓流體（non-Newtonian fluid），粘度隨剪切速率變；轉子在模腔裡的流場複雜，量到的是一段剪切範圍內的平均扭矩——所以單位是自定的木尼單位，不是物理粘度單位<sup class="ref">[3][5]</sup></li>
+      <li><strong>條件差一點數字就差</strong>：轉子大小、溫度、讀值時間任一不同都不能直接比——跨實驗室比對前先核對寫法完全一致；ASTM D1646 的國際對應標準是 ISO 289-1<sup class="ref">[7]</sup>，兩者條文細節也要對齊</li>
+      <li><strong>高分子量膠的鑑別度</strong>：木尼值受分子量、支化、凝膠等多因素影響，沒有對應分子量的簡單公式；丁基橡膠（IIR）分子量高到一定程度，ML(1+4)100°C 會停在約 80 MU 甚至下降——高分子量膠有時要升溫測才有鑑別度<sup class="ref">[3]</sup></li>
+      <li><strong>NR 的特殊狀況</strong>：研究發現天然膠在標準 2 rpm 下可能已進入熔體破裂（melt fracture）區——膠在模腔內撕裂而非流動，量到的不是真實流動行為；RSS3 系膠臨界轉速約 0.2 rpm、TSR20 約 1.5 rpm。這解釋了為什麼 NR 木尼值有時與華氏可塑度（Wallace plasticity）對不上，該研究建議 NR 改用低速量測<sup class="ref">[6]</sup></li>
+      <li><strong>機台狀態也會影響</strong>：轉子鋸齒磨損會降低抓膠力、讓讀值漂移——定期檢查轉子是比對前的基本功<sup class="ref">[3]</sup></li>
+    </ul>
+
+    <h3>它做不到什麼：完整硫化曲線</h3>
+    <p>焦燒測試只能抓硫化的「起跑點」（incipient cure）。膠硫化變硬後試片會在轉子下打滑（slippage），扭矩不再反映材料變化——所以木尼儀<strong>追蹤不了完整硫化過程</strong>。要看完整硫化曲線（最低粘度、焦燒時間、正硫化點、過硫）要用無轉子流變儀（MDR）。<sup class="ref">[3]</sup></p>
+    <table>
+      <tr><th></th><th>木尼粘度計</th><th>無轉子流變儀（MDR）</th></tr>
+      <tr><td>量什麼</td><td>加工性（粘度）、焦燒起點、彈性成分</td><td>完整硫化過程：焦燒、硫化速率、正硫化、過硫</td></tr>
+      <tr><td>試片</td><td>含或不含硫化劑皆可</td><td>通常含硫化劑</td></tr>
+      <tr><td>角色</td><td>進料與混煉膠的「加工性守門員」</td><td>硫化特性的「全程記錄員」</td></tr>
+    </table>
+    <p>簡單說：木尼儀管「硫化之前好不好做」，流變儀管「硫化過程怎麼走」。兩台互補，不互替。<sup class="ref">[2][3]</sup></p>
+    <p>看不到的那一面清楚了——那這台機器做不到什麼呢？</p>
+  </div>
+  <div class="lang-en">
+    <div class="case">
+      <p class="s">Two lots both passed incoming at ML 50 — yet on extrusion, lot A behaves while lot B swells beyond dimensional limits.</p>
+      <p class="q">Same number, why does it process differently?</p>
+      <p>A relaxation test shows A decays fast and B slowly. What does decay speed mean? Fast decay means the rubber is viscous-dominated — shape flows away and stays gone; slow decay means more elastic content — the rubber remembers its shape and springs back.<sup class="ref">[5]</sup> Lot B's excess elasticity is exactly why it swells out of control. The follow-up: adjust the die gap or line speed for B, and add the relaxation index to incoming inspection for this product family — ML alone cannot catch this.</p>
+      <figure>
+        <div class="mw" data-mw="relax-ab" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-relaxation-ab.svg" alt="Relaxation curves of two lots with the same ML">
+        <figcaption>Both lots read 50 when the rotor stops (same ML), but decay completely differently: Lot A drops fast (viscous-dominated, stable extrusion), Lot B holds on (elastic-dominated, swells after the die) — this gap is where "same ML, different feel" comes from.</figcaption>
+      </figure>
+    </div>
+
+    <h3>What does stress relaxation do in practice?</h3>
+    <p>Viscosity says how "thick" the rubber is; relaxation says how elastic it is. Rubber is both viscous and elastic, and two batches with the same Mooney value can differ greatly in elastic content — the blind spot lot B just ran into.<sup class="ref">[3]</sup></p>
+    <p><strong>Practical uses:</strong></p>
+    <ul>
+      <li><strong>Predicting die swell</strong>: a highly elastic rubber expands more after leaving the die; slow-relaxing batches need more allowance in die design and line speed<sup class="ref">[3]</sup></li>
+      <li><strong>A more sensitive batch indicator than ML</strong>: differences in gel content, branching, and molecular-weight distribution may not show in the Mooney value but do change the relaxation rate — two batches with the same ML can be told apart by their relaxation curves<sup class="ref">[3][5]</sup></li>
+      <li><strong>Explaining NR vs. synthetic feel</strong>: natural rubber is elastic-rich and relaxes slowly; most synthetics are viscous-rich and relax fast — a common reason equal-ML rubbers process differently</li>
+      <li><strong>Formulation and mixing development</strong>: comparing how elastic content shifts across formulations or mixing conditions is a standard development tool</li>
+    </ul>
+    <p><strong>Reading the numbers (power law M = k·t<sup>a</sup>):</strong></p>
+    <ul>
+      <li><strong>k</strong>: correlates strongly with the Mooney value — overlapping information, nothing new<sup class="ref">[3][5]</sup></li>
+      <li><strong>Slope a</strong>: the relaxation-rate index. Closer to 0 (flatter decay) = stress holds longer = more elastic; more negative (steeper) = more viscous</li>
+      <li><strong>Elastic energy retention index (a+1)</strong>: an elasticity reading derived from exponent a — the (a+1) term already sits inside ASTM's area formula; Maláč's reading of it is covered in the elasticity-index deep dive. Lower as elasticity drops — independent information a viscosity value cannot give<sup class="ref">[3][5]</sup></li>
+    </ul>
+    <figure>
+      <div class="mw" data-mw="power-law" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-power-law-d1646.svg" alt="Power-law fit on log–log axes">
+      <figcaption>Power-law fit (redrawn per ASTM D1646): on log–log axes the measured relaxation response (blue solid) is fitted by a straight line M = k·t<sup>a</sup> (brown dashed) — k is the torque 1 second after the rotor stops, and the fitted line's slope is the relaxation index a.<sup class="ref">[3][5]</sup></figcaption>
+    </figure>
+
+    <h3>What else can a raw-rubber test show?</h3>
+    <p>One viscosity-test curve actually carries three pieces of information, yet most reports only quote the plateau:</p>
+    <figure class="mw-fig"><div class="mw" data-mw="curve-regions" tabindex="0"></div><figcaption><strong><span class="lang-zh">互動演示</span><span class="lang-en">Interactive demo</span></strong><span class="lang-zh">：滑到曲線任一區，看那段告訴你什麼——峰＝生膠強度、平台＝加工性、衰減＝彈性。</span><span class="lang-en">: Hover any region of the curve to see what it tells you — peak = green strength, plateau = processability, decay = elasticity.</span></figcaption></figure>
+    <ul>
+      <li><strong>Mooney peak</strong>: the maximum torque right at rotor start, related to green strength — an indicator of how the rubber holds together in early milling<sup class="ref">[5]</sup></li>
+      <li><strong>Peak-to-plateau drop</strong>: a larger drop means stronger thixotropy — a rubber that softens under shear keeps softening inside the machine<sup class="ref">[5]</sup></li>
+      <li><strong>Relaxation index (a+1)</strong>: the elastic component covered in the relaxation section above</li>
+    </ul>
+    <p>In practice, an incoming inspection that only records ML discards the first half of the curve. Asking the supplier or lab for the full curve (peak + relaxation data) extracts more from the same test.</p>
+
+    <h3>Why might labs disagree on the number?</h3>
+    <ul>
+      <li><strong>It is not a true viscosity</strong>: rubber is non-Newtonian — viscosity changes with shear rate; the rotor's flow field is complex, so the reading is a torque averaged over a range of shear rates. That is why the unit is the arbitrary Mooney unit, not a physical viscosity unit<sup class="ref">[3][5]</sup></li>
+      <li><strong>Any condition change shifts the number</strong>: rotor size, temperature, or reading time — never compare values with different notations; verify identical conditions before a cross-lab comparison, including clause-level differences between ASTM D1646 and its ISO counterpart, ISO 289-1<sup class="ref">[7]</sup></li>
+      <li><strong>Discrimination at high molecular weight</strong>: Mooney value is driven jointly by molecular weight, branching, gel, and other factors with no simple formula linking them; for IIR, ML(1+4)100°C plateaus near 80 MU or even drops once molecular weight is high enough — higher test temperatures may be needed to discriminate<sup class="ref">[3]</sup></li>
+      <li><strong>The NR special case</strong>: a variable-speed study found NR can enter melt fracture — tearing internally rather than flowing — even at the standard 2 rpm; critical speeds were ~0.2 rpm for an RSS3-type rubber and ~1.5 rpm for TSR20. This explains why NR Mooney values sometimes fail to correlate with Wallace plasticity, and why the study recommends low-speed measurement for NR<sup class="ref">[6]</sup></li>
+      <li><strong>Instrument condition matters</strong>: worn rotor serrations reduce grip and drift readings — checking the rotor is basic homework before comparisons<sup class="ref">[3]</sup></li>
+    </ul>
+
+    <h3>What it cannot do: the full cure curve</h3>
+    <p>The scorch test only captures the onset of cure (incipient cure). Once the rubber stiffens, the specimen slips under the rotor and torque no longer reflects the material — so the Mooney viscometer <strong>cannot track complete vulcanization</strong>. For the full cure curve (minimum viscosity, scorch time, optimum cure, reversion), a rotorless rheometer (MDR) is required.<sup class="ref">[3]</sup></p>
+    <table>
+      <tr><th></th><th>Mooney viscometer</th><th>Rotorless rheometer (MDR)</th></tr>
+      <tr><td>Measures</td><td>Processability (viscosity), scorch onset, elastic component</td><td>The full cure process: scorch, cure rate, optimum cure, reversion</td></tr>
+      <tr><td>Specimen</td><td>With or without curatives</td><td>Usually with curatives</td></tr>
+      <tr><td>Role</td><td>Gatekeeper of processability for raw rubber and compounds</td><td>Full-process recorder of vulcanization</td></tr>
+    </table>
+    <p>In short: the Mooney covers "how easy it is to process before curing"; the rheometer covers "how curing proceeds". They complement rather than replace each other.<sup class="ref">[2][3]</sup></p>
+    <p>The blind side is clear — so what can't the instrument do?</p>
+  </div>
+
+  <h2 id="s7"><span class="lang-zh">七、那它做不到什麼？</span><span class="lang-en">7. What can't it do?</span></h2>
+
+  <div class="lang-zh">
+    <p class="q">能做的事一路講下來——它的邊界在哪裡？</p>
+    <p class="q">ML 合格，到底能保證什麼、不能保證什麼？</p>
+    <p class="q">哪些問題換個條件就能解決，哪些是這台機器天生到不了的地方？</p>
+    <p>前面講的都是「它能做什麼」。這裡反過來，把 ASTM D1646 條文與文獻裡寫明的邊界一次收齊——這些不是操作不當才踩到的坑，而是儀器在設計上就到不了的地方。看清楚了，才知道什麼問題該拿它問、什麼問題該換工具。</p>
+    <table>
+      <tr><th>它做不到什麼</th><th>為什麼（機制）</th><th>拿什麼補</th></tr>
+      <tr><td>給出「真粘度」或流變參數</td><td>橡膠是非牛頓流體，量到的是一段剪切範圍內的平均扭矩，結果為此機型特有（D1646 NOTE 1）——不能代進流動公式當材料常數</td><td>毛細管／旋轉流變儀<sup class="ref">[3]</sup></td></tr>
+      <tr><td>從 ML 直接讀分子量或結構</td><td>分子量、支化、凝膠、非橡膠成分混在同一個數字裡，無簡單對應（§5.1）；分子量高到一定程度讀值還會鈍化——IIR 在 100°C 約停在 80 MU、再高反而下降</td><td>SEC／GPC 分子量分析；NR 可用變速木尼低速端<sup class="ref">[3][10]</sup></td></tr>
+      <tr><td>用 ML 單值分開彈性／黏性</td><td>ML 是彈黏混合量——前面同 ML 兩批膠裡的 B 批就踩中這個盲區</td><td>鬆弛測試：指數 a、(a+1)、Maxwell tm<sup class="ref">[3][5][11]</sup></td></tr>
+      <tr><td>追蹤完整硫化曲線</td><td>試片硫化變硬後在轉子下打滑，扭矩不再反映材料（§5.3）——只能抓焦燒起點</td><td>無轉子流變儀（MDR）<sup class="ref">[3]</sup></td></tr>
+      <tr><td>保證標準 2 rpm 一定在正常流動區</td><td>NR 在 2 rpm 以下即可能進入熔體破裂支線（材料層上限）；打滑則是儀器層上限，換小轉子也不保證能解（§10.1）</td><td>變速木尼低速量測<sup class="ref">[6][10]</sup></td></tr>
+      <tr><td>大小轉子讀值互換</td><td>兩種轉子的對應關係隨膠種與條件變動，標準明文禁止換算（§11.1.3.1）</td><td>固定寫法、分開報告<sup class="ref">[3]</sup></td></tr>
+      <tr><td>跨製備方式、跨標準直接比數字</td><td>輥壓與否（massed／unmassed）讀值可差；ISO 289 不設輥壓製備、ASTM 允許；兩種模面型式也可能給出不同結果（NOTE 2、§1.5）</td><td>比對前先對齊條件寫法<sup class="ref">[3][7]</sup></td></tr>
+      <tr><td>用單一固定條件模擬真實加工</td><td>溫度、轉速、模腔幾何全部固定——它是對照指標，不是製程模擬；真實押出／射出的剪切率高出好幾個量級</td><td>製程側線驗證、高剪切流變工具<sup class="ref">[3]</sup></td></tr>
+      <tr><td>告訴你批次為什麼不同</td><td>一個數字只指出「有差異」，不說差異的成因——可能是分子量、凝膠、支化、混煉或老化中的任何一種</td><td>鬆弛曲線＋結構分析（SEC、凝膠含量）<sup class="ref">[5][10][11]</sup></td></tr>
+      <tr><td>用 ML 合格保證成品性能</td><td>它量的是「未硫化膠的加工性」；強度、耐久、硫化後物性不在量測範圍</td><td>硫化後物性測試（拉力、硬度等）</td></tr>
+    </table>
+    <p><strong>那它到底是什麼？</strong>一台在<strong>固定條件下做比較</strong>的儀器：同類膠、同寫法、同條件下比批次、看趨勢、守進料——這是它的主場。表裡的邊界不是它的缺點，是它的工作範圍：越界的需求不是它壞，是該換工具了。<sup class="ref">[3]</sup></p>
+    <p>能做的、做不到的邊界都收齊了——那開頭的三個問題呢？</p>
+  </div>
+  <div class="lang-en">
+    <p class="q">All this on what it can do — where are its limits?</p>
+    <p class="q">What does a passing ML actually guarantee — and what does it not?</p>
+    <p class="q">Which problems can be fixed by changing test conditions, and which are simply beyond this instrument?</p>
+    <p>Everything so far was about what it can do. Here we turn it around and collect the boundaries written into ASTM D1646 and the literature — these are not pitfalls of poor execution, but places the instrument was never designed to reach. Knowing them tells you which questions to bring to it and which need a different tool.</p>
+    <table>
+      <tr><th>What it can't do</th><th>Why (mechanism)</th><th>What to use instead</th></tr>
+      <tr><td>Give a "true viscosity" or rheological parameters</td><td>Rubber is non-Newtonian; the reading is a torque averaged over a range of shear rates, unique to this instrument (D1646 NOTE 1) — not a material constant for flow equations</td><td>Capillary or rotational rheometry<sup class="ref">[3]</sup></td></tr>
+      <tr><td>Read molecular weight or structure from ML</td><td>Molecular weight, branching, gel, and non-rubber constituents fold into one number with no simple relation (§5.1); readings even blunt at very high MW — IIR plateaus near 80 MU at 100°C and can drop beyond</td><td>SEC/GPC analysis; for NR, the low-speed end of variable-speed Mooney<sup class="ref">[3][10]</sup></td></tr>
+      <tr><td>Separate elastic from viscous using the ML value alone</td><td>ML is a composite — the lot-B case with the same ML ran straight into this blind spot</td><td>Relaxation test: exponent a, (a+1), Maxwell tm<sup class="ref">[3][5][11]</sup></td></tr>
+      <tr><td>Track the full cure curve</td><td>Once the specimen stiffens it slips under the rotor and torque stops reflecting the material (§5.3) — only the scorch onset is readable</td><td>Rotorless rheometer (MDR)<sup class="ref">[3]</sup></td></tr>
+      <tr><td>Guarantee the standard 2 rpm is in the proper-flow regime</td><td>NR can enter the melt-fracture branch below 2 rpm (a material-level ceiling); slippage is an instrument-level ceiling, and switching to the small rotor does not always cure it (§10.1)</td><td>Variable-speed Mooney at low rotor speeds<sup class="ref">[6][10]</sup></td></tr>
+      <tr><td>Convert between large- and small-rotor readings</td><td>The rotor relationship varies with rubber type and conditions — the standard explicitly forbids conversion (§11.1.3.1)</td><td>Fixed notation; report each rotor separately<sup class="ref">[3]</sup></td></tr>
+      <tr><td>Compare numbers across preparations or standards</td><td>Massed vs unmassed specimens can differ; ISO 289 provides no mill massing while ASTM allows it; the two die-surface types may also give different results (NOTE 2, §1.5)</td><td>Align conditions and notation before comparing<sup class="ref">[3][7]</sup></td></tr>
+      <tr><td>Simulate real processing from one fixed condition</td><td>Temperature, speed, and cavity geometry are all fixed — it is a comparative index, not a process simulation; real extrusion/injection shear rates are orders of magnitude higher</td><td>Line-side process validation, high-shear rheometry<sup class="ref">[3]</sup></td></tr>
+      <tr><td>Tell you why a batch differs</td><td>One number flags a difference but not its cause — molecular weight, gel, branching, mixing history, or aging could each produce it</td><td>Relaxation curve + structural analysis (SEC, gel content)<sup class="ref">[5][10][11]</sup></td></tr>
+      <tr><td>Guarantee finished-product performance from a passing ML</td><td>It measures the processability of unvulcanized rubber; strength, durability, and post-cure properties are outside its scope</td><td>Post-cure physical tests (tensile, hardness, etc.)</td></tr>
+    </table>
+    <p><strong>So what is it, exactly?</strong> An instrument for <strong>comparisons under fixed conditions</strong>: same rubber family, same notation, same conditions — ranking batches, tracking trends, guarding incoming material. That is its home ground. The limits in the table are not flaws; they are its scope. A need beyond the boundary is not a broken instrument — it is the wrong tool.<sup class="ref">[3]</sup></p>
+    <p>Capabilities and limits are now both on the table — so what about the three questions from the start?</p>
+  </div>
+
+  <h2 id="s8"><span class="lang-zh">八、那三個問題，現在有答案了嗎？</span><span class="lang-en">8. Those three questions — do they have answers now?</span></h2>
+
+  <div class="lang-zh">
+    <div class="case hook">
+      <p class="s">新一批膠到貨，等著進混煉。進料檢驗打下去——ML 測出 72，規格寫的是 50±5。倉庫在等、產線也在等。</p>
+      <p class="q">這批收還是不收？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>先別收，也先別退。</strong>先核對量測條件——轉子、溫度、時間、試片製備，跟規格寫法一致嗎？條件一致、值仍超規，就退貨或協議放行；放行的話同步告訴產線「這批偏硬」，塑煉時間得拉長，後面混煉、押出才不會出問題。</p></div></div>
+    </div>
+    <div class="case hook">
+      <p class="s">產線反映：「昨天那批料特別難做，押出來尺寸一直跑。」品保翻進料檢驗紀錄——同牌號、ML 全部在規格內、跟平常沒兩樣。</p>
+      <p class="q">現場說難做、數據說正常——哪裡出了問題？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>都沒錯——是數字量錯了面向。</strong>ML 只量「難不難推」，押出尺寸漂移看的是彈性記憶，ML 看不到。補做鬆弛測試：衰減慢的批彈性強、出模膨脹大，調口型間隙或降押速；並把鬆弛指數加進這類產品的進料檢驗——光靠 ML 擋不住這種問題。</p></div></div>
+    </div>
+    <div class="case hook">
+      <p class="s">資深師傅捏一把新到的膠，搖搖頭：「這批不一樣。」檢驗數據攤開來——合格。師傅說不上哪裡不對，數據也挑不出毛病。</p>
+      <p class="q">摸出來的判斷和量出來的數字，誰說的算？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>都說的算——只是量的面向不同。</strong>師傅摸到的多半是彈性那一面：抱不抱得住、回不回得來；ML 量到的是黏性那一面：好不好推。兩個都真實，只是一直沒有共同的單位——鬆弛指數，就是把那個手感變成數字的方法。</p></div></div>
+    </div>
+  </div>
+  <div class="lang-en">
+    <div class="case hook">
+      <p class="s">A new lot arrives, waiting to be mixed. The test comes back — ML 72 against a spec of 50±5. The warehouse is waiting; so is the line.</p>
+      <p class="q">Accept it or reject it?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>Don't accept it yet — and don't reject it yet either.</strong> First check the test conditions — rotor, temperature, timing, specimen preparation — against the spec notation. If the conditions match and the value is still over the limit, reject it or negotiate a conditional release. If released, tell the line "this lot is stiff" — mastication time goes up so downstream mixing and extrusion stay out of trouble.</p></div></div>
+    </div>
+    <div class="case hook">
+      <p class="s">Production reports yesterday's lot was unusually hard to run — extruded dimensions kept drifting. QA pulls the inspection records — same grade, every ML within spec, nothing unusual.</p>
+      <p class="q">The floor says it is hard to run; the data says it is normal — where is the problem?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>Both are right — the number was measuring the wrong dimension.</strong> ML only captures "how hard to push"; dimensional drift on extrusion is driven by elastic memory, which ML cannot see. Run a relaxation test: a slow-decaying lot is more elastic and swells more out of the die — adjust the die gap or line speed, and add the relaxation index to incoming inspection for this product family. ML alone cannot catch this.</p></div></div>
+    </div>
+    <div class="case hook">
+      <p class="s">A senior operator squeezes the new rubber and shakes his head: "This lot is different." The inspection data disagrees — it passed. He cannot say what is off, and the numbers show nothing wrong.</p>
+      <p class="q">A judgment made by hand, a number made by machine — which one counts?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>Both count — they are measuring different dimensions.</strong> What the operator feels is largely the elastic side: whether the band holds together, how fast it springs back. What ML measures is the viscous side: how hard it is to push. Both are real — they just never shared a unit. The relaxation index is what turns that feel into a number.</p></div></div>
+    </div>
+  </div>
+
+  <h2 id="app"><span class="lang-zh">附錄</span><span class="lang-en">Appendix</span></h2>
+
+  <div class="lang-zh">
+    <h3>A. 中英名詞對照</h3>
+    <table>
+      <tr><th>中文</th><th>English</th><th>說明</th></tr>
+      <tr><td>木尼粘度計</td><td>Mooney viscometer</td><td>亦作「門尼粘度計」；以發明者 Melvin Mooney 命名</td></tr>
+      <tr><td>木尼值 / 木尼單位</td><td>Mooney viscosity / Mooney unit (MU)</td><td>相對指標，非真粘度</td></tr>
+      <tr><td>轉子</td><td>rotor</td><td>大轉子 L（38.10 mm）/ 小轉子 S（30.48 mm）</td></tr>
+      <tr><td>模腔 / 模具</td><td>die cavity / dies</td><td>容納膠料的密閉腔體</td></tr>
+      <tr><td>扭矩</td><td>torque</td><td>轉動阻力，木尼值的原始量測量</td></tr>
+      <tr><td>焦燒 / 提前硫化</td><td>scorch / pre-vulcanization</td><td>膠料在加工中提前開始硫化</td></tr>
+      <tr><td>應力鬆弛</td><td>stress relaxation</td><td>停止變形後應力衰減的速率</td></tr>
+      <tr><td>生膠強度</td><td>green strength</td><td>未硫化膠的強度，與初期峰值相關</td></tr>
+      <tr><td>非牛頓流體</td><td>non-Newtonian fluid</td><td>粘度隨剪切速率改變的流體</td></tr>
+      <tr><td>觸變性</td><td>thixotropy</td><td>剪切越久粘度越低的性質</td></tr>
+      <tr><td>熔體破裂</td><td>melt fracture</td><td>超過臨界應力時材料內部撕裂而非流動</td></tr>
+      <tr><td>凝膠含量</td><td>gel content</td><td>膠中已交聯成網狀的部分</td></tr>
+      <tr><td>混煉膠</td><td>compound</td><td>已混入配方成分的膠料</td></tr>
+      <tr><td>無轉子流變儀</td><td>MDR (moving die rheometer)</td><td>量完整硫化曲線的儀器</td></tr>
+    </table>
+    <h3>B. 常見問答</h3>
+    <details class="mw-faq"><summary>Q：木尼值 50 算高還是低？</summary><p>A：看膠種與測試條件。一般混煉膠多在 40–70 之間，但不能跨膠種、跨條件直接比。</p></details>
+    <details class="mw-faq"><summary>Q：為什麼同一批膠今天測和上個月測不一樣？</summary><p>A：可能原因包括膠料老化（NR 老化會使木尼值上升<sup class="ref">[6]</sup>）、試片製備差異、機台狀況（轉子磨損會影響結果<sup class="ref">[3]</sup>）。先確認測試條件與試片製備一致再判斷。</p></details>
+    <details class="mw-faq"><summary>Q：木尼值合格的膠，做出來的產品就沒問題嗎？</summary><p>A：不是。木尼值只管加工性；產品強度、耐久等要看硫化後物性測試（拉力、硬度等）。</p></details>
+    <details class="mw-faq"><summary>Q：供應商報的 ML(1+4) 和我們測的不一樣，誰對？</summary><p>A：先核對雙方的測試條件寫法是否完全一致（轉子/溫度/時間）、試片製備方式、機台校正狀態，再談數據差異。跨機台比對是合理的第一步。</p></details>
+    <details class="mw-faq"><summary>Q：ML 低、衰減快的膠，是不是就一定比較好加工？</summary><p>A：要看「加工」指哪一段。押出成型時是的——衰減快的膠在模內就把應力散掉，出模膨脹小、尺寸穩。但開鏈機正好相反：包輥要求膠帶連續、不裂不垂，靠的是生膠強度與內聚力（彈性那一面）——黏性太強、彈性不足的膠反而容易散帶、黏輥、垂料。天然膠開鏈手感好，正因為它偏彈性主導。所以「黏」不等於「好加工」——押出有利、開鏈未必；預判包輥性要看初期峰值（Mooney peak），不是只看 ML。</p></details>
+    <h3>C. 參考文獻</h3>
+    <ol class="refs">
+      <li>[1]Wikipedia, "Mooney viscometer" — 發明者、發明年代與儀器原理概述. https://en.wikipedia.org/wiki/Mooney_viscometer</li>
+      <li>[2]ACE Laboratories, "What is a Mooney Viscometer?" — 三種測試的用途與實務定位. https://www.ace-laboratories.com/what-is-a-mooney-viscometer/</li>
+      <li>[3]ASTM D1646-04, <em>Standard Test Methods for Rubber—Viscosity, Stress Relaxation, and Pre-Vulcanization Characteristics (Mooney Viscometer)</em>, ASTM International, 2004. 本文件的標準主軸：定義（§3）、意義與用途（§5，含非真粘度註記、IIR 80 MU 上限例、鬆弛與分子結構相關性、打滑限制）、儀器規格（§6，轉子尺寸、閉模力 11.5 kN、溫控 ±0.5°C）、焦燒讀點（t5/t35）。</li>
+      <li>[4]TSE Industries, <em>Sample Preparation for Testing Mooney Viscosity of Millathane® Millable Polyurethanes</em>, 2020 — 試片滾壓製備、重量規範（ML 34±3 g）、冷卻回穩 30–60 min、MS(1+10) 寫法示例。</li>
+      <li>[5]J. Maláč, "Mooney Viscosity, Mooney Elasticity and Processability of Raw Natural Rubber", <em>Journal of Materials Science and Engineering with Advanced Technology</em>, 3(1), 67–87, 2011（期刊未指派 DOI）— Mooney peak 與 green strength、觸變性與讀值時間、冪次定律 M=k·tᵃ 與彈性指數 (a+1)。</li>
+      <li>[6]B. Cantaloube &amp; S. Cocard (Michelin), "Revisiting the Rheological Characterization of NR Using a Mooney Viscometer", <em>KGK Kautschuk Gummi Kunststoffe</em>, 57(4), 168–171, 2004（期刊未指派 DOI）— 可變速木尼儀實驗：NR 在 &lt;2 rpm 即進入熔體破裂、臨界轉速（GPA 0.2 / GPB 1.5 rpm）、低速量測建議、與 Wallace 可塑度無相關的解釋。</li>
+      <li>[7]ISO 289-1:2015, <em>Rubber, unvulcanized — Determinations using a shearing-disc viscometer — Part 1: Determination of Mooney viscosity</em>, 2015 — ASTM D1646 的 ISO 對應標準。</li>
+      <li>[8]MonTech, "Mooney Viscometer Curve Explained" — 曲線判讀與木尼單位換算教學. https://resource.montechusa.com/mooney-viscometer-curve-explained</li>
+      <li>[9]Qualitest, "Mooney Viscometer Explained: How It Works and Why You Need It" — 應用面補充. https://qualitest.ae/article/mooney-viscometer-explained/</li>
+      <li>[10]C. Kim, M.-H. Morel, J. Sainte Beuve, S. Guilbert &amp; F. Bonfils, "Better Characterization of Raw Natural Rubber by Decreasing the Rotor Speed of Mooney Viscometer: Role of Macromolecular Structure", <em>Polymer Engineering and Science</em>, 50(2), 240–248, 2010 — 變速木尼（MVS）：VR2 對應 Mn、VR0.05 對應 Mw；工業 TSR5CV60 同 VR2 但 VR0.05 差 35%。DOI: 10.1002/pen.21525</li>
+      <li>[11]E. Ehabe, F. Bonfils, C. Aymard, A.K. Akinlabi &amp; J. Sainte Beuve, "Modelling of Mooney Viscosity Relaxation in Natural Rubber", <em>Polymer Testing</em>, 24(5), 620–627, 2005 — 鬆弛建模四模型比較：三指數 Maxwell 最優、Wu–Abbott 次之、冪次定律第三；tm 與總凝膠含量相關。DOI: 10.1016/j.polymertesting.2005.03.006</li>
+    </ol>
+  </div>
+  <div class="lang-en">
+    <h3>A. Glossary (Chinese–English)</h3>
+    <table>
+      <tr><th>中文</th><th>English</th><th>Note</th></tr>
+      <tr><td>木尼粘度計</td><td>Mooney viscometer</td><td>Also written 門尼粘度計; named after inventor Melvin Mooney</td></tr>
+      <tr><td>木尼值 / 木尼單位</td><td>Mooney viscosity / Mooney unit (MU)</td><td>A relative index, not a true viscosity</td></tr>
+      <tr><td>轉子</td><td>rotor</td><td>Large L (38.10 mm) / small S (30.48 mm)</td></tr>
+      <tr><td>模腔 / 模具</td><td>die cavity / dies</td><td>Sealed chamber holding the specimen</td></tr>
+      <tr><td>扭矩</td><td>torque</td><td>Rotational resistance; the raw measured quantity</td></tr>
+      <tr><td>焦燒 / 提前硫化</td><td>scorch / pre-vulcanization</td><td>Premature onset of curing during processing</td></tr>
+      <tr><td>應力鬆弛</td><td>stress relaxation</td><td>Rate of stress decay after deformation stops</td></tr>
+      <tr><td>生膠強度</td><td>green strength</td><td>Strength of uncured rubber; related to the initial peak</td></tr>
+      <tr><td>非牛頓流體</td><td>non-Newtonian fluid</td><td>Fluid whose viscosity varies with shear rate</td></tr>
+      <tr><td>觸變性</td><td>thixotropy</td><td>Property of viscosity dropping under sustained shear</td></tr>
+      <tr><td>熔體破裂</td><td>melt fracture</td><td>Internal tearing instead of flow beyond a critical stress</td></tr>
+      <tr><td>凝膠含量</td><td>gel content</td><td>The already-crosslinked fraction of the rubber</td></tr>
+      <tr><td>混煉膠</td><td>compound</td><td>Rubber already mixed with formulation ingredients</td></tr>
+      <tr><td>無轉子流變儀</td><td>MDR (moving die rheometer)</td><td>Instrument for full vulcanization curves</td></tr>
+    </table>
+    <h3>B. FAQ</h3>
+    <details class="mw-faq"><summary>Q: Is a Mooney value of 50 high or low?</summary><p>A: Depends on the rubber and the test conditions. Most compounds fall between 40–70, but values are not comparable across rubber types or test conditions.</p></details>
+    <details class="mw-faq"><summary>Q: Why does the same batch read differently this month vs. last month?</summary><p>A: Possible causes include rubber aging (aging raises NR's Mooney value<sup class="ref">[6]</sup>), specimen preparation differences, and instrument condition (rotor wear affects results<sup class="ref">[3]</sup>). Verify identical test conditions and specimen prep before judging the data.</p></details>
+    <details class="mw-faq"><summary>Q: If the Mooney value passes, is the product fine?</summary><p>A: Not necessarily. Mooney only covers processability; product strength and durability require post-cure physical tests (tensile, hardness, etc.).</p></details>
+    <details class="mw-faq"><summary>Q: The supplier's ML(1+4) differs from ours — who is right?</summary><p>A: First verify both sides used identical notation (rotor/temperature/time), specimen preparation, and calibration status before comparing numbers. Cross-machine comparison is a reasonable first step.</p></details>
+    <details class="mw-faq"><summary>Q: Does a low ML, fast-relaxing rubber always process better?</summary><p>A: Depends which step "processing" means. For extrusion, yes — a fast-relaxing rubber sheds stress inside the die, so die swell stays small and dimensions hold. On an open mill it is the opposite: banding on the rolls needs green strength and cohesion (the elastic side), so an overly viscous rubber tends to crumble, stick, or sag. Natural rubber mills beautifully precisely because it is elastic-dominated. "Viscous" does not equal "easy to process" — good for extrusion, not necessarily for milling. Mill banding is better predicted by the initial Mooney peak than by ML alone.</p></details>
+    <h3>C. References</h3>
+    <ol class="refs">
+      <li>[1]Wikipedia, "Mooney viscometer" — inventor, era, and instrument principle. https://en.wikipedia.org/wiki/Mooney_viscometer</li>
+      <li>[2]ACE Laboratories, "What is a Mooney Viscometer?" — purposes and practical roles of the three tests. https://www.ace-laboratories.com/what-is-a-mooney-viscometer/</li>
+      <li>[3]ASTM D1646-04, <em>Standard Test Methods for Rubber—Viscosity, Stress Relaxation, and Pre-Vulcanization Characteristics (Mooney Viscometer)</em>, ASTM International, 2004. Primary standard for this document: definitions (§3), significance and use (§5: not-a-true-viscosity note, IIR ~80 MU plateau, relaxation–structure correlation, slippage limit), apparatus (§6: rotor dimensions, 11.5 kN closure, ±0.5°C), scorch read points (t5/t35).</li>
+      <li>[4]TSE Industries, <em>Sample Preparation for Testing Mooney Viscosity of Millathane® Millable Polyurethanes</em>, 2020 — milling preparation, specimen mass (ML 34±3 g), 30–60 min rest, MS(1+10) notation example.</li>
+      <li>[5]J. Maláč, "Mooney Viscosity, Mooney Elasticity and Processability of Raw Natural Rubber", <em>Journal of Materials Science and Engineering with Advanced Technology</em>, 3(1), 67–87, 2011 (no DOI assigned by the journal) — Mooney peak and green strength, thixotropy and reading time, power law M=k·tᵃ and the (a+1) elasticity index.</li>
+      <li>[6]B. Cantaloube &amp; S. Cocard (Michelin), "Revisiting the Rheological Characterization of NR Using a Mooney Viscometer", <em>KGK Kautschuk Gummi Kunststoffe</em>, 57(4), 168–171, 2004 (no DOI assigned by the journal) — variable-speed experiments: NR enters melt fracture below 2 rpm, critical speeds (GPA 0.2 / GPB 1.5 rpm), low-speed recommendation, explanation for missing Wallace-plasticity correlation.</li>
+      <li>[7]ISO 289-1:2015, <em>Rubber, unvulcanized — Determinations using a shearing-disc viscometer — Part 1: Determination of Mooney viscosity</em>, 2015 — the ISO counterpart of ASTM D1646.</li>
+      <li>[8]MonTech, "Mooney Viscometer Curve Explained" — curve reading and Mooney-unit conversion tutorial. https://resource.montechusa.com/mooney-viscometer-curve-explained</li>
+      <li>[9]Qualitest, "Mooney Viscometer Explained: How It Works and Why You Need It" — application-level supplement. https://qualitest.ae/article/mooney-viscometer-explained/</li>
+      <li>[10]C. Kim, M.-H. Morel, J. Sainte Beuve, S. Guilbert &amp; F. Bonfils, "Better Characterization of Raw Natural Rubber by Decreasing the Rotor Speed of Mooney Viscometer: Role of Macromolecular Structure", <em>Polymer Engineering and Science</em>, 50(2), 240–248, 2010 — variable-speed Mooney (MVS): VR2 ↔ Mn, VR0.05 ↔ Mw; industrial TSR5CV60 with equal VR2 differed 35% at VR0.05. DOI: 10.1002/pen.21525</li>
+      <li>[11]E. Ehabe, F. Bonfils, C. Aymard, A.K. Akinlabi &amp; J. Sainte Beuve, "Modelling of Mooney Viscosity Relaxation in Natural Rubber", <em>Polymer Testing</em>, 24(5), 620–627, 2005 — four relaxation models compared: tri-exponential Maxwell best, Wu–Abbott second, power law third; tm correlates with total gel content. DOI: 10.1016/j.polymertesting.2005.03.006</li>
+    </ol>
+  </div>
+
+  <div class="deep">
+    <h2 id="deep"><span class="lang-zh">深入專案討論</span><span class="lang-en">Deep Project Discussions</span></h2>
+
+    <div class="lang-zh">
+      <p>前面一路給的是「怎麼讀數字」——這一區收的是「這些讀法從哪裡來、還能走到哪裡」。以下四份是<strong>各自完整的專題文件</strong>：每份延伸本文的一段、對應一篇關鍵文獻，有獨立的標題、前言、數據、圖表與邊界討論，任何一份都可以單獨從頭讀完。文獻引用走本區自己的延伸文獻表（[E1]–[E6]，收在區塊最後），與主文文獻分開編號；每份專題也各自有獨立的 PDF。</p>
+      <table>
+        <tr><th>專題</th><th>延伸自本文</th><th>回答的核心問題</th><th>關鍵文獻</th></tr>
+        <tr><td><a href="#topic-a">彈性指數 (a+1)</a></td><td>停轉之後的鬆弛曲線</td><td>鬆弛指數 a 是負數又反向——(a+1) 這個彈性讀法是怎麼來的？</td><td>Maláč 2011 [E1]</td></tr>
+        <tr><td><a href="#topic-b">熔體破裂</a></td><td>三種測試・能力邊界清單</td><td>標準規定 2 rpm——天然膠在這個轉速下量到的還是粘度嗎？</td><td>Cantaloube &amp; Cocard 2004 [E2]</td></tr>
+        <tr><td><a href="#topic-c">變速木尼（MVS）</a></td><td>能力邊界清單（固定條件之限）</td><td>換不同轉速量，各段讀值分別對應分子結構的哪一部分？</td><td>Kim et al. 2010 [E3]</td></tr>
+        <tr><td><a href="#topic-d">鬆弛模型比較</a></td><td>冪次定律擬合段</td><td>冪次定律只是四個模型之一——換個模型，鬆弛曲線會說出什麼？</td><td>Ehabe et al. 2005 [E4]</td></tr>
+      </table>
+      <p><strong>建議讀法：</strong>品保與進料檢驗先讀〈彈性指數〉與〈熔體破裂〉——一個講指標怎麼讀出彈性，一個講標準量測在哪裡會失真；做配方與製程的加讀〈變速木尼〉——同規格膠的結構差異用雙點量測才攔得到；做研究或數據分析的看〈鬆弛模型比較〉——模型選擇決定鬆弛曲線能挖到多深。四份彼此有交叉引用，但順序不拘。</p>
+      <p class="topicnav"><a href="#topic-a">彈性指數</a><a href="#topic-b">熔體破裂</a><a href="#topic-c">變速木尼</a><a href="#topic-d">鬆弛模型</a><a href="#deeprefs">延伸文獻</a></p>
+    </div>
+    <div class="lang-en">
+      <p>The main text covered how to read the numbers — this section collects where those readings come from and how much further they go. Below are <strong>four complete topic documents</strong>: each extends one passage of the main text, is built on one key paper, and carries its own title, introduction, data, figures, and boundary discussion — any one of them reads standalone from beginning to end. Citations use this section's own reference list ([E1]–[E6], collected at the end), numbered independently of the main text; each topic also ships as its own PDF.</p>
+      <table>
+        <tr><th>Topic</th><th>Extends</th><th>Core question</th><th>Key paper</th></tr>
+        <tr><td><a href="#topic-a">Elasticity index (a+1)</a></td><td>the relaxation-curve section</td><td>Exponent a is negative and reads backwards — where does the elastic reading (a+1) come from?</td><td>Maláč 2011 [E1]</td></tr>
+        <tr><td><a href="#topic-b">Melt fracture</a></td><td>the three tests · the limits list</td><td>The standard says 2 rpm — is the NR reading at that speed still viscosity?</td><td>Cantaloube &amp; Cocard 2004 [E2]</td></tr>
+        <tr><td><a href="#topic-c">Variable-speed Mooney (MVS)</a></td><td>the limits list (fixed-condition entry)</td><td>Measured at different speeds, which part of the molecular structure does each reading see?</td><td>Kim et al. 2010 [E3]</td></tr>
+        <tr><td><a href="#topic-d">Relaxation-model comparison</a></td><td>the power-law fitting section</td><td>The power law is only one of four models — what does the curve say under another?</td><td>Ehabe et al. 2005 [E4]</td></tr>
+      </table>
+      <p><strong>Suggested paths:</strong> for QA and incoming inspection, start with the elasticity index and melt fracture — one reads elasticity out of the index, the other shows where the standard measurement distorts; for compounding and processing, add variable-speed Mooney — structural differences inside spec are only caught by two-point measurement; for research and data analysis, read the model comparison — the model choice sets how deep the relaxation curve can be mined. The four cross-reference each other, but any order works.</p>
+      <p class="topicnav"><a href="#topic-a">Elasticity index</a><a href="#topic-b">Melt fracture</a><a href="#topic-c">Variable speed</a><a href="#topic-d">Model comparison</a><a href="#deeprefs">References</a></p>
+    </div>
+
+    <!-- ==================== 彈性指數 ==================== -->
+    <div class="topic topic-a" id="topic-a">
+      <div class="lang-zh">
+        <h3>「彈性指數 (a+1)」是怎麼來的？<span class="tag">Maláč 2011</span></h3>
+        <p class="topicmeta">本篇延伸本文「停轉之後，曲線還在說話」的冪次定律段——那裡建立了 M = k·t<sup>a</sup> 與鬆弛指數 a 的讀法；這裡往下追一層：a 怎麼變成一個好用的彈性指標。</p>
+        <p class="q">鬆弛指數 a 量出來一直是負數——拿負數當日常指標，哪裡不好用？</p>
+        <p class="q">把 a 加 1 變成 (a+1)，是為了讓數字好看，還是真的有物理意義？</p>
+        <p class="q">k 跟 a 都是同一條曲線擬合出來的——為什麼 k 不能當彈性指標？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>這篇要解決的問題很實務：</strong>ML 相同的兩批天然膠，進了混煉或押出仍可能表現不同——因為「好不好加工」除了黏的那一半，還有彈的那一半，而 ML 只說了前一半。木尼測試跑完，機器吐出的不只是一個 ML——還有初始峰值扭矩、整條鬆弛曲線。這些數據裡哪些是獨立情報、哪些只是換個方式把粘度再說一遍？Maláč 用文獻中量測的 18 個天然膠品級（NAT 10 系列、SMR L 等）逐一檢查：每個品級有 ML(1+4)100°C 與初始峰值扭矩，鬆弛段照 ASTM 框架用冪次定律 M = k·t<sup>a</sup> 擬合取 k 與 a，各品級擬合相關係數約 0.998–0.999（原文 Table 1）。<sup class="ref">[E1]</sup></p></div></div>
+        <figure>
+          <div class="mw" data-mw="a-curve" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-typical-curve.svg" alt="一條實測木尼曲線：預熱後衝上 ~140 MU 初始峰、衰減到 ~91 MU 的 ML 平穩段、第 5 分鐘停轉後鬆弛衰減到 ~18">
+          <figcaption>一條實測木尼曲線的全貌（原文 Fig. 1 數位化描取重繪）：1 分鐘預熱段扭矩近零，轉子啟動瞬間衝上 ~140 MU 的應力過衝峰、衰減到第 4 分鐘的 ML(1+4) 平穩值 ~91，第 5 分鐘停轉後扭矩進入鬆弛衰減段。本篇所有參數（峰、ML、k、a）都從這一條曲線上讀出。<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <p><strong>先排除 k。</strong>k 是「轉子停後第 1 秒的扭矩」，聽起來像個強度指標——但把 18 個品級的 k 對各自的 ML 作圖，幾乎落在一條直線上：k = 0.9312·ML − 15.53，R² = 0.9821（原文 Fig. 6）。k 帶的資訊跟粘度幾乎完全重疊，拿它當彈性指標是誤用，它只是用鬆弛段把粘度再說一遍。<sup class="ref">[E1]</sup></p>
+        <p><strong>a 帶的才是獨立資訊。</strong>同樣作圖，a 對 ML 卻是散開的：R² 只有 0.2931（原文 Fig. 8）——a 跟粘度基本無關，它帶的正是 ML 看不到的那一面。18 個品級的實測 a 全部是負值，落在約 −0.20 到 −0.38 之間。問題在讀法：a 越負代表衰減越快、黏性越強——「越負越不彈」是反向又帶負號的讀法，當日常判定指標很彆扭。<sup class="ref">[E1]</sup></p>
+        <figure>
+          <div class="mw" data-mw="a-params" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-params.svg" alt="18 品級實測：初始扭矩對 ML、k 對 ML、a 對 ML 三幅散點與回歸線">
+          <figcaption>18 品級實測數據（原文 Table 1 原值重繪）：左——初始扭矩峰對 ML，相關弱（R² = 0.238）；中——k 對 ML 幾乎共線（R² = 0.982，原文 Fig. 6）；右——a 對 ML 散開（R² = 0.293，原文 Fig. 8）。三幅一起回答「哪個參數帶獨立資訊」：k 是粘度的複述，a 才是新情報。<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="a-bars" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-profiles.svg" alt="六格圖：18 品級各自的初始扭矩峰、ML、k、a、k/(a+1) 排序長條圖，與 k/(a+1) 對 ML 散點">
+          <figcaption>各參數的品級分布全覽（原文 Table 1 原值重繪，對應原文 Fig. 2/3/5/7/9/10）：五幅長條圖分別是 18 品級的初始扭矩峰、ML、k、a 與 k/(a+1)（按值排序、橫軸為品級名）；右下——k/(a+1) 對 ML 散點，R² = 0.884，與原文「近似線性但非嚴格」的描述一致。五個參數的品級排序互不相同的程度，比單看相關係數更直觀。<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <p><strong>Maláč 的處理是把問題從扭矩面搬到能量面。</strong>轉子轉動時功率 P = ω·M、單位時間耗能 dE = P·dt；轉子一停，黏性貢獻的扭矩立刻消失，剩下來自彈性、隨時間衰減的部分。他假設彈性儲能的釋放速率正比於當下扭矩：dEs ~ M·dt = k·t<sup>a</sup>·dt，兩邊積分得 Es ~ k/(a+1)·t<sup>(a+1)</sup>——儲能項上的指數是 (a+1)，不是 a。這就是 (a+1) 的由來：不是為了把負數弄正，而是「彈性儲能隨時間的保持率」的指數（推導見原文 Eq. 8）。<sup class="ref">[E1]</sup></p>
+        <figure>
+          <div class="mw" data-mw="a-energy" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-energy-index.svg" alt="同 k 不同 a 的扭矩衰減與對應儲能釋放曲線">
+          <figcaption>左：log–log 圖上同 k、不同 a 的兩條扭矩衰減線；右：對應的累積儲能釋放曲線 Es ∝ t<sup>(a+1)</sup>/(a+1)——(a+1) 越大，儲能釋放越持久（彈性越強），虛線 t¹ 即理論上限 (a+1)=1。本篇依 Maláč Eq. 8 推導自繪的說明圖（原文無此圖）。<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <p><strong>有意思的一點：(a+1) 這個結構本來就在 ASTM 裡。</strong>D1646 §12.3.3 算鬆弛曲線下面積的公式 A = k/(a+1)·[t<sub>f</sub><sup>(a+1)</sup> − t<sub>o</sub><sup>(a+1)</sup>]（Eq 4）就是同一個積分，報告項也把 a、k、相關係數 r 與面積 A 都列入（§13.1.3）——但 ASTM 只把它當計算面積的中間項；把 (a+1) 單獨取出來命名為「木尼彈性」（Mooney elasticity）當獨立指標，是 Maláč 的詮釋。標準 NOTE 11 的範例正好可以套：k = 48.0、a = −0.5805，對應 (a+1) ≈ 0.42——偏黏的一端。<sup class="ref">[E5][E1]</sup></p>
+        <table>
+          <tr><th>a</th><th>(a+1)</th><th>讀法</th></tr>
+          <tr><td>−0.20</td><td>0.80</td><td>18 品級實測最彈的一端</td></tr>
+          <tr><td>−0.38</td><td>0.62</td><td>實測最黏的一端</td></tr>
+          <tr><td>−0.58</td><td>0.42</td><td>ASTM NOTE 11 範例值</td></tr>
+          <tr><td>0（假想）</td><td>1</td><td>理論上限：儲能完全不衰減</td></tr>
+        </table>
+        <p><strong>讀法因而直覺：</strong>(a+1) 恆為正值、越高越彈，18 個品級實測落在約 0.62–0.80——都在中上段，符合天然膠彈性偏強的常識（原文 Fig. 11）。附帶產物是 k/(a+1)：黏性耗能對彈性儲能的比值，角色類似動態力學測試裡的損耗因子 tan δ——Maláč 自己註明這只是候選對應、尚非已證實的等同。<sup class="ref">[E1]</sup></p>
+        <figure>
+          <div class="mw" data-mw="a-grades" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-grades.svg" alt="18 個品級的 (a+1) 排序長條圖，全部落在 0.62–0.80">
+          <figcaption>18 個品級的 (a+1) 實測值排序（原文 Table 1 原值重繪，對應原文 Fig. 11；Fig. 9/10 的 k/(a+1) 數據見上方六格圖）：全部落在 0.62–0.80 之間，離理論上限 1 都還有距離——天然膠彈性偏強、但沒有一個品級接近「純彈」。<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>品級</th><th>初始扭矩峰</th><th>ML</th><th>a</th><th>k</th><th>(a+1)</th></tr>
+          <tr><td>SVR 10, 1144</td><td>120.7</td><td>96.1</td><td>−0.211</td><td>74.5</td><td>0.79</td></tr>
+          <tr><td>NAT 10, 1045</td><td>123.4</td><td>94.8</td><td>−0.226</td><td>72.2</td><td>0.77</td></tr>
+          <tr><td>NAT 10, 1042</td><td>131.3</td><td>91.6</td><td>−0.248</td><td>70.3</td><td>0.75</td></tr>
+          <tr><td>NAT 10, 1046</td><td>143.6</td><td>94.0</td><td>−0.238</td><td>73.0</td><td>0.76</td></tr>
+          <tr><td>SMR L</td><td>108.4</td><td>64.8</td><td>−0.247</td><td>40.9</td><td>0.75</td></tr>
+          <tr><td>PAKRUB 10, 1022</td><td>132.0</td><td>97.3</td><td>−0.216</td><td>75.5</td><td>0.78</td></tr>
+          <tr><td>PAKRUB 10, 1025</td><td>122.7</td><td>94.6</td><td>−0.232</td><td>71.7</td><td>0.77</td></tr>
+          <tr><td>PAKRUB 10, 1024</td><td>128.5</td><td>96.8</td><td>−0.218</td><td>73.9</td><td>0.78</td></tr>
+          <tr><td>NR SVR 10</td><td>62.2</td><td>58.0</td><td>−0.251</td><td>42.0</td><td>0.75</td></tr>
+          <tr><td>NR SVR 3L</td><td>179.0</td><td>97.5</td><td>−0.201</td><td>76.5</td><td>0.80</td></tr>
+          <tr><td>NR PANRUB 5L</td><td>198.7</td><td>83.9</td><td>−0.254</td><td>63.2</td><td>0.75</td></tr>
+          <tr><td>NR SVR CV 60</td><td>105.3</td><td>62.6</td><td>−0.377</td><td>44.5</td><td>0.62</td></tr>
+          <tr><td>PANRUB 5 CV 60</td><td>130.3</td><td>72.2</td><td>−0.291</td><td>52.5</td><td>0.71</td></tr>
+          <tr><td>SVR 10, 1383</td><td>113.2</td><td>97.4</td><td>−0.250</td><td>75.1</td><td>0.75</td></tr>
+          <tr><td>NAT 10, 20</td><td>103.3</td><td>85.8</td><td>−0.311</td><td>65.3</td><td>0.69</td></tr>
+          <tr><td>NAT 10, 22</td><td>88.2</td><td>78.2</td><td>−0.316</td><td>56.4</td><td>0.68</td></tr>
+          <tr><td>SVR 3L, 1100</td><td>137.5</td><td>81.5</td><td>−0.239</td><td>58.7</td><td>0.76</td></tr>
+          <tr><td>SVR CV 60, 31</td><td>118.5</td><td>71.6</td><td>−0.214</td><td>48.4</td><td>0.79</td></tr>
+        </table>
+        <p class="src">原文 Table 1 原值（扭矩單位 MU；各列冪次擬合相關係數 R ≈ −0.998~−0.999）；(a+1) 欄為依 a 值計算。<sup class="ref">[E1]</sup></p>
+        <p><strong>邊界也要說清楚：</strong>(a+1) 建立在「儲能釋放率 ∝ 扭矩」這個經驗假設上，且只在天然膠品級上驗證；外推到合成膠或配方膠需要各自重新驗證。另外〈鬆弛模型比較〉一篇會看到，冪次定律在 Ehabe 的模型比較裡擬合度排倒數——但那是「曲線擬合品質」的問題；(a+1) 作為單一、跨廠可比的指標，在 ASTM 框架內仍然成立。兩件事不衝突：要擬合得漂亮，換模型；要一指標比對批次，(a+1) 的讀法依然實用。<sup class="ref">[E1][E4]</sup></p>
+        <p class="src">本篇文獻：Maláč 2011 [E1]——原文 Fig. 1–11 與 Table 1 全數收錄於本篇（Fig. 1 為數位化描取的忠實重繪；Fig. 2/3/5/7/9/10 見六格圖；Fig. 4/6/8 見三幅散點；Fig. 11 見排序長條圖；推導見 Eq. 8）；ASTM 面積公式與報告項見 D1646 §12.3.3、§13.1.3 [E5]。</p>
+        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
+      </div>
+      <div class="lang-en">
+        <h3>Where does the elasticity index (a+1) come from? <span class="tag">Maláč 2011</span></h3>
+        <p class="topicmeta">This piece extends the main text's power-law section — where M = k·t<sup>a</sup> and the relaxation exponent a were established. Here we go one layer down: how a becomes a usable elasticity index.</p>
+        <p class="q">The measured relaxation exponent a is always negative — what goes wrong when a routine index is a negative number?</p>
+        <p class="q">Does adding 1 to get (a+1) just make the number prettier, or does it carry physical meaning?</p>
+        <p class="q">k and a come from the same fitted curve — why can't k serve as the elasticity index?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>The problem this paper solves is practical:</strong> two NR batches with the same ML can still behave differently in mixing or extrusion — "processability" has a viscous half and an elastic half, and ML only reports the first. A finished Mooney run yields more than one ML — there is the initial torque peak and the whole relaxation curve. Which of these carry independent information, and which merely restate viscosity? Maláč checked parameter by parameter on 18 raw natural rubber grades from the literature (NAT 10 series, SMR L, etc.): each grade has ML(1+4)100°C and the initial torque peak, and the relaxation portion is fitted per the ASTM framework by the power law M = k·t<sup>a</sup>, giving k and a with correlation coefficients around 0.998–0.999 (the paper's Table 1).<sup class="ref">[E1]</sup></p></div></div>
+        <figure>
+          <div class="mw" data-mw="a-curve" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-typical-curve.svg" alt="A measured Mooney curve: ~140 MU initial peak after preheat, decay to ~91 MU plateau, relaxation to ~18 after the rotor stops">
+          <figcaption>A measured Mooney curve in full (digitized trace of Fig. 1): torque sits near zero through the 1-minute preheat, spikes to a ~140 MU stress overshoot at rotor start, decays to the ML(1+4) plateau ~91 by minute 4, then enters relaxation decay once the rotor stops at minute 5. Every parameter in this piece (peak, ML, k, a) is read off this one curve.<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <p><strong>Rule out k first.</strong> k is "the torque 1 second after the rotor stops" — it sounds like a strength index. But plotting the 18 grades' k against their ML lands almost on one line: k = 0.9312·ML − 15.53, R² = 0.9821 (Fig. 6). What k carries overlaps almost completely with viscosity — using it as an elasticity index is a misuse; it just restates viscosity from the relaxation segment.<sup class="ref">[E1]</sup></p>
+        <p><strong>a carries the independent information.</strong> The same plot for a is scattered: R² only 0.2931 (Fig. 8) — a is essentially uncorrelated with viscosity, carrying exactly the side ML cannot see. The measured a values are all negative, roughly −0.20 to −0.38. The problem is the reading direction: the more negative a is, the faster the decay and the more viscous the rubber — "more negative means less elastic" is an inverted, signed reading, awkward as a routine index.<sup class="ref">[E1]</sup></p>
+        <figure>
+          <div class="mw" data-mw="a-params" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-params.svg" alt="Measured data for 18 grades: initial torque vs ML, k vs ML, a vs ML">
+          <figcaption>Measured data for the 18 grades (reproduced from the paper's Table 1): left — initial torque peak vs ML, weakly correlated (R² = 0.238); center — k vs ML, nearly collinear (R² = 0.982, Fig. 6); right — a vs ML, scattered (R² = 0.293, Fig. 8). Together the three panels answer "which parameter carries independent information": k restates viscosity; a is the new signal.<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="a-bars" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-profiles.svg" alt="Six panels: ranked per-grade bars for initial torque, ML, k, a, k/(a+1), plus k/(a+1) vs ML scatter">
+          <figcaption>The full parameter profile across grades (reproduced from Table 1 values, covering the paper's Figs. 2/3/5/7/9/10): five ranked bar charts show each grade's initial torque peak, ML, k, a, and k/(a+1); bottom right — k/(a+1) vs ML scatter, R² = 0.884, consistent with the paper's "roughly linear, not strict" description. Seeing all six together, how differently the five parameters rank the same grades is clearer than any single correlation coefficient.<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <p><strong>Maláč's move was to shift the question from torque to energy.</strong> While the rotor turns, power P = ω·M and energy per unit time dE = P·dt; the instant the rotor stops, the viscous part of torque vanishes and what remains is the elastic part, decaying over time. He assumed the release rate of elastically stored energy is proportional to the torque itself: dEs ~ M·dt = k·t<sup>a</sup>·dt, which integrates to Es ~ k/(a+1)·t<sup>(a+1)</sup> — the exponent on the stored-energy term is (a+1), not a. That is the origin of (a+1): not a cosmetic fix for a negative number, but the exponent of how much elastic energy the material retains over time (the paper's Eq. 8).<sup class="ref">[E1]</sup></p>
+        <figure>
+          <div class="mw" data-mw="a-energy" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-energy-index.svg" alt="Torque decay for two a values and the corresponding stored-energy release curves">
+          <figcaption>Left: two torque decays on log–log axes, same k, different a. Right: the corresponding cumulative stored-energy release Es ∝ t<sup>(a+1)</sup>/(a+1) — larger (a+1) means longer-sustained release (stronger elasticity); the dashed t¹ line is the theoretical maximum (a+1)=1. Explanatory figure drawn from the Maláč Eq. 8 derivation (no such figure in the paper).<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <p><strong>An interesting point: the (a+1) structure was already inside ASTM.</strong> D1646 §12.3.3 computes the area under the relaxation curve as A = k/(a+1)·[t<sub>f</sub><sup>(a+1)</sup> − t<sub>o</sub><sup>(a+1)</sup>] (Eq 4) — the same integral — and the report items list a, k, r, and A (§13.1.3). But ASTM treats it only as an intermediate term for area; pulling (a+1) out as a standalone "Mooney elasticity" index is Maláč's interpretation. The standard's own NOTE 11 example fits nicely: k = 48.0, a = −0.5805, giving (a+1) ≈ 0.42 — the more viscous end.<sup class="ref">[E5][E1]</sup></p>
+        <table>
+          <tr><th>a</th><th>(a+1)</th><th>Reading</th></tr>
+          <tr><td>−0.20</td><td>0.80</td><td>Most elastic end among the 18 measured grades</td></tr>
+          <tr><td>−0.38</td><td>0.62</td><td>Most viscous end measured</td></tr>
+          <tr><td>−0.58</td><td>0.42</td><td>ASTM NOTE 11 example value</td></tr>
+          <tr><td>0 (hypothetical)</td><td>1</td><td>Theoretical maximum: stored energy never decays</td></tr>
+        </table>
+        <p><strong>The reading becomes intuitive:</strong> (a+1) is always positive, higher means more elastic; the 18 grades land around 0.62–0.80 — the upper-middle range, consistent with NR's elastic character (the paper's Fig. 11). A by-product is k/(a+1), the ratio of viscous dissipation to elastic storage, playing a role similar to the loss factor tan δ in dynamic mechanical testing — Maláč himself notes it is only a candidate correspondence, not a proven equivalence.<sup class="ref">[E1]</sup></p>
+        <figure>
+          <div class="mw" data-mw="a-grades" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-a-grades.svg" alt="Ranked bar chart of (a+1) across the 18 grades, all between 0.62 and 0.80">
+          <figcaption>Ranked measured (a+1) for the 18 grades (Table 1 values; corresponding to the paper's Fig. 11 — the Fig. 9/10 k/(a+1) data sits in the six-panel figure above): everything falls between 0.62 and 0.80, still far from the theoretical maximum of 1 — NR is elastic-leaning, but no grade approaches "purely elastic".<sup class="ref">[E1]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>Grade</th><th>Initial torque</th><th>ML</th><th>a</th><th>k</th><th>(a+1)</th></tr>
+          <tr><td>SVR 10, 1144</td><td>120.7</td><td>96.1</td><td>−0.211</td><td>74.5</td><td>0.79</td></tr>
+          <tr><td>NAT 10, 1045</td><td>123.4</td><td>94.8</td><td>−0.226</td><td>72.2</td><td>0.77</td></tr>
+          <tr><td>NAT 10, 1042</td><td>131.3</td><td>91.6</td><td>−0.248</td><td>70.3</td><td>0.75</td></tr>
+          <tr><td>NAT 10, 1046</td><td>143.6</td><td>94.0</td><td>−0.238</td><td>73.0</td><td>0.76</td></tr>
+          <tr><td>SMR L</td><td>108.4</td><td>64.8</td><td>−0.247</td><td>40.9</td><td>0.75</td></tr>
+          <tr><td>PAKRUB 10, 1022</td><td>132.0</td><td>97.3</td><td>−0.216</td><td>75.5</td><td>0.78</td></tr>
+          <tr><td>PAKRUB 10, 1025</td><td>122.7</td><td>94.6</td><td>−0.232</td><td>71.7</td><td>0.77</td></tr>
+          <tr><td>PAKRUB 10, 1024</td><td>128.5</td><td>96.8</td><td>−0.218</td><td>73.9</td><td>0.78</td></tr>
+          <tr><td>NR SVR 10</td><td>62.2</td><td>58.0</td><td>−0.251</td><td>42.0</td><td>0.75</td></tr>
+          <tr><td>NR SVR 3L</td><td>179.0</td><td>97.5</td><td>−0.201</td><td>76.5</td><td>0.80</td></tr>
+          <tr><td>NR PANRUB 5L</td><td>198.7</td><td>83.9</td><td>−0.254</td><td>63.2</td><td>0.75</td></tr>
+          <tr><td>NR SVR CV 60</td><td>105.3</td><td>62.6</td><td>−0.377</td><td>44.5</td><td>0.62</td></tr>
+          <tr><td>PANRUB 5 CV 60</td><td>130.3</td><td>72.2</td><td>−0.291</td><td>52.5</td><td>0.71</td></tr>
+          <tr><td>SVR 10, 1383</td><td>113.2</td><td>97.4</td><td>−0.250</td><td>75.1</td><td>0.75</td></tr>
+          <tr><td>NAT 10, 20</td><td>103.3</td><td>85.8</td><td>−0.311</td><td>65.3</td><td>0.69</td></tr>
+          <tr><td>NAT 10, 22</td><td>88.2</td><td>78.2</td><td>−0.316</td><td>56.4</td><td>0.68</td></tr>
+          <tr><td>SVR 3L, 1100</td><td>137.5</td><td>81.5</td><td>−0.239</td><td>58.7</td><td>0.76</td></tr>
+          <tr><td>SVR CV 60, 31</td><td>118.5</td><td>71.6</td><td>−0.214</td><td>48.4</td><td>0.79</td></tr>
+        </table>
+        <p class="src">Original values from the paper's Table 1 (torque in MU; power-law fit R ≈ −0.998 to −0.999 for every grade); the (a+1) column is computed from a.<sup class="ref">[E1]</sup></p>
+        <p><strong>The boundaries deserve equal clarity:</strong> (a+1) rests on the empirical assumption that stored-energy release rate is proportional to torque, and it was verified only on natural rubber grades — extrapolating to synthetics or compounds needs revalidation. The model-comparison piece will show the power law ranks last in Ehabe's fit comparison — but that is a question of curve-fitting quality; (a+1) as a single, cross-plant-comparable index within the ASTM framework still stands. The two are not in conflict: for a beautiful fit, change the model; for a one-number batch comparison, (a+1) remains practical.<sup class="ref">[E1][E4]</sup></p>
+        <p class="src">Sources for this topic: Maláč 2011 [E1] — all of Figs. 1–11 and Table 1 are reproduced in this piece (Fig. 1 is a faithful redraw digitized from the original; Figs. 2/3/5/7/9/10 in the six-panel figure; Figs. 4/6/8 in the three scatter panels; Fig. 11 in the ranked bars; derivation in Eq. 8); ASTM area formula and report items in D1646 §12.3.3, §13.1.3 [E5].</p>
+        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
+      </div>
+    </div>
+
+    <!-- ==================== 熔體破裂 ==================== -->
+    <div class="topic topic-b" id="topic-b">
+      <div class="lang-zh">
+        <h3>標準規定 2 rpm，為什麼量到的可能不是粘度？<span class="tag">Cantaloube &amp; Cocard 2004</span></h3>
+        <p class="topicmeta">本篇延伸本文的三種測試與「那它做不到什麼」的邊界清單——那裡列出木尼儀的能力邊界，這裡追邊界背後的機制：為什麼照標準 2 rpm 做，天然膠量到的可能已經不是粘度。</p>
+        <p class="q">標準寫 2 rpm，照著做還會量錯嗎？</p>
+        <p class="q">如果膠在模腔裡不是「流」而是「裂」，扭矩讀出來還算粘度嗎？</p>
+        <p class="q">為什麼多年來 NR 的 ML 跟 Wallace 可塑度一直對不上？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>這篇出自米其林 Ladoux 技術中心，動機是業界一個老問題：</strong>天然膠的 ML 值跟 Wallace 可塑度（P0）長期對不上——兩個都號稱量「膠的軟硬」，排出來的順序卻不一致。Cantaloube 與 Cocard 的做法是把木尼儀改成可變速（0.01–15 rpm），對同一批膠掃描整個轉速範圍，看讀值到底在哪個轉速開始失真。樣品是 GPA（RSS3 類）與 GPB（TSR20 類）兩種天然膠，各取新鮮與三個月老化版本；另加不同產地的生膠（RSS、TSR、TSR5CV）驗證普遍性。<sup class="ref">[E2]</sup></p></div></div>
+        <table>
+          <tr><th>樣品</th><th>原膠類型</th><th>ML 新鮮（1 天）</th><th>ML 老化（3 個月）</th></tr>
+          <tr><td>GP A</td><td>RSS3 類</td><td>76</td><td>92</td></tr>
+          <tr><td>GP B</td><td>TSR20 類</td><td>72</td><td>91</td></tr>
+        </table>
+        <p class="src">原文 Table 1 原值：兩種塑煉膠新鮮與三個月老化的 ML(1+4)——老化讓 ML 上移 16–19 個單位，後面流動曲線的「垂直上移」就是從這個變化來的。<sup class="ref">[E2]</sup></p>
+        <p><strong>先把「熔體破裂」說清楚。</strong>聚合物熔體受剪切時，剪應力一旦超過某個臨界值，流動會從平順轉為失效——表面由光滑變粗糙、內部出現滑移與撕裂；押出製程惱人的「鯊魚皮」表面就是同一族現象。關鍵在於：進了破裂區，扭矩反映的是材料撕裂的臨界位準，不再是流動阻力——儀器照常回傳數字，但數字代表的意義已經變了。</p>
+        <figure>
+          <div class="mw" data-mw="b-rpm" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-torque-time.svg" alt="GP A 老化樣品在 15、2、0.2、0.02 rpm 的扭矩–時間曲線：高速有過衝與毛邊，低速平滑">
+          <figcaption>扭矩–時間曲線（原文 Fig. 1 數位化描取重繪，GP A 老化三個月）：15 rpm 曲線啟動瞬間衝出 ~142 MU 的應力過衝尖峰再回落，與 2 rpm 的曲線後段都帶毛邊——破裂的原始訊號；0.2 與 0.02 rpm 平滑爬升到約 70／34 MU 的穩定值。標準 ML(1+4) 取的就是高速曲線上的第 4 分鐘讀值。<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <p><strong>方法與第一個發現：</strong>把「ML(1+4) 對轉速」畫在雙對數座標上（原文 Fig. 2）——扭矩先隨轉速上升，到某個臨界轉速後斜率驟降、進入平緩支線。這個折點正是「正常流動→材料失效」的轉捩，與毛細管流變儀看到的熔體破裂特徵相同，而且不是儀器假象：折點對應的臨界剪應力約 0.19 MPa（GPA），跟大口徑毛細管流變儀量到的值一致；升溫會移動臨界轉速的位置，但折點的扭矩位準不隨溫度改變——是材料微結構的內在性質。<sup class="ref">[E2]</sup></p>
+        <p><strong>關鍵在折點的位置：</strong>GPA 臨界轉速 0.2 rpm、GPB 1.5 rpm——受測樣品的折點全在 2 rpm 以下，也就是標準 ML(1+4) 的讀值落在破裂支線上。老化（三個月）不改變臨界轉速，但讓整條曲線垂直上移。而且不止這兩支：不同產地生膠的掃描裡，連恒黏級的 TSR5CV 也在 2 rpm 以下出現折點——「標準轉速已在破裂區」不是單一樣品的特例。<sup class="ref">[E2]</sup></p>
+        <figure>
+          <div class="mw" data-mw="b-flow" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-melt-fracture.svg" alt="雙對數流動曲線：GP A 老化、GP B 老化、GP B 新鮮三條曲線上升後收斂到高轉速平台">
+          <figcaption>雙對數流動曲線（原文 Fig. 2 數位化描取重繪）：GP A 老化、GP B 老化、GP B 新鮮三條曲線各自上升後收斂到 95–100 MU 的高轉速平台——平台段就是熔體破裂支線；GP A 約 0.2 rpm 即轉平、GP B 約 1.5 rpm；標準 ML(1+4) 的 2 rpm 讀值位置三條曲線擠作一團、分不出高下，低速端才拉開。<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="b-temp" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-flow-temp.svg" alt="GP A 在 80、100、130、150°C 四個溫度的 ML 對轉速雙對數流動曲線，高轉速端四線收斂">
+          <figcaption>四個溫度的流動曲線（原文 Fig. 3 標記點數位化描取重繪，GP A）：80／100／130／150 °C 各成一線，升溫讓臨界轉速右移、整線下移，但高轉速端四線收斂——折點處的扭矩位準不隨溫度改變；高轉速端四線標記在原圖中即相互重疊，重繪照原樣呈現。<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <p><strong>這同時解開了 Wallace 對不上的謎：</strong>2 rpm 的讀值只對微結構與老化敏感、對平均分子量不敏感——在破裂支線上，扭矩反映的是材料撕裂的臨界位準，不是流動阻力。把轉速降到 0.1 rpm，樣品排序立刻跟 Wallace P0 一致（原文 Fig. 5）。原因也乾淨：Wallace 可塑度計的等效剪切率不到 0.1 s⁻¹，本來就在破裂臨界以下——兩種量測在低速端量的是同一種材料狀態，在 2 rpm 量的卻是另一種。<sup class="ref">[E2]</sup></p>
+        <figure>
+          <div class="mw" data-mw="b-p0" data-arg="2" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-wallace.svg" alt="七個生膠樣品的標準 ML(1+4) 對 Wallace P0 實測散點，排不出次序">
+          <figcaption>七個生膠樣品的標準 ML(1+4) 對 Wallace P0（原文 Table 2 原值重繪）：P0 從 59 降到 37，ML 卻在 67–92 之間無序跳動、排不出次序——「對不上」的直接證據。降到 0.1 rpm 後排序恢復一致的證據，見下方 Fig. 5 重繪的四條回歸線。<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="b-origins" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-ml-rpm.svg" alt="原文 Fig. 4 描線重繪：RSS3、SIR20C、TSR5CV 不同產地生膠的流動曲線">
+          <figcaption>原文 Fig. 4（自原圖逐站位描取標記的忠實重繪）：不同產地生膠的流動曲線——RSS3 與 SIR20C 各族在低速端清楚分開、TSR5CV 也有自己的位置；而在標準 2 rpm 處各族擠成一團（0.5 與 1 rpm 處原圖僅見單一標記，依原圖如實呈現）。「低速端分得開、標準速分不開」是這張圖直接畫出來的。<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="b-p0" data-arg="low" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-ml-p0.svg" alt="四個轉速的 ML 讀值對 Wallace P0 散點與回歸線：0.1、0.2 rpm 相關高，2、5 rpm 崩解">
+          <figcaption>ML 讀值對 Wallace P0（原文 Fig. 5 數位化描取重繪，回歸式照原文標註）：0.1 與 0.2 rpm 的點沿回歸線排開（R² = 0.96），2 與 5 rpm 散開（R² = 0.39／0.16）——轉速一過臨界，與可塑度的相關直接崩解。<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>樣品</th><th>Wallace P0</th><th>PRI</th><th>ML(1+4)</th></tr>
+          <tr><td>生膠 1</td><td>56</td><td>80</td><td>87.4</td></tr>
+          <tr><td>生膠 2</td><td>59</td><td>78</td><td>91.6</td></tr>
+          <tr><td>生膠 3</td><td>53</td><td>89</td><td>84.8</td></tr>
+          <tr><td>生膠 4</td><td>47</td><td>57</td><td>91.6</td></tr>
+          <tr><td>生膠 5</td><td>45</td><td>62</td><td>88.1</td></tr>
+          <tr><td>生膠 6</td><td>38</td><td>68</td><td>84.7</td></tr>
+          <tr><td>生膠 7</td><td>37</td><td>81</td><td>66.9</td></tr>
+        </table>
+        <p class="src">原文 Table 2 原值：不同產地生膠（RSS、TSR、TSR5CV 類）的 Wallace 塑性值 P0、可塑性保持指數 PRI 與標準 ML(1+4)。注意 P0 從 59 降到 37，ML 卻在 67–92 之間無序跳動——「對不上」不是誤差，是 2 rpm 讀值本身失真。<sup class="ref">[E2]</sup></p>
+        <p><strong>兩個「上限」要分開：</strong>打滑（slippage）是儀器層的上限——膠在轉子下滑動、扭矩讀不進去，鋸齒模面就是為了壓它；熔體破裂是材料層的上限——膠還咬著轉子，但膠本身撕裂了。機制不同，結果一樣：2 rpm 的讀值失真。作者建議 NR 的木尼量測改在 ≤0.2 rpm 進行。<sup class="ref">[E2]</sup></p>
+        <p><strong>範圍要說清楚：</strong>這個結論建立在天然膠上（含老化與不同產地）——合成膠、配方膠的臨界轉速各不相同，不能直接套用 0.2 rpm；而且破裂支線上的讀值並非「錯誤數據」，它對微結構與老化仍然敏感，只是量的不再是「流動粘度」這個量。<sup class="ref">[E2]</sup></p>
+        <p class="src">本篇文獻：Cantaloube &amp; Cocard 2004 [E2]——原文 Fig. 1–5 全為數位化描取的忠實重繪，Table 1/Table 2 數據表照原值轉載；低速端量測的後續發展見 Kim et al. [E3]（〈變速木尼〉篇）。</p>
+        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
+      </div>
+      <div class="lang-en">
+        <h3>The standard says 2 rpm — why might it not be measuring viscosity? <span class="tag">Cantaloube &amp; Cocard 2004</span></h3>
+        <p class="topicmeta">This piece extends the main text's three tests and its capability-boundary list — those passages list where the instrument's limits sit; this document chases the mechanism behind one of them: why NR measured at the standard 2 rpm may no longer be viscosity at all.</p>
+        <p class="q">The standard specifies 2 rpm — can you still measure wrong by following it?</p>
+        <p class="q">If the rubber is tearing rather than flowing inside the cavity, is the torque still viscosity?</p>
+        <p class="q">Why has Mooney viscosity never correlated with Wallace plasticity for NR?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>This paper comes from Michelin's Ladoux technical center, motivated by an old industry problem:</strong> NR Mooney values never lined up with Wallace plasticity (P0) — two instruments both claiming to measure "how stiff the rubber is," yet ranking samples differently. Cantaloube and Cocard modified a Mooney viscometer for variable speed (0.01–15 rpm) and scanned each rubber across the whole speed range to see where the reading starts to distort. The samples were GPA (RSS3-type) and GPB (TSR20-type), each fresh and aged three months, plus raw rubbers of different origins (RSS, TSR, TSR5CV) to check generality.<sup class="ref">[E2]</sup></p></div></div>
+        <table>
+          <tr><th>Sample</th><th>Base rubber</th><th>ML fresh (1 day)</th><th>ML aged (3 months)</th></tr>
+          <tr><td>GP A</td><td>RSS3-type</td><td>76</td><td>92</td></tr>
+          <tr><td>GP B</td><td>TSR20-type</td><td>72</td><td>91</td></tr>
+        </table>
+        <p class="src">Original Table 1 values: fresh and three-month-aged ML(1+4) for the two masticated rubbers — aging lifts ML by 16–19 units, the source of the "vertical shift" seen on the flow curves below.<sup class="ref">[E2]</sup></p>
+        <p><strong>First, what "melt fracture" means.</strong> When a polymer melt is sheared past a critical stress, flow turns from smooth to failure — the surface goes from glossy to rough, and slip and tearing appear inside; the "sharkskin" that plagues extrusion is the same family of phenomenon. The point: inside the fracture zone, torque reports the critical level at which the material tears, not flow resistance — the instrument still returns a number, but what the number means has changed.</p>
+        <figure>
+          <div class="mw" data-mw="b-rpm" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-torque-time.svg" alt="Torque-time curves for aged GP A at 15, 2, 0.2, and 0.02 rpm: overshoot and roughness at high speed, smooth at low speed">
+          <figcaption>Torque–time curves (digitized trace of Fig. 1, GP A aged three months): the 15 rpm trace fires a ~142 MU stress-overshoot spike at start-up before falling back, and both high-speed traces stay ragged — the raw fracture signature; 0.2 and 0.02 rpm climb smoothly to plateaus near 70 / 34 MU. The standard ML(1+4) takes its 4-minute reading on the high-speed traces.<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <p><strong>Method and first finding:</strong> plotting ML(1+4) against rotor speed on double-log axes (the paper's Fig. 2) — torque first rises with speed, then the slope breaks sharply at a critical speed into a flatter branch. That break is the transition from proper flow to material failure, the same melt-fracture signature seen in capillary rheometry — and not an instrument artifact: the critical shear stress at the break is about 0.19 MPa (GPA), matching capillary-rheometer values with a large-diameter die; raising the temperature shifts where the break sits, but the torque level at the break does not move — an intrinsic property of the material's microstructure.<sup class="ref">[E2]</sup></p>
+        <p><strong>What matters is where the break sits:</strong> 0.2 rpm for GPA and 1.5 rpm for GPB — every sample tested broke below 2 rpm, meaning the standard ML(1+4) reading lands on the fracture branch. Aging (three months) does not move the critical speed but shifts the whole curve vertically upward. And it is not just these two: in scans of raw rubbers from different origins, even the viscosity-stabilized TSR5CV shows a break below 2 rpm — "the standard speed already sits in the fracture zone" is not a single-sample exception.<sup class="ref">[E2]</sup></p>
+        <figure>
+          <div class="mw" data-mw="b-flow" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-melt-fracture.svg" alt="Double-log flow curves: aged GP A, aged GP B, and fresh GP B each rising then converging to the high-speed plateau">
+          <figcaption>Double-log flow curves (digitized trace of Fig. 2): aged GP A, aged GP B, and fresh GP B each rise, then converge onto the 95–100 MU high-speed plateau — that plateau is the melt-fracture branch; GP A flattens near 0.2 rpm, GP B near 1.5 rpm. At the standard 2 rpm position the three curves bunch together and separate only at the low-speed end.<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="b-temp" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-flow-temp.svg" alt="GP A flow curves at 80, 100, 130, and 150 °C — four log-log lines converging at the high-speed end">
+          <figcaption>Flow curves at four temperatures (markers digitized from Fig. 3, GP A): the 80/100/130/150 °C series sit one above another — heating shifts the critical speed rightward and lowers the whole line, yet all four converge at the high-speed end: the torque level at the break does not move with temperature; the four series' markers genuinely overlap there, reproduced as-is in the redraw.<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <p><strong>This also resolves the Wallace puzzle:</strong> the 2 rpm reading responds to microstructure and aging but not to average molecular weight — on the fracture branch, torque reflects the critical level at which the material tears, not flow resistance. Drop the speed to 0.1 rpm and the sample ranking immediately matches the Wallace P0 ranking (the paper's Fig. 5). The reason is clean: the Wallace plastimeter's equivalent shear rate is below 0.1 s⁻¹ — already under the fracture threshold. The two measurements see the same material state at low speed; at 2 rpm they see a different one.<sup class="ref">[E2]</sup></p>
+        <figure>
+          <div class="mw" data-mw="b-p0" data-arg="2" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-wallace.svg" alt="Standard ML(1+4) vs Wallace P0 for seven raw rubbers — measured scatter with no ranking">
+          <figcaption>Standard ML(1+4) vs Wallace P0 for the seven raw rubbers (redrawn from Table 2 values): P0 falls from 59 to 37 while ML jumps around inside 67–92 with no ranking — the direct evidence of the mismatch. For the recovered ranking at 0.1 rpm, see the four regression lines in the Fig. 5 redraw below.<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="b-origins" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-ml-rpm.svg" alt="Fig. 4 station-by-station marker redraw: flow curves of raw rubbers RSS3, SIR20C, and TSR5CV from different origins">
+          <figcaption>The paper's Fig. 4 (faithful redraw with markers digitized station by station): flow curves of raw rubbers from different origins — the RSS3 and SIR20C families separate cleanly at the low-speed end and TSR5CV takes its own position, while at the standard 2 rpm all the families bunch together (at 0.5 and 1 rpm the original shows only single markers, reproduced as-is). "Separable at low speed, indistinguishable at standard speed" is drawn directly on this figure.<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="b-p0" data-arg="low" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-b-ml-p0.svg" alt="ML readings vs Wallace P0 at four speeds with regression lines: tight at 0.1 and 0.2 rpm, scattered at 2 and 5 rpm">
+          <figcaption>ML readings vs Wallace P0 (digitized from Fig. 5, regression equations as printed in the paper): the 0.1 and 0.2 rpm points line up along their fits (R² = 0.96), while 2 and 5 rpm scatter (R² = 0.39 / 0.16) — past the threshold, the correlation with plasticity collapses.<sup class="ref">[E2]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>Sample</th><th>Wallace P0</th><th>PRI</th><th>ML(1+4)</th></tr>
+          <tr><td>Raw 1</td><td>56</td><td>80</td><td>87.4</td></tr>
+          <tr><td>Raw 2</td><td>59</td><td>78</td><td>91.6</td></tr>
+          <tr><td>Raw 3</td><td>53</td><td>89</td><td>84.8</td></tr>
+          <tr><td>Raw 4</td><td>47</td><td>57</td><td>91.6</td></tr>
+          <tr><td>Raw 5</td><td>45</td><td>62</td><td>88.1</td></tr>
+          <tr><td>Raw 6</td><td>38</td><td>68</td><td>84.7</td></tr>
+          <tr><td>Raw 7</td><td>37</td><td>81</td><td>66.9</td></tr>
+        </table>
+        <p class="src">Original Table 2 values: Wallace plasticity P0, plasticity retention index PRI, and standard ML(1+4) for raw rubbers of different origins (RSS, TSR, TSR5CV types). Note that P0 falls from 59 to 37 while ML jumps around inside 67–92 — the mismatch is not noise; the 2 rpm reading itself is distorted.<sup class="ref">[E2]</sup></p>
+        <p><strong>Keep two "ceilings" apart:</strong> slippage is an instrument-level limit — the rubber slides under the rotor and torque cannot be read into it, which is what the serrated dies are for; melt fracture is a material-level limit — the rubber still grips the rotor, but the rubber itself tears. Different mechanisms, same outcome: the 2 rpm reading distorts. The authors recommend measuring NR at rotor speeds not greater than 0.2 rpm.<sup class="ref">[E2]</sup></p>
+        <p><strong>Scope deserves honesty:</strong> the conclusion was established on natural rubber (aged and of different origins) — critical speeds differ for synthetics and compounds, so 0.2 rpm cannot be transplanted as a universal number; and a reading on the fracture branch is not "wrong data" — it still responds to microstructure and aging, it just no longer measures "flow viscosity."<sup class="ref">[E2]</sup></p>
+        <p class="src">Sources: Cantaloube &amp; Cocard 2004 [E2] — Figs. 1–5 are all faithful digitized redraws, Tables 1–2 transcribed with original values; the low-speed measurement development continues in Kim et al. [E3] (see the variable-speed piece).</p>
+        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
+      </div>
+    </div>
+
+    <!-- ==================== 變速木尼 ==================== -->
+    <div class="topic topic-c" id="topic-c">
+      <div class="lang-zh">
+        <h3>轉速一變、讀值就變——變速木尼（MVS）各段在看什麼？<span class="tag">Kim et al. 2010</span></h3>
+        <p class="topicmeta">本篇延伸本文邊界清單中「用單一固定條件模擬真實加工」那一條——〈熔體破裂〉證明標準轉速可能落在失效區，這裡把同一個事實反過來用：既然轉速會改變量到的東西，各段轉速分別看到分子結構的哪一部分？</p>
+        <p class="q">同一批膠、不同轉速量出不同 VR——哪一個才代表材料本身？</p>
+        <p class="q">為什麼高速端對應 Mn、低速端對應 Mw？</p>
+        <p class="q">VR2 合格的膠，怎麼還會被低速端挑出來？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>〈熔體破裂〉證明了 2 rpm 對 NR 可能在破裂區——自然的下一問是：各個轉速分別看到什麼？</strong>CIRAD 的 Kim、Bonfils 團隊用可變速木尼儀 MV3000V（0.02–5 rpm）正面回答，而且他們的樣品設計很關鍵：單一無性系（GT1、PB217、PB235、RRIC101）、兩品系混摻、塑解劑處理（Struktol LP150）與工業 TSR5CV60——每個樣品的分子量分布都由 SEC-MALS 逐一標定，所以能把「哪個轉速看到什麼」直接對上分子結構，不是猜的。<sup class="ref">[E3]</sup></p></div></div>
+        <p><strong>樣品設計分成三族，剛好對應三種結構情境：</strong>單一無性系與兩品系混摻提供「高 Mw／寬分布」端——兩條單峰疊加成更寬的雙峰分布；塑解劑處理提供「長鏈被剪斷」端——化學塑解優先切最長的那批鏈，Mw 明顯下降而 Mn 相對撐住；工業 TSR5CV60 則是「規格上長得一樣、結構未必一樣」的真實世界端。三族擺在一起，「哪個轉速對哪段結構敏感」才驗證得起來。<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-mmd" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-family.svg" alt="四個單株模型膠的 SEC-MALS 色譜：GT1 雙峰、PB235 單峰偏左、RRIM600 與 PB217 居中">
+          <figcaption>單株模型膠的 SEC-MALS 色譜（原文 Fig. 1 數位化描取重繪）：GT1 雙峰——左側小峰是短鏈群（壓低 Mn）、右側主體撐高 Mw；PB235 近乎單峰偏左。雙峰族與單峰族的差異是實際量出來的分布，不是假設。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>轉速</th><th>等效剪切率</th><th>等效頻率</th><th>主要看到什麼</th></tr>
+          <tr><td>0.05 rpm</td><td>0.039 s⁻¹</td><td>0.18 Hz</td><td>Mw——最長鏈扛扭矩的區段</td></tr>
+          <tr><td>0.2 rpm</td><td>0.157 s⁻¹</td><td>0.6 Hz</td><td>過渡區</td></tr>
+          <tr><td>2 rpm</td><td>1.571 s⁻¹</td><td>5.9 Hz</td><td>Mn——短鏈與失效臨界主導</td></tr>
+        </table>
+        <p>轉速與剪切率、頻率的對應關係如上（原文 Table 2；剪切率由轉子幾何換算，等效頻率用來跟動態力學 G* 對照）。<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="mono" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-mono.svg" alt="原文 Fig. 2 原值重繪：單株樣品在 2、0.2、0.05 rpm 的 VR 讀值連線，低速端各曲線分開">
+          <figcaption>原文 Fig. 2（Table 1 原值繪製）：單株模型膠的 VR 流動曲線——2 rpm 端各曲線漸趨收斂，低速端明顯分開成不同位準；「同一批規格膠、低速端才分得出」在原值上就看得見（虛線為三個實測轉速點的連線，原文連續曲線段以點間內插示意）。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-gstar" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-gstar-freq.svg" alt="原文 Fig. 3 描線重繪：單株樣品的 G*–頻率雙對數圖">
+          <figcaption>原文 Fig. 3（自原圖逐站位描取頻帶與標記群的忠實重繪）：同一批單株樣品的動態力學 G*–頻率圖——這是頻率域的對照量測，後面 G* 與 VR 的相關（Fig. 7）就是把這兩個域的資料對接起來；同站位的系列標記在原圖中即相互疊合，重繪依原樣呈現。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <p><strong>相關性的分工很清楚：</strong>VR2 與數均分子量 Mn 相關最好（R² = 0.851），比它與 √(Mn·Mw) 的相關（0.745）還高；但降到 0.05 rpm，VR–Mn 相關只剩 0.575。反過來，VR0.05 與重均分子量 Mw 高度相關（R² = 0.931，VR0.05 = 0.022·Mw + 0.312），把 Mw 乘上分散度倒數平方根 Ip<sup>−1/2</sup> 修正後更強（VR0.05 = 0.05·Mw·Ip<sup>−1/2</sup> + 12.24，R² = 0.953）。換算成剪切粘度也同向：η<sub>0.02</sub> ∝ Mw<sup>1.05</sup>、η<sub>0.05</sub> ∝ Mw<sup>0.91</sup>、η<sub>0.2</sub> ∝ Mw<sup>0.55</sup>——分子量敏感度隨轉速下降而升高。動態力學 G* 的對照也吻合：G*(8 Hz) 與 VR2 相關最好（R² = 0.895）、G*(0.12 Hz) 與 VR0.05 相關最好（R² = 0.953）——頻率域與轉速域互相印證。<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-scatter" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-mn-mw.svg" alt="實測散點：VR2 對 Mn、VR0.05 對 Mw，後者幾乎貼回歸線">
+          <figcaption>實測散點（原文 Table 1 原值，對應 Fig. 6/11）：左——VR2 對 Mn，各族各自成群、R² = 0.851；右——VR0.05 對 Mw，21 個樣品幾乎貼在一條線上（R² = 0.931，分散度修正後 0.953）。高速端看「鏈的數量」、低速端看「最長的鏈」，這兩幅就是直接證據。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-mwip" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-mwip.svg" alt="VR0.05 對分散度修正後 Mw 的實測散點，各族樣品更貼回歸線">
+          <figcaption>VR0.05 對 Mw·Ip<sup>−1/2</sup>（原文 Table 1 原值重算繪製，對應原文 Fig. 12）：把 Mw 乘上分散度倒數平方根修正後，21 個樣品更貼回歸線——原文報告 R² = 0.953（以表列整數值重算為 0.882，差異來自表中 Mw 的四捨五入）。分散度修正這一步，是「同 Mw、不同分布寬」的樣品能被分開的關鍵。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="mvs" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-mvs.svg" alt="VR 流動曲線：兩類樣品在 2 rpm 重合、低速端分開">
+          <figcaption>VR 流動曲線的分組對照（本篇依 Table 1 原值整理自繪的說明圖——2／0.2／0.05 rpm 三個實測點連線）：雙峰／高 Mw 樣品與塑解／低 Mw 樣品在 2 rpm 讀值全落在 57–63 合格帶內、分不出來；降到 0.05 rpm 才拉開 11 MU（35%）的差距——低速端對應 Mw（R² = 0.93）、高速端對應 Mn。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-blend" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-blend.svg" alt="GT1 與 PB217 三種混摻比的 SEC-MALS 色譜：GT1 越多左側短鏈峰越高">
+          <figcaption>混摻樣品的 SEC-MALS 色譜（原文 Fig. 4 數位化描取重繪）：GT1 與 PB217 不同混摻比——改變的只有短鏈峰的量，所以主要是 Mn 在動、Mw 幾乎不動；這是「VR2 對 Mn 敏感」得以被驗證的樣品設計。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="blends" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-blends.svg" alt="原文 Fig. 5 原值重繪：GT1 × PB217 混摻樣品在 2、0.2、0.05 rpm 的 VR 讀值連線">
+          <figcaption>原文 Fig. 5（Table 1 原值繪製）：混摻樣品的 VR 流動曲線——混摻比沿著曲線展開，低速端讀值隨組成連續變化；單點 VR2 之外的整段結構訊息就在這裡（虛線為三個實測轉速點的連線）。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-gstarvr" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-gstar-vr.svg" style="width:76%" alt="原文 Fig. 7 描取重繪：三個頻率的 G* 與各轉速 VR 的相關">
+          <figcaption>原文 Fig. 7（標記點自原圖逐點描取重繪，R² 為原文標示值）：G*（0.12 / 0.5 / 8 Hz）對各轉速 VR 的相關——8 Hz 的 G* 與 VR2 最相關（R² = 0.895）、0.12 Hz 與 VR0.05 最相關（R² = 0.953）；頻率域與轉速域各自獨立量測，得到一致的「高速↔短鏈、低速↔長鏈」。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <p><strong>最有說服力的是工業樣品案：</strong>三個 TSR5CV60（IA、IB、IC）VR2 分別 57、63、59——全在 60±5 合格帶內、幾乎無法區分。但 SEC-MALS 顯示 IA 是雙峰分布（像 family 1 模型膠，Mw 1581 kg/mol），IB/IC 卻是近單峰、Mw 只有 920/870、Mz 也低——結構其實像塑解膠。低速端立刻現形：VR0.05 分別 33、22、19——IB/IC 比 IA 低三成多。對照組更乾淨：塑解處理的樣品 VR2 跟未塑解的一樣（60/61），VR0.05 卻掉到 18–20——塑解劑剪斷的是最長的那批鏈（Mw 降 38%），VR2 完全看不見，VR0.05 一看一個準。<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-peptized" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-peptized.svg" alt="塑解前後樣品的 SEC-MALS 色譜對比：塑解後主峰左移、長鏈尾削短">
+          <figcaption>塑解前後的色譜對比（原文 Fig. 8 數位化描取重繪）：塑解處理前（AW、AB）與塑解後（BV）——塑解劑讓分布整體左移、最長鏈尾削得最多（Mw 降 38%）；Mn 幾乎不動，這正是 VR2 看不見、VR0.05 看得見的結構變化。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-industrial" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-industrial.svg" alt="IA、IB、IC 三個工業 TSR5CV60 的 SEC-MALS 色譜：IA 有雙峰肩、IB/IC 近單峰">
+          <figcaption>三個工業 TSR5CV60 的色譜（原文 Fig. 9 數位化描取重繪）：規格同級、分布不同型——IA 帶明顯雙峰與長鏈尾，IB/IC 近單峰、尾巴短。規格上看不出的差異，SEC-MALS 一目了然。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="industrial" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-industrial.svg" alt="原文 Fig. 10 原值重繪：工業樣品在 2、0.2、0.05 rpm 的 VR 讀值連線，低速端 IA 與 IB/IC 分開">
+          <figcaption>原文 Fig. 10（Table 1 原值繪製）：工業樣品的 VR 流動曲線——2 rpm 端三條曲線貼在一起（57–63，全在合格帶）；低速端 IA 撐在高處、IB/IC 掉下去，0.05 rpm 差出 11 MU。雙點量測的實務價值，就是這張圖的左右兩端（虛線為三個實測轉速點的連線）。<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <p><strong>為什麼高低速端看到不同東西？</strong>接回〈熔體破裂〉的圖像：高速端材料已進入失效／解纏區，響應被短鏈含量與破裂臨界主導——對 Mn（鏈的數量）敏感；低速端材料還在正常流動區，扭矩主要由最長的那批鏈扛——對 Mw（權重偏長鏈的平均）敏感。作者引 Wang 的理論補充機制：應力過衝後的劇烈解纏與斷鏈造成不均勻流動，而過衝在 &lt;0.2 rpm 消失——正好接上 Cantaloube 的臨界轉速。<sup class="ref">[E3][E2]</sup></p>
+        <table>
+          <tr><th>族</th><th>樣品</th><th>Mn</th><th>Mw</th><th>VR2</th><th>VR0.2</th><th>VR0.05</th></tr>
+          <tr><td rowspan="4">單株 F1</td><td>5CV60-1</td><td>480</td><td>1450</td><td>55</td><td>41</td><td>29</td></tr>
+          <tr><td>5CV60-2</td><td>500</td><td>1380</td><td>60</td><td>44</td><td>31</td></tr>
+          <tr><td>5CV60-3</td><td>520</td><td>1380</td><td>62</td><td>43</td><td>31</td></tr>
+          <tr><td>5CV60-4</td><td>520</td><td>1430</td><td>60</td><td>45</td><td>30</td></tr>
+          <tr><td rowspan="4">單株 F2</td><td>5CV-1</td><td>710</td><td>1340</td><td>73</td><td>46</td><td>29</td></tr>
+          <tr><td>5CV-2</td><td>710</td><td>1470</td><td>79</td><td>60</td><td>39</td></tr>
+          <tr><td>5CV-3</td><td>770</td><td>1440</td><td>78</td><td>59</td><td>40</td></tr>
+          <tr><td>5CV-4</td><td>730</td><td>1540</td><td>75</td><td>58</td><td>40</td></tr>
+          <tr><td rowspan="7">混摻</td><td>PB217 20%</td><td>570</td><td>1420</td><td>65</td><td>46</td><td>32</td></tr>
+          <tr><td>PB217 40%</td><td>610</td><td>1430</td><td>70</td><td>54</td><td>37</td></tr>
+          <tr><td>PB217 60%</td><td>600</td><td>1380</td><td>70</td><td>52</td><td>35</td></tr>
+          <tr><td>PB217 80%</td><td>700</td><td>1480</td><td>76</td><td>60</td><td>41</td></tr>
+          <tr><td>RRIC101 20%</td><td>610</td><td>1430</td><td>63</td><td>47</td><td>34</td></tr>
+          <tr><td>RRIC101 80%</td><td>710</td><td>1560</td><td>69</td><td>55</td><td>36</td></tr>
+          <tr><td>PB235 60%</td><td>554</td><td>1280</td><td>65</td><td>47</td><td>30</td></tr>
+          <tr><td rowspan="3">塑解</td><td>P-1</td><td>480</td><td>910</td><td>61</td><td>33</td><td>20</td></tr>
+          <tr><td>P-2</td><td>520</td><td>960</td><td>61</td><td>31</td><td>19</td></tr>
+          <tr><td>P-3</td><td>490</td><td>840</td><td>60</td><td>29</td><td>18</td></tr>
+          <tr><td rowspan="3">工業</td><td>IA</td><td>505</td><td>1581</td><td>57</td><td>46</td><td>33</td></tr>
+          <tr><td>IB</td><td>450</td><td>920</td><td>63</td><td>37</td><td>22</td></tr>
+          <tr><td>IC</td><td>400</td><td>870</td><td>59</td><td>32</td><td>19</td></tr>
+        </table>
+        <p class="src">原文 Table 1 原值（Mn、Mw 單位 kg/mol；VR 單位 MU）。對照看：塑解族 VR2 與單株族同階（60–61），VR0.05 卻只剩 18–20；工業 IB/IC 的 Mn、Mw 都接近塑解族——規格相同的膠，低速端把結構差異攤開。<sup class="ref">[E3]</sup></p>
+        <p><strong>實務與邊界：</strong>建議做法是雙點法——同時記錄 VR2 與 VR0.05：VR2 守規格門、VR0.05 專門攔「規格合格但長鏈已被破壞」的樣品。為什麼選 0.05 不再更低？因為再低的轉速要等更久才到平穩值，測試時間失去實務性。邊界也要說：這些相關性建立在天然膠模型膠與工業 NR 上，不同膠種的流動區間與失效臨界不同，不能直接搬公式；VR 讀的是「對結構敏感的指標」，不是分子量本身。<sup class="ref">[E3]</sup></p>
+        <p class="src">本篇文獻：Kim et al. 2010 [E3]——Fig. 1/4/8/9（SEC-MALS 色譜）為數位化描取的忠實重繪，Fig. 2/5/10 由 Table 1 原值重繪，Fig. 7 為逐點描取的忠實重繪（R² 照原文標示），Fig. 3 為逐站位描取頻帶與標記群的忠實重繪（疊合標記依原樣呈現），Fig. 6/11 由 VR–Mn/Mw 實測散點圖涵蓋、Fig. 12 由 Mw·Ip<sup>−1/2</sup> 修正圖涵蓋（皆 Table 1 原值重繪），Table 1/Table 2 照原值轉載；熔體破裂背景見 Cantaloube &amp; Cocard [E2]（〈熔體破裂〉篇）。</p>
+        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
+      </div>
+      <div class="lang-en">
+        <h3>Same rubber, different speed, different answer — what is variable-speed Mooney (MVS) looking at? <span class="tag">Kim et al. 2010</span></h3>
+        <p class="topicmeta">This piece extends the "one fixed condition cannot simulate real processing" entry in the limits list — the melt-fracture piece showed the standard speed can sit inside the failure zone; this document turns the same fact around: if speed changes what is measured, which part of the molecular structure does each speed see?</p>
+        <p class="q">The same rubber gives different VR at different rotor speeds — which one represents the material?</p>
+        <p class="q">Why does the high-speed end correspond to Mn while the low-speed end corresponds to Mw?</p>
+        <p class="q">How can a VR2-passing rubber still get caught?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>The melt-fracture piece showed that 2 rpm can be inside the fracture zone for NR — the natural next question is what each speed actually sees.</strong> The CIRAD team of Kim and Bonfils answered directly with a variable-speed MV3000V (0.02–5 rpm), and their sample design is what makes the answer solid: monoclonal rubbers (GT1, PB217, PB235, RRIC101), two-clone blends, peptized samples (Struktol LP150), and industrial TSR5CV60 — every sample's molecular-weight distribution characterized by SEC-MALS, so they could map which speed sees which structure instead of guessing.<sup class="ref">[E3]</sup></p></div></div>
+        <p><strong>The sample design falls into three families, one per structural scenario:</strong> monoclonal rubbers and two-clone blends supply the high-Mw / broad-distribution end — two unimodal peaks stacked into a wider, bimodal one; peptized samples supply the "long chains cut" end — chemical peptization preferentially severs the longest chains, so Mw drops markedly while Mn largely holds; and industrial TSR5CV60 supplies the real-world end — identical on spec, not necessarily identical in structure. Only with all three families side by side can "which speed is sensitive to which structure" actually be verified.<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-mmd" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-family.svg" alt="SEC-MALS chromatograms of four monoclonal model rubbers: GT1 bimodal, PB235 unimodal shifted left, RRIM600 and PB217 in between">
+          <figcaption>SEC-MALS chromatograms of the monoclonal model rubbers (digitized trace of Fig. 1): GT1 is bimodal — the small left peak is the short-chain population (pulling Mn down) while the right body props Mw up; PB235 is nearly unimodal and shifted left. The bimodal vs unimodal difference is measured, not assumed.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>Rotor speed</th><th>Equiv. shear rate</th><th>Equiv. frequency</th><th>What it mainly sees</th></tr>
+          <tr><td>0.05 rpm</td><td>0.039 s⁻¹</td><td>0.18 Hz</td><td>Mw — where the longest chains carry the torque</td></tr>
+          <tr><td>0.2 rpm</td><td>0.157 s⁻¹</td><td>0.6 Hz</td><td>Transition zone</td></tr>
+          <tr><td>2 rpm</td><td>1.571 s⁻¹</td><td>5.9 Hz</td><td>Mn — dominated by short chains and the failure threshold</td></tr>
+        </table>
+        <p>The speed–shear-rate–frequency correspondence is shown above (the paper's Table 2; shear rate from rotor geometry, equivalent frequency for comparison with dynamic-mechanical G*).<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="mono" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-mono.svg" alt="Fig. 2 redrawn from Table 1 values: monoclonal-sample VR readings at 2, 0.2, and 0.05 rpm, separating at the low-speed end">
+          <figcaption>The paper's Fig. 2 (drawn from Table 1 values): VR flow curves of the monoclonal model rubbers — the curves converge toward 2 rpm and spread into distinct levels at the low-speed end; "same spec grade, separable only at low speed" is visible on the raw values (dashes join the three measured speed points).<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-gstar" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-gstar-freq.svg" alt="Fig. 3 traced redraw: G*-frequency double-log plot for the monoclonal samples">
+          <figcaption>The paper's Fig. 3 (faithful redraw — bands and marker groups digitized station-by-station from the original): dynamic-mechanical G*–frequency curves for the same monoclonal set — the frequency-domain counterpart measurement; the G*-VR correlation in Fig. 7 joins these two domains; series markers at the same station genuinely overlap in the original, reproduced as-is.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <p><strong>The division of labor is clear:</strong> VR2 correlates best with number-average molar mass Mn (R² = 0.851) — better even than with √(Mn·Mw) (0.745); but at 0.05 rpm the VR–Mn correlation drops to 0.575. Conversely, VR0.05 correlates strongly with weight-average Mw (R² = 0.931, VR0.05 = 0.022·Mw + 0.312), stronger still after correcting Mw by the inverse square root of dispersity (VR0.05 = 0.05·Mw·Ip<sup>−1/2</sup> + 12.24, R² = 0.953). Converted shear viscosities point the same way: η<sub>0.02</sub> ∝ Mw<sup>1.05</sup>, η<sub>0.05</sub> ∝ Mw<sup>0.91</sup>, η<sub>0.2</sub> ∝ Mw<sup>0.55</sup> — molecular-weight sensitivity rises as speed falls. Dynamic-mechanical G* agrees: G*(8 Hz) correlates best with VR2 (R² = 0.895), G*(0.12 Hz) best with VR0.05 (R² = 0.953) — frequency domain and speed domain confirm each other.<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-scatter" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-mn-mw.svg" alt="Measured scatter: VR2 vs Mn and VR0.05 vs Mw, the latter tightly on the regression line">
+          <figcaption>Measured scatter (original Table 1 values, corresponding to Fig. 6/11): left — VR2 vs Mn, families clustering separately, R² = 0.851; right — VR0.05 vs Mw, all 21 samples nearly on one line (R² = 0.931, 0.953 after dispersity correction). The high-speed end sees the number of chains, the low-speed end the longest chains — these two panels are the direct evidence.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-mwip" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-mwip.svg" alt="Measured scatter of VR0.05 against dispersity-corrected Mw, samples tighter on the regression line">
+          <figcaption>VR0.05 vs Mw·Ip<sup>−1/2</sup> (recomputed from Table 1 values, corresponding to the paper's Fig. 12): correcting Mw by the inverse square root of dispersity pulls the 21 samples tighter to the line — the paper reports R² = 0.953 (recomputing from the rounded integer Mw values in the table gives 0.882). The dispersity correction is what lets same-Mw, different-width samples separate.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="mvs" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-mvs.svg" alt="VR flow curves: sample types overlap at 2 rpm and separate at low speed">
+          <figcaption>VR flow curves grouped for comparison (our own teaching figure organized from Table 1 values — the three measured speeds 2 / 0.2 / 0.05 rpm joined): bimodal/high-Mw and peptized/low-Mw samples all read 57–63 at 2 rpm — inside spec, indistinguishable; at 0.05 rpm they separate by 11 MU (35%) — the low-speed end tracks Mw (R² = 0.93), the high-speed end Mn.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-blend" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-blend.svg" alt="SEC-MALS chromatograms of GT1 × PB217 blends at three ratios: more GT1 raises the left short-chain peak">
+          <figcaption>SEC-MALS chromatograms of the blends (digitized trace of Fig. 4): GT1–PB217 at different ratios — only the short-chain peak's amount changes, so mostly Mn moves while Mw barely shifts; this is the sample design that lets "VR2 is Mn-sensitive" be verified.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="blends" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-blends.svg" alt="Fig. 5 redrawn from Table 1 values: GT1 × PB217 blend VR readings at 2, 0.2, and 0.05 rpm">
+          <figcaption>The paper's Fig. 5 (drawn from Table 1 values): VR flow curves of the blends — blend ratio unfolds along the curves and the low-speed readings move continuously with composition; the structural information beyond a single VR2 point lives here (dashes join the three measured speed points).<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-gstarvr" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-gstar-vr.svg" style="width:76%" alt="Fig. 7 digitized-trace redraw: correlation between G* at three frequencies and VR at each rotor speed">
+          <figcaption>The paper's Fig. 7 (markers traced point-by-point from the original, R² as printed in the paper): G* at 0.12 / 0.5 / 8 Hz against VR at each rotor speed — 8 Hz G* correlates best with VR2 (R² = 0.895), 0.12 Hz with VR0.05 (R² = 0.953); two independent measurement domains agreeing on "high speed ↔ short chains, low speed ↔ long chains".<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <p><strong>The most convincing evidence is the industrial-sample case:</strong> three TSR5CV60 (IA, IB, IC) read VR2 of 57, 63, 59 — all inside the 60±5 spec, nearly indistinguishable. Yet SEC-MALS shows IA is bimodal (like the family-1 model rubbers, Mw 1581 kg/mol) while IB/IC are quasi-unimodal with Mw only 920/870 and lower Mz — structurally closer to peptized rubber. The low-speed end exposes it immediately: VR0.05 of 33, 22, 19 — IB/IC more than 30% below IA. The control is cleaner still: peptized samples have the same VR2 as unpeptized ones (60/61), but VR0.05 collapses to 18–20 — the peptizer cuts the longest chains (Mw down 38%), invisible to VR2, obvious to VR0.05.<sup class="ref">[E3]</sup></p>
+        <figure>
+          <div class="mw" data-mw="c-peptized" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-peptized.svg" alt="SEC-MALS chromatograms before and after peptization: the distribution shifts left and the long-chain tail is clipped">
+          <figcaption>Chromatograms before and after peptization (digitized trace of Fig. 8): AW/AB before vs BV after — the peptizer shifts the whole distribution left and clips the long-chain tail hardest (Mw down 38%); Mn barely moves — exactly the structural change VR2 cannot see and VR0.05 can.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-industrial" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-sec-industrial.svg" alt="SEC-MALS chromatograms of industrial TSR5CV60 samples IA, IB, IC: IA has a bimodal shoulder, IB/IC are nearly unimodal">
+          <figcaption>Chromatograms of the three industrial TSR5CV60 samples (digitized trace of Fig. 9): same spec grade, different shapes — IA carries a clear bimodal shoulder and a long tail, while IB/IC are quasi-unimodal with short tails. What the spec sheet hides, SEC-MALS shows at a glance.<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="c-vr" data-arg="industrial" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-c-vr-industrial.svg" alt="Fig. 10 redrawn from Table 1 values: industrial-sample VR readings at 2, 0.2, and 0.05 rpm, IA separating from IB/IC at low speed">
+          <figcaption>The paper's Fig. 10 (drawn from Table 1 values): VR flow curves of the industrial samples — the three curves sit together at 2 rpm (57–63, all in spec); at the low-speed end IA holds high while IB/IC drop away, an 11 MU gap at 0.05 rpm. The practical case for two-point measurement is the two ends of this figure (dashes join the three measured speed points).<sup class="ref">[E3]</sup></figcaption>
+        </figure>
+        <p><strong>Why do the two ends see different things?</strong> Connecting back to the melt-fracture picture: at the high-speed end the material is already in the failure/disentanglement regime, the response dominated by short-chain content and the fracture threshold — sensitive to Mn (the number of chains); at the low-speed end the material is still in proper flow, the torque carried mainly by the longest chains — sensitive to Mw (the average weighted toward long chains). The authors cite Wang's theory for the mechanism: severe disentanglement and chain fracture after the stress overshoot cause inhomogeneous flow, and the overshoot disappears below 0.2 rpm — exactly Cantaloube's critical speed.<sup class="ref">[E3][E2]</sup></p>
+        <table>
+          <tr><th>Family</th><th>Sample</th><th>Mn</th><th>Mw</th><th>VR2</th><th>VR0.2</th><th>VR0.05</th></tr>
+          <tr><td rowspan="4">mono F1</td><td>5CV60-1</td><td>480</td><td>1450</td><td>55</td><td>41</td><td>29</td></tr>
+          <tr><td>5CV60-2</td><td>500</td><td>1380</td><td>60</td><td>44</td><td>31</td></tr>
+          <tr><td>5CV60-3</td><td>520</td><td>1380</td><td>62</td><td>43</td><td>31</td></tr>
+          <tr><td>5CV60-4</td><td>520</td><td>1430</td><td>60</td><td>45</td><td>30</td></tr>
+          <tr><td rowspan="4">mono F2</td><td>5CV-1</td><td>710</td><td>1340</td><td>73</td><td>46</td><td>29</td></tr>
+          <tr><td>5CV-2</td><td>710</td><td>1470</td><td>79</td><td>60</td><td>39</td></tr>
+          <tr><td>5CV-3</td><td>770</td><td>1440</td><td>78</td><td>59</td><td>40</td></tr>
+          <tr><td>5CV-4</td><td>730</td><td>1540</td><td>75</td><td>58</td><td>40</td></tr>
+          <tr><td rowspan="7">blends</td><td>PB217 20%</td><td>570</td><td>1420</td><td>65</td><td>46</td><td>32</td></tr>
+          <tr><td>PB217 40%</td><td>610</td><td>1430</td><td>70</td><td>54</td><td>37</td></tr>
+          <tr><td>PB217 60%</td><td>600</td><td>1380</td><td>70</td><td>52</td><td>35</td></tr>
+          <tr><td>PB217 80%</td><td>700</td><td>1480</td><td>76</td><td>60</td><td>41</td></tr>
+          <tr><td>RRIC101 20%</td><td>610</td><td>1430</td><td>63</td><td>47</td><td>34</td></tr>
+          <tr><td>RRIC101 80%</td><td>710</td><td>1560</td><td>69</td><td>55</td><td>36</td></tr>
+          <tr><td>PB235 60%</td><td>554</td><td>1280</td><td>65</td><td>47</td><td>30</td></tr>
+          <tr><td rowspan="3">peptized</td><td>P-1</td><td>480</td><td>910</td><td>61</td><td>33</td><td>20</td></tr>
+          <tr><td>P-2</td><td>520</td><td>960</td><td>61</td><td>31</td><td>19</td></tr>
+          <tr><td>P-3</td><td>490</td><td>840</td><td>60</td><td>29</td><td>18</td></tr>
+          <tr><td rowspan="3">industrial</td><td>IA</td><td>505</td><td>1581</td><td>57</td><td>46</td><td>33</td></tr>
+          <tr><td>IB</td><td>450</td><td>920</td><td>63</td><td>37</td><td>22</td></tr>
+          <tr><td>IC</td><td>400</td><td>870</td><td>59</td><td>32</td><td>19</td></tr>
+        </table>
+        <p class="src">Original Table 1 values (Mn, Mw in kg/mol; VR in MU). For contrast: the peptized family's VR2 sits in the same band as the monoclonals (60–61) while VR0.05 collapses to 18–20; industrial IB/IC have Mn and Mw close to the peptized family — the low-speed end lays bare the structural differences inside same-spec rubber.<sup class="ref">[E3]</sup></p>
+        <p><strong>Practice and boundaries:</strong> the recommended protocol is two-point — record both VR2 and VR0.05: VR2 guards the spec gate, VR0.05 catches samples that pass spec but have lost their long chains. Why 0.05 and not lower? Below that, reaching the plateau takes longer and the test loses practicality. The boundaries also deserve statement: these correlations were built on NR model rubbers and industrial NR — other rubber families have different flow regimes and failure thresholds, so the equations do not transplant directly; VR reads a structure-sensitive index, not molecular weight itself.<sup class="ref">[E3]</sup></p>
+        <p class="src">Sources: Kim et al. 2010 [E3] — Figs. 1/4/8/9 (SEC-MALS chromatograms) are faithful digitized redraws; Figs. 2/5/10 are redrawn from Table 1 values; Fig. 7 is a faithful point-by-point digitized redraw (R² as printed); Fig. 3 is a faithful redraw with bands and marker groups digitized station-by-station (overlapping markers rendered as in the original); Figs. 6/11 covered by the VR–Mn/Mw measured scatter and Fig. 12 by the Mw·Ip<sup>−1/2</sup> correction plot (both redrawn from Table 1 values); Tables 1–2 transcribed with original values; melt-fracture background in Cantaloube &amp; Cocard [E2] (see the melt-fracture piece).</p>
+        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
+      </div>
+    </div>
+
+    <!-- ==================== 鬆弛模型 ==================== -->
+    <div class="topic topic-d" id="topic-d">
+      <div class="lang-zh">
+        <h3>鬆弛曲線只能用冪次定律擬合嗎？<span class="tag">Ehabe et al. 2005</span></h3>
+        <p class="topicmeta">本篇延伸本文「停轉之後，曲線還在說話」的冪次定律擬合段——那裡用 M = k·t<sup>a</sup>，是因為它是 ASTM 判讀框架的標配；這裡把四個候選模型放上同一批數據同場比試，看「標配」的代價是什麼、換模型能多得什麼。</p>
+        <p class="q">M = k·t<sup>a</sup> 不是唯一選項——換個模型，會不會擬合得更準？</p>
+        <p class="q">食品科學的番茄硬度模型，為什麼會出現在橡膠裡？</p>
+        <p class="q">擬合得再漂亮，參數對不上材料結構有用嗎？</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>前文用的冪次定律是 ASTM 框架的標配，但「標配」不等於「最好」。</strong>Ehabe 等人（同樣是 CIRAD 團隊）把同一批鬆弛數據用四種模型比擬合優度：14 個樣品（12 個天然膠——GT1、PB217、PR107 三品系的 TSR3CV 與 TSR10，加 IR305、Natsyn 兩個合成聚異戊二烯），ISO 289 條件、500 秒鬆弛窗，每個樣品三次重複。四個候選的選擇也有脈絡：冪次定律是現任標配、廣義 Maxwell 是黏彈性的物理基礎模型、拉伸指數是玻璃態鬆弛的常用形狀、Wu–Abbott 則是參數帶物理解讀的經驗式——等於物理派與經驗派的同場比試。<sup class="ref">[E4]</sup></p></div></div>
+        <figure>
+          <div class="mw" data-mw="d-typical" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-typical.svg" alt="原文 Fig. 1 描線重繪：TSR10、TSR3CV、Natsyn 的典型木尼曲線與參數標註">
+          <figcaption>原文 Fig. 1（自原圖描線的忠實重繪）：三種膠的典型木尼曲線——TSR10 應力過衝高、TSR3CV 平緩、合成膠 Natsyn 幾乎無過衝；轉子停後的衰減段（曲線右側）就是四個模型要擬合的對象。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>樣品</th><th>品系</th><th>品級</th><th>熟成（天）</th><th>ML(1+4)</th><th>tm (s)</th><th>總凝膠 %</th></tr>
+          <tr><td>IR305</td><td>—</td><td>合成 PI</td><td>—</td><td>76</td><td>163</td><td>8</td></tr>
+          <tr><td>Natsyn</td><td>—</td><td>合成 PI</td><td>—</td><td>85</td><td>198</td><td>25</td></tr>
+          <tr><td>1SAP1-CV</td><td>GT1</td><td>TSR3CV</td><td>—</td><td>66</td><td>185</td><td>40</td></tr>
+          <tr><td>1SAP2-CV</td><td>PR107</td><td>TSR3CV</td><td>—</td><td>54</td><td>196</td><td>39</td></tr>
+          <tr><td>1SAP3-CV</td><td>PB217</td><td>TSR3CV</td><td>—</td><td>85</td><td>204</td><td>44</td></tr>
+          <tr><td>1SAP1-1</td><td>GT1</td><td>TSR10</td><td>1</td><td>96</td><td>259</td><td>65</td></tr>
+          <tr><td>1SAP2-1</td><td>PR107</td><td>TSR10</td><td>1</td><td>91</td><td>271</td><td>65</td></tr>
+          <tr><td>1SAP3-1</td><td>PB217</td><td>TSR10</td><td>1</td><td>98</td><td>253</td><td>58</td></tr>
+          <tr><td>1SAP1-4</td><td>GT1</td><td>TSR10</td><td>4</td><td>104</td><td>290</td><td>67</td></tr>
+          <tr><td>1SAP2-4</td><td>PR107</td><td>TSR10</td><td>4</td><td>99</td><td>277</td><td>69</td></tr>
+          <tr><td>1SAP3-4</td><td>PB217</td><td>TSR10</td><td>4</td><td>95</td><td>249</td><td>59</td></tr>
+          <tr><td>1SAP1-21</td><td>GT1</td><td>TSR10</td><td>21</td><td>101</td><td>261</td><td>66</td></tr>
+          <tr><td>1SAP2-21</td><td>PR107</td><td>TSR10</td><td>21</td><td>100</td><td>297</td><td>70</td></tr>
+          <tr><td>1SAP3-21</td><td>PB217</td><td>TSR10</td><td>21</td><td>97</td><td>264</td><td>61</td></tr>
+        </table>
+        <p class="src">原文 Table 1 原值（節錄品系、品級、熟成天數、ML、Maxwell 總鬆弛時間 tm、總凝膠六欄；全表另有 Wu–Abbott 參數 a/b 與宏觀/微觀凝膠細項）。樣品設計的關鍵在右兩欄：熟成天數把凝膠含量從 8% 拉到 70%，tm–凝膠關係（Fig. 8）才有得看。<sup class="ref">[E4]</sup></p>
+        <table>
+          <tr><th>模型</th><th>方程式</th><th>背景與參數意義</th></tr>
+          <tr><td>冪次定律</td><td>M = k·t<sup>a</sup></td><td>ASTM D1646 標配；a 為鬆弛速率指數</td></tr>
+          <tr><td>拉伸指數（KWW）</td><td>M = exp(−(t/τ)<sup>β</sup>)</td><td>玻璃態鬆弛常用；β 與鬆弛時間分布寬度成反比</td></tr>
+          <tr><td>廣義 Maxwell（三指數）</td><td>ML<sub>N</sub>(t) = a + b·e<sup>−t/c</sup> + d·e<sup>−t/f</sup> + g·e<sup>−t/h</sup></td><td>黏彈性基礎模型：a 為殘餘扭矩（t→∞），c/f/h 為三個鬆弛時間 t<sub>i</sub> = η<sub>i</sub>/G<sub>i</sub></td></tr>
+          <tr><td>Wu–Abbott</td><td>Y = 1 − a·ln(1+t) − b·t/(c+t)</td><td>食品科學經驗式（原描述番茄果肉貯藏硬度鬆弛）；a 正比於彈性成分、b 正比於黏性成分</td></tr>
+        </table>
+        <p><strong>排名乾淨俐落（原文 Table 2）：</strong>廣義 Maxwell 三指數模型在 14 個樣品上每個都拿第一（平均排名 1.0、平均 R² ≈ 0.999、殘差隨機分布）；Wu–Abbott 第二（2.2、R² ≈ 0.996）；冪次定律第三（3.3、R² ≈ 0.968）且殘差呈系統性分布——不是雜訊，是模型形狀本身就套不準；拉伸指數墊底（3.7、R² ≈ 0.962）。所以後續研究只保留 Maxwell 與 Wu–Abbott 兩個模型做參數穩健性評估。<sup class="ref">[E4]</sup></p>
+        <figure>
+          <div class="mw" data-mw="d-r2" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-r2.svg" alt="14 個樣品逐筆的四模型 R²：Maxwell 與 Wu–Abbott 貼頂，冪次定律與拉伸指數散落下方">
+          <figcaption>14 個樣品逐筆的擬合 R²（原文 Table 2 原值）：廣義 Maxwell 全部貼在 0.994 以上、每個樣品都是第一名；Wu–Abbott 緊追在後；冪次定律與拉伸指數明顯掉落且逐樣品波動——「平均排名」背後是這種一面倒的分布。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>樣品</th><th>品系</th><th>Maxwell</th><th>Wu–Abbott</th><th>冪次定律</th><th>拉伸指數</th></tr>
+          <tr><td>IR305</td><td>合成</td><td>0.9984</td><td>0.9965</td><td>0.9672</td><td>0.9676</td></tr>
+          <tr><td>Natsyn</td><td>合成</td><td>0.9965</td><td>0.9935</td><td>0.9606</td><td>0.8761</td></tr>
+          <tr><td>1SAP1CV</td><td>GT1</td><td>0.9974</td><td>0.9943</td><td>0.9965</td><td>0.9409</td></tr>
+          <tr><td>1SAP2CV</td><td>PR107</td><td>0.9941</td><td>0.9880</td><td>0.9174</td><td>0.8727</td></tr>
+          <tr><td>1SAP3CV</td><td>PB217</td><td>0.9991</td><td>0.9965</td><td>0.9134</td><td>0.9906</td></tr>
+          <tr><td>1SAP11</td><td>GT1</td><td>0.9983</td><td>0.9967</td><td>0.9922</td><td>0.9681</td></tr>
+          <tr><td>1SAP21</td><td>PR107</td><td>0.9988</td><td>0.9914</td><td>0.9731</td><td>0.9867</td></tr>
+          <tr><td>1SAP31</td><td>PB217</td><td>0.9995</td><td>0.9984</td><td>0.9362</td><td>0.9962</td></tr>
+          <tr><td>1SAP14</td><td>GT1</td><td>0.9979</td><td>0.9969</td><td>0.9882</td><td>0.9782</td></tr>
+          <tr><td>1SAP24</td><td>PR107</td><td>0.9990</td><td>0.9974</td><td>0.9907</td><td>0.9800</td></tr>
+          <tr><td>1SAP34</td><td>PB217</td><td>0.9987</td><td>0.9977</td><td>0.9691</td><td>0.9890</td></tr>
+          <tr><td>1SAP121</td><td>GT1</td><td>0.9985</td><td>0.9974</td><td>0.9818</td><td>0.9769</td></tr>
+          <tr><td>1SAP221</td><td>PR107</td><td>0.9983</td><td>0.9976</td><td>0.9838</td><td>0.9821</td></tr>
+          <tr><td>1SAP321</td><td>PB217</td><td>0.9986</td><td>0.9969</td><td>0.9869</td><td>0.9664</td></tr>
+          <tr><td colspan="2">平均 R²／平均排名</td><td>0.9981／1.0</td><td>0.9957／2.2</td><td>0.9684／3.3</td><td>0.9622／3.7</td></tr>
+        </table>
+        <p class="src">原文 Table 2 原值：14 個樣品四模型的決定係數 R²（擬合 500 秒鬆弛段、三次重複）。末列為各模型的平均 R² 與平均排名（1 = 最佳）——Maxwell 在 14 個樣品上全部排名第一。<sup class="ref">[E4]</sup></p>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="pl" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit02.svg" alt="原文 Fig. 2 描線重繪：冪次定律的擬合與殘差，殘差呈系統性偏離">
+          <figcaption>原文 Fig. 2（自原圖描線的忠實重繪）：冪次定律的擬合（a）與殘差（b）——資料點在曲線兩端系統性彎離擬合線，殘差呈規律起伏而非隨機散布。「R² 還有 0.97、形狀卻不對」的實際長相。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="23" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fits23.svg" alt="原文 Fig. 3 描線重繪：雙指數與三指數 Maxwell 的擬合對比">
+          <figcaption>原文 Fig. 3（自原圖描線的忠實重繪）：雙指數（a）與三指數（b）Maxwell 擬合對比——雙指數中後段已不錯，但初期快衰段咬不住；三指數把前段也貼上，這就是為什麼最後選三指數。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="maxwell" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit04.svg" alt="原文 Fig. 4 描線重繪：廣義 Maxwell 擬合與隨機殘差">
+          <figcaption>原文 Fig. 4（自原圖描線的忠實重繪）：廣義 Maxwell（三指數）的擬合與殘差——擬合線穿過資料點、殘差只剩零均值噪聲。與冪次定律的系統波浪對照，就是「函數形狀對不對」的差別。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="wa" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit05.svg" alt="原文 Fig. 5 描線重繪：Wu–Abbott 擬合與殘差">
+          <figcaption>原文 Fig. 5（自原圖描線的忠實重繪）：Wu–Abbott 的擬合與殘差——品質僅次於 Maxwell、殘差近乎隨機，與它排名第二的成績一致。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="kww" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit06.svg" alt="原文 Fig. 6 描線重繪：拉伸指數擬合與殘差">
+          <figcaption>原文 Fig. 6（自原圖描線的忠實重繪）：拉伸指數（KWW）的擬合與殘差——殘差帶低頻漂移，與它墊底的排名一致；玻璃態鬆弛的常用形狀套在橡膠扭矩鬆弛上，就是形狀不對。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <p><strong>Wu–Abbott 的跨域借用值得多看一眼：</strong>它原本用來描述番茄果肉貯藏時的硬度鬆弛——搬到橡膠還成立，是因為鬆弛曲線的形狀本身是通用特徵。而且參數有物理解讀：a 正比於彈性成分、b 正比於黏性成分、c 描述初期鬆弛速率——實測 a 與 b 呈負相關（原文 Fig. 7），與模型假設一致。<sup class="ref">[E4]</sup></p>
+        <p><strong>但擬合好只是入場券——作者把參數回接分子結構才算得分：</strong>Maxwell 的總鬆弛時間 tm = Σt<sub>i</sub> 與總凝膠含量（宏觀凝膠＋微觀凝膠）相關（原文 Fig. 8）——單獨看其中一種凝膠反而無相關；與平均分子量則找不到可靠關係，顯示鬆弛行為受凝膠影響大於分子量。<sup class="ref">[E4]</sup></p>
+        <figure>
+          <div class="mw" data-mw="d-tmgel" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-tm-gel.svg" alt="左：tm 對總凝膠含量正相關；右：Wu–Abbott 的 a 與 b 負相關">
+          <figcaption>參數回接結構的兩條線索（原文 Table 1/2 原值重繪，內容取代原圖 Fig. 8 與 Fig. 7）：左——Maxwell 總鬆弛時間 tm 對總凝膠含量（宏觀＋微觀）呈正相關，兩個合成膠落在左下（凝膠 8–25%）；右——Wu–Abbott 的 a（彈性成分）與 b（黏性成分）負相關，與模型假設一致。<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <p><strong>重現性也要老實說：</strong>ML 本身的重複性 CV 不到 1%，但鬆弛參數的 CV 落在 3.7–11.5%——比 ML 糙一截。實務含義：這些參數當「趨勢指標」用比當「絕對值」用穩。<sup class="ref">[E4]</sup></p>
+        <table>
+          <tr><th>參數</th><th>來源模型</th><th>平均 CV</th><th>備註</th></tr>
+          <tr><td>ML(1+4)</td><td>—（粘度本體）</td><td>0.8%</td><td>重複性極佳，14 樣品最高 2.1%</td></tr>
+          <tr><td>t<sub>m</sub> = Σt<sub>i</sub></td><td>廣義 Maxwell</td><td>8.0%</td><td>總鬆弛時間；樣品間 1.6–23.9%</td></tr>
+          <tr><td>ML<sub>N</sub>(t)</td><td>廣義 Maxwell</td><td>7.2%</td><td>歸一化鬆弛扭矩；樣品間 1.0–14.4%</td></tr>
+          <tr><td>a（彈性成分）</td><td>Wu–Abbott</td><td>8.7%</td><td>兩個合成膠樣品最差（17–21%），NR 較穩</td></tr>
+          <tr><td>b（黏性成分）</td><td>Wu–Abbott</td><td>11.5%</td><td>最糙的一項，NR 樣品亦有離群值（17–48%）</td></tr>
+        </table>
+        <p class="src">原文 Table 3：各參數的變異係數 CV（每樣品三次重複的平均）。粘度讀值本身很穩，鬆弛模型參數整整糙一個數量級——這是「當趨勢指標用」的直接依據。<sup class="ref">[E4]</sup></p>
+        <p><strong>跟前文的關係要說清楚：</strong>前文用冪次定律，是因為 ASTM 的判讀體系與 Maláč 的 (a+1) 都建立在其上——單一參數、跨廠可比、接得上標準；Ehabe 顯示冪次定律在四個模型裡擬合度倒數、指數 a 也對不上具體結構量。兩者不矛盾，是分工不同：要跨廠比對、接標準，用冪次指數；要從鬆弛曲線挖結構情報，Maxwell 的 tm 能挖到凝膠含量這一層。<sup class="ref">[E4]</sup></p>
+        <p class="src">本篇文獻：Ehabe et al. 2005 [E4]——Fig. 1–6 為自原圖描線的忠實重繪、Fig. 7/8 由 Table 1/2 原值重繪涵蓋，Table 1/2/3 照原值轉載；冪次框架見 ASTM D1646 [E5] 與〈彈性指數〉篇 [E1]。</p>
+        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
+      </div>
+      <div class="lang-en">
+        <h3>Is the power law the only way to fit a relaxation curve? <span class="tag">Ehabe et al. 2005</span></h3>
+        <p class="topicmeta">This piece extends the main text's power-law fitting section — the power law M = k·t<sup>a</sup> was used there because it is the ASTM reading framework's default; here four candidate models are run on one shared dataset to see what the default costs and what a different model buys.</p>
+        <p class="q">M = k·t<sup>a</sup> is not the only option — would another model fit better?</p>
+        <p class="q">Why does a tomato-firmness model from food science show up in rubber?</p>
+        <p class="q">If a fit is beautiful but its parameters map to nothing structural, is it useful?</p><div class="mw-reveal"><button class="mw-reveal-btn"><span class="lang-zh">顯示說明</span><span class="lang-en">Show answer</span></button><div class="mw-reveal-body"><p><strong>The power law used earlier in the main text is the ASTM framework default — but "default" is not "best."</strong> Ehabe and co-workers (the same CIRAD team) ran one shared relaxation dataset through four models and ranked them by goodness of fit: 14 samples (12 natural rubbers — TSR3CV and TSR10 of the GT1, PB217, and PR107 clones — plus two synthetic polyisoprenes IR305 and Natsyn), ISO 289 conditions, a 500-second relaxation window, three replicates per sample. The four candidates were chosen with a rationale: the power law is the incumbent standard, the generalized Maxwell is the physical baseline of viscoelasticity, the stretched exponential is the usual shape for glassy-state relaxation, and Wu–Abbott is an empirical form whose parameters carry physical readings — a head-to-head of physics-based and empirical schools.<sup class="ref">[E4]</sup></p></div></div>
+        <figure>
+          <div class="mw" data-mw="d-typical" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-typical.svg" alt="Fig. 1 traced faithful redraw: typical Mooney curves for TSR10, TSR3CV, and Natsyn with parameter annotations">
+          <figcaption>The paper's Fig. 1 (faithful redraw traced from the original): typical Mooney curves for the three rubber types — TSR10 shows a high stress overshoot, TSR3CV is milder, the synthetic Natsyn has almost none; the decay segment after the rotor stops (right side of each curve) is what all four models must fit.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>Sample</th><th>Clone</th><th>Grade</th><th>Maturation (days)</th><th>ML(1+4)</th><th>tm (s)</th><th>Total gel %</th></tr>
+          <tr><td>IR305</td><td>—</td><td>synthetic PI</td><td>—</td><td>76</td><td>163</td><td>8</td></tr>
+          <tr><td>Natsyn</td><td>—</td><td>synthetic PI</td><td>—</td><td>85</td><td>198</td><td>25</td></tr>
+          <tr><td>1SAP1-CV</td><td>GT1</td><td>TSR3CV</td><td>—</td><td>66</td><td>185</td><td>40</td></tr>
+          <tr><td>1SAP2-CV</td><td>PR107</td><td>TSR3CV</td><td>—</td><td>54</td><td>196</td><td>39</td></tr>
+          <tr><td>1SAP3-CV</td><td>PB217</td><td>TSR3CV</td><td>—</td><td>85</td><td>204</td><td>44</td></tr>
+          <tr><td>1SAP1-1</td><td>GT1</td><td>TSR10</td><td>1</td><td>96</td><td>259</td><td>65</td></tr>
+          <tr><td>1SAP2-1</td><td>PR107</td><td>TSR10</td><td>1</td><td>91</td><td>271</td><td>65</td></tr>
+          <tr><td>1SAP3-1</td><td>PB217</td><td>TSR10</td><td>1</td><td>98</td><td>253</td><td>58</td></tr>
+          <tr><td>1SAP1-4</td><td>GT1</td><td>TSR10</td><td>4</td><td>104</td><td>290</td><td>67</td></tr>
+          <tr><td>1SAP2-4</td><td>PR107</td><td>TSR10</td><td>4</td><td>99</td><td>277</td><td>69</td></tr>
+          <tr><td>1SAP3-4</td><td>PB217</td><td>TSR10</td><td>4</td><td>95</td><td>249</td><td>59</td></tr>
+          <tr><td>1SAP1-21</td><td>GT1</td><td>TSR10</td><td>21</td><td>101</td><td>261</td><td>66</td></tr>
+          <tr><td>1SAP2-21</td><td>PR107</td><td>TSR10</td><td>21</td><td>100</td><td>297</td><td>70</td></tr>
+          <tr><td>1SAP3-21</td><td>PB217</td><td>TSR10</td><td>21</td><td>97</td><td>264</td><td>61</td></tr>
+        </table>
+        <p class="src">Original Table 1 values (six columns excerpted: clone, grade, maturation days, ML, Maxwell total relaxation time tm, total gel; the full table also lists Wu–Abbott parameters a/b and macro-/microgel detail). The design point sits in the last two columns: maturation spreads gel content from 8% to 70% — that spread is what makes the tm–gel relation (Fig. 8) visible.<sup class="ref">[E4]</sup></p>
+        <table>
+          <tr><th>Model</th><th>Equation</th><th>Background and parameter meaning</th></tr>
+          <tr><td>Power law</td><td>M = k·t<sup>a</sup></td><td>ASTM D1646 default; a is the relaxation-rate exponent</td></tr>
+          <tr><td>Stretched exponential (KWW)</td><td>M = exp(−(t/τ)<sup>β</sup>)</td><td>Common in glassy-state relaxation; β inversely related to the width of the relaxation-time distribution</td></tr>
+          <tr><td>Generalized Maxwell (tri-exponential)</td><td>ML<sub>N</sub>(t) = a + b·e<sup>−t/c</sup> + d·e<sup>−t/f</sup> + g·e<sup>−t/h</sup></td><td>Basic viscoelastic model: a is the residual torque (t→∞); c/f/h are three relaxation times t<sub>i</sub> = η<sub>i</sub>/G<sub>i</sub></td></tr>
+          <tr><td>Wu–Abbott</td><td>Y = 1 − a·ln(1+t) − b·t/(c+t)</td><td>Food-science empirical form (originally for firmness relaxation of stored tomato flesh); a ∝ elastic component, b ∝ viscous component</td></tr>
+        </table>
+        <p><strong>The ranking is unambiguous (the paper's Table 2):</strong> the tri-exponential Maxwell places first for every one of the 14 samples (mean rank 1.0, mean R² ≈ 0.999, residuals randomly distributed); Wu–Abbott comes second (2.2, R² ≈ 0.996); the power law third (3.3, R² ≈ 0.968) with systematically distributed residuals — not noise, but a shape the model intrinsically cannot capture; the stretched exponential finishes last (3.7, R² ≈ 0.962). Only the Maxwell and Wu–Abbott models were kept for the subsequent robustness assessment.<sup class="ref">[E4]</sup></p>
+        <figure>
+          <div class="mw" data-mw="d-r2" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-r2.svg" alt="Per-sample R² for the four models: Maxwell and Wu–Abbott hug the top, power law and stretched exponential scattered below">
+          <figcaption>Per-sample fit R² (original Table 2 values): the generalized Maxwell stays above 0.994 and ranks first on every sample; Wu–Abbott follows close behind; the power law and stretched exponential drop visibly and fluctuate sample to sample — the "mean rank" sits on top of a one-sided distribution.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <table>
+          <tr><th>Sample</th><th>Clone</th><th>Maxwell</th><th>Wu–Abbott</th><th>Power law</th><th>Stretched exp.</th></tr>
+          <tr><td>IR305</td><td>synthetic</td><td>0.9984</td><td>0.9965</td><td>0.9672</td><td>0.9676</td></tr>
+          <tr><td>Natsyn</td><td>synthetic</td><td>0.9965</td><td>0.9935</td><td>0.9606</td><td>0.8761</td></tr>
+          <tr><td>1SAP1CV</td><td>GT1</td><td>0.9974</td><td>0.9943</td><td>0.9965</td><td>0.9409</td></tr>
+          <tr><td>1SAP2CV</td><td>PR107</td><td>0.9941</td><td>0.9880</td><td>0.9174</td><td>0.8727</td></tr>
+          <tr><td>1SAP3CV</td><td>PB217</td><td>0.9991</td><td>0.9965</td><td>0.9134</td><td>0.9906</td></tr>
+          <tr><td>1SAP11</td><td>GT1</td><td>0.9983</td><td>0.9967</td><td>0.9922</td><td>0.9681</td></tr>
+          <tr><td>1SAP21</td><td>PR107</td><td>0.9988</td><td>0.9914</td><td>0.9731</td><td>0.9867</td></tr>
+          <tr><td>1SAP31</td><td>PB217</td><td>0.9995</td><td>0.9984</td><td>0.9362</td><td>0.9962</td></tr>
+          <tr><td>1SAP14</td><td>GT1</td><td>0.9979</td><td>0.9969</td><td>0.9882</td><td>0.9782</td></tr>
+          <tr><td>1SAP24</td><td>PR107</td><td>0.9990</td><td>0.9974</td><td>0.9907</td><td>0.9800</td></tr>
+          <tr><td>1SAP34</td><td>PB217</td><td>0.9987</td><td>0.9977</td><td>0.9691</td><td>0.9890</td></tr>
+          <tr><td>1SAP121</td><td>GT1</td><td>0.9985</td><td>0.9974</td><td>0.9818</td><td>0.9769</td></tr>
+          <tr><td>1SAP221</td><td>PR107</td><td>0.9983</td><td>0.9976</td><td>0.9838</td><td>0.9821</td></tr>
+          <tr><td>1SAP321</td><td>PB217</td><td>0.9986</td><td>0.9969</td><td>0.9869</td><td>0.9664</td></tr>
+          <tr><td colspan="2">Mean R² / mean rank</td><td>0.9981 / 1.0</td><td>0.9957 / 2.2</td><td>0.9684 / 3.3</td><td>0.9622 / 3.7</td></tr>
+        </table>
+        <p class="src">Original Table 2 values: coefficient of determination R² for the four models on each of the 14 samples (500 s relaxation window, three replicates). The last row gives each model's mean R² and mean rank (1 = best) — Maxwell ranked first on all 14 samples.<sup class="ref">[E4]</sup></p>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="pl" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit02.svg" alt="Fig. 2 traced faithful redraw: power-law fit and residuals showing systematic deviation">
+          <figcaption>The paper's Fig. 2 (faithful redraw traced from the original): the power-law fit (a) and its residuals (b) — data points bend away systematically at both ends of the curve and the residuals form a regular wave, not random scatter. This is what "R² of 0.97 with the wrong shape" actually looks like.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="23" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fits23.svg" alt="Fig. 3 traced faithful redraw: two- versus three-exponential Maxwell fits">
+          <figcaption>The paper's Fig. 3 (faithful redraw traced from the original): two-exponential (a) versus three-exponential (b) Maxwell fits — the two-term version already handles the later part but misses the fast initial decay; the third term catches it, which is why the tri-exponential form was kept.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="maxwell" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit04.svg" alt="Fig. 4 traced faithful redraw: generalized Maxwell fit with random residuals">
+          <figcaption>The paper's Fig. 4 (faithful redraw traced from the original): the generalized Maxwell (tri-exponential) fit and residuals — the fit line threads the data and the residuals are zero-mean noise. Against the power law's systematic wave, this is the difference between "the function shape fits" and "it does not".<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="wa" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit05.svg" alt="Fig. 5 traced faithful redraw: Wu–Abbott fit and residuals">
+          <figcaption>The paper's Fig. 5 (faithful redraw traced from the original): the Wu–Abbott fit and residuals — second only to Maxwell, residuals near-random, consistent with its runner-up ranking.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <figure>
+          <div class="mw" data-mw="d-models" data-arg="kww" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-fit06.svg" alt="Fig. 6 traced faithful redraw: stretched-exponential fit and residuals">
+          <figcaption>The paper's Fig. 6 (faithful redraw traced from the original): the stretched-exponential (KWW) fit and residuals — the residuals carry a low-frequency drift, matching its last-place ranking; the usual glassy-relaxation shape is simply the wrong shape for rubber torque decay.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <p><strong>The Wu–Abbott borrowing deserves a second look:</strong> it was originally written to describe firmness relaxation of stored tomato flesh — the cross-material borrowing works because the shape of a relaxation curve is a generic signature. And its parameters carry physical meaning: a is proportional to the elastic component, b to the viscous component, c describes the initial relaxation rate — the measured a and b are negatively correlated (the paper's Fig. 7), consistent with the model's assumption.<sup class="ref">[E4]</sup></p>
+        <p><strong>But a good fit is only the entry ticket — the authors wired the parameters back to structure:</strong> the Maxwell total relaxation time tm = Σt<sub>i</sub> correlates with total gel content (macrogel + microgel) (the paper's Fig. 8) — while neither gel fraction alone correlates; no reliable relation with mean molar masses was found, showing relaxation responds to gel more than to molecular weight.<sup class="ref">[E4]</sup></p>
+        <figure>
+          <div class="mw" data-mw="d-tmgel" tabindex="0"></div>
+      <img class="mw-print" src="figures/fig-topic-d-tm-gel.svg" alt="Left: tm correlates positively with total gel; right: Wu–Abbott a and b correlate negatively">
+          <figcaption>Two leads wiring parameters back to structure (redrawn from Table 1/2 values, replacing the original Figs. 8 and 7): left — the Maxwell total relaxation time tm relates positively to total gel content (macrogel + microgel), the two synthetics sitting low at 8–25% gel; right — Wu–Abbott's a (elastic) and b (viscous) are negatively correlated, consistent with the model's assumption.<sup class="ref">[E4]</sup></figcaption>
+        </figure>
+        <p><strong>Repeatability deserves honesty too:</strong> the CV of ML itself is under 1%, but the relaxation parameters show CVs of 3.7–11.5% — considerably rougher. Practical reading: treat these parameters as trend indicators rather than absolute values.<sup class="ref">[E4]</sup></p>
+        <table>
+          <tr><th>Parameter</th><th>Model</th><th>Mean CV</th><th>Note</th></tr>
+          <tr><td>ML(1+4)</td><td>— (viscosity itself)</td><td>0.8%</td><td>Excellent repeatability; max 2.1% across samples</td></tr>
+          <tr><td>t<sub>m</sub> = Σt<sub>i</sub></td><td>Generalized Maxwell</td><td>8.0%</td><td>Total relaxation time; 1.6–23.9% by sample</td></tr>
+          <tr><td>ML<sub>N</sub>(t)</td><td>Generalized Maxwell</td><td>7.2%</td><td>Normalized relaxation torque; 1.0–14.4%</td></tr>
+          <tr><td>a (elastic)</td><td>Wu–Abbott</td><td>8.7%</td><td>Worst on the two synthetics (17–21%); NR more stable</td></tr>
+          <tr><td>b (viscous)</td><td>Wu–Abbott</td><td>11.5%</td><td>Roughest of all; NR samples also show outliers (17–48%)</td></tr>
+        </table>
+        <p class="src">The paper's Table 3: coefficient of variation for each parameter (mean of three replicates per sample). The viscosity reading itself is stable, while the relaxation-model parameters are a full order of magnitude rougher — the direct basis for "use them as trend indicators."<sup class="ref">[E4]</sup></p>
+        <p><strong>The relation to the main text should be stated plainly:</strong> the power law was used because ASTM's reading framework and Maláč's (a+1) are built on it — a single comparable parameter that plugs into the standard; Ehabe shows the power law is among the weakest of the four fits, and its exponent a maps to no specific structural quantity. There is no contradiction, only a division of labor: for cross-plant comparison and standard compliance, use the power-law index; for mining structural information out of the relaxation curve, Maxwell's tm reaches the gel-content layer.<sup class="ref">[E4]</sup></p>
+        <p class="src">Sources: Ehabe et al. 2005 [E4] — Figs. 1–6 are faithful redraws traced from the originals; Figs. 7/8 are covered by a redraw from Table 1/2 values; Tables 1–3 transcribed with original values; the power-law framework in ASTM D1646 [E5] and the elasticity-index piece [E1].</p>
+        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
+      </div>
+    </div>
+
+    <div class="refs deeprefs" id="deeprefs">
+      <div class="lang-zh">
+        <p><strong>深入專案討論　延伸文獻</strong></p>
+        <ol style="list-style:none; padding-left:0;">
+          <li>[E1]J. Maláč, "Mooney Viscosity, Mooney Elasticity and Processability of Raw Natural Rubber", <em>Journal of Materials Science and Engineering with Advanced Technology</em>, 3(1), 67–87, 2011（期刊未指派 DOI）— 〈彈性指數〉篇：冪次定律 M=k·tᵃ、彈性指數 (a+1) 的推導與 18 品級實測。</li>
+          <li>[E2]B. Cantaloube &amp; S. Cocard (Michelin), "Revisiting the Rheological Characterization of NR Using a Mooney Viscometer", <em>KGK Kautschuk Gummi Kunststoffe</em>, 57(4), 168–171, 2004（期刊未指派 DOI）— 〈熔體破裂〉篇：變速掃描證明 NR 在 &lt;2 rpm 即進入熔體破裂。</li>
+          <li>[E3]C. Kim, M.-H. Morel, J. Sainte Beuve, S. Guilbert &amp; F. Bonfils, "Better Characterization of Raw Natural Rubber by Decreasing the Rotor Speed of Mooney Viscometer: Role of Macromolecular Structure", <em>Polymer Engineering and Science</em>, 50(2), 240–248, 2010 — 〈變速木尼〉篇：VR2 對應 Mn、VR0.05 對應 Mw。DOI: 10.1002/pen.21525</li>
+          <li>[E4]E. Ehabe, F. Bonfils, C. Aymard, A.K. Akinlabi &amp; J. Sainte Beuve, "Modelling of Mooney Viscosity Relaxation in Natural Rubber", <em>Polymer Testing</em>, 24(5), 620–627, 2005 — 〈鬆弛模型比較〉篇：四模型同場比較與 tm–凝膠相關。DOI: 10.1016/j.polymertesting.2005.03.006</li>
+          <li>[E5]ASTM D1646-04, <em>Standard Test Methods for Rubber—Viscosity, Stress Relaxation, and Pre-Vulcanization Characteristics (Mooney Viscometer)</em>, ASTM International, 2004 — 鬆弛參數定義（§12.3）、報告項（§13.1）、NOTE 11 範例。</li>
+          <li>[E6]ISO 289-1:2015, <em>Rubber, unvulcanized — Determinations using a shearing-disc viscometer — Part 1</em>, ISO, 2015 — 〈鬆弛模型比較〉篇的測試條件基準。</li>
+        </ol>
+      </div>
+      <div class="lang-en">
+        <p><strong>Deep-Dive References</strong></p>
+        <ol style="list-style:none; padding-left:0;">
+          <li>[E1]J. Maláč, "Mooney Viscosity, Mooney Elasticity and Processability of Raw Natural Rubber", <em>Journal of Materials Science and Engineering with Advanced Technology</em>, 3(1), 67–87, 2011 (no DOI assigned by the journal) — Elasticity-index piece: the power law M=k·tᵃ, the (a+1) elasticity index derivation, and 18-grade data.</li>
+          <li>[E2]B. Cantaloube &amp; S. Cocard (Michelin), "Revisiting the Rheological Characterization of NR Using a Mooney Viscometer", <em>KGK Kautschuk Gummi Kunststoffe</em>, 57(4), 168–171, 2004 (no DOI assigned by the journal) — Melt-fracture piece: variable-speed scans showing NR enters melt fracture below 2 rpm.</li>
+          <li>[E3]C. Kim, M.-H. Morel, J. Sainte Beuve, S. Guilbert &amp; F. Bonfils, "Better Characterization of Raw Natural Rubber by Decreasing the Rotor Speed of Mooney Viscometer: Role of Macromolecular Structure", <em>Polymer Engineering and Science</em>, 50(2), 240–248, 2010 — Variable-speed piece: VR2 ↔ Mn, VR0.05 ↔ Mw. DOI: 10.1002/pen.21525</li>
+          <li>[E4]E. Ehabe, F. Bonfils, C. Aymard, A.K. Akinlabi &amp; J. Sainte Beuve, "Modelling of Mooney Viscosity Relaxation in Natural Rubber", <em>Polymer Testing</em>, 24(5), 620–627, 2005 — Model-comparison piece: the four-model comparison and the tm–gel correlation. DOI: 10.1016/j.polymertesting.2005.03.006</li>
+          <li>[E5]ASTM D1646-04, <em>Standard Test Methods for Rubber—Viscosity, Stress Relaxation, and Pre-Vulcanization Characteristics (Mooney Viscometer)</em>, ASTM International, 2004 — relaxation parameter definitions (§12.3), report items (§13.1), the NOTE 11 example.</li>
+          <li>[E6]ISO 289-1:2015, <em>Rubber, unvulcanized — Determinations using a shearing-disc viscometer — Part 1</em>, ISO, 2015 — test-condition basis for the model-comparison piece.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">郭權德橡膠技術工作室 · 2026 年 9 月</div>
+</div>
+
+<script>
+function setLang(l) {
+  document.body.classList.toggle('show-en', l === 'en');
+  document.getElementById('btn-zh').classList.toggle('on', l === 'zh');
+  document.getElementById('btn-en').classList.toggle('on', l === 'en');
+  document.documentElement.lang = l === 'en' ? 'en' : 'zh-Hant';
+}
+function setDeep() {
+  var on = document.body.classList.toggle('show-deep');
+  document.getElementById('btn-deep').classList.toggle('on', on);
+  if (on) document.getElementById('deep').scrollIntoView({ behavior: 'smooth' });
+}
+(function () {
+  var m = location.hash.match(/^#pdf-(a|b|c|d)$/);
+  if (m) {
+    document.body.classList.add('pm-' + m[1]);
+    document.body.classList.add('show-deep');
+    var t = document.getElementById('topic-' + m[1]);
+    if (t) t.scrollIntoView();
+  }
+})();
+</script>
+<script src="mooney-machine.js"></script>
+<script src="mw-core.js"></script>
+<script src="mw-spec-band.js"></script>
+<script src="mw-viscosity-curve.js"></script>
+<script src="mw-scorch-curve.js"></script>
+<script src="mw-scorch-t5.js"></script>
+<script src="mw-relaxation.js"></script>
+<script src="mw-mooney-level.js"></script>
+<script src="mw-relax-ab.js"></script>
+<script src="mw-power-law.js"></script>
+<script src="mw-viscosity-pour.js"></script>
+<script src="mw-code-decoder.js"></script>
+<script src="mw-curve-regions.js"></script>
+<script src="mw-trap-quiz.js"></script>
+<script src="mw-a-curve.js"></script>
+<script src="mw-a-params.js"></script>
+<script src="mw-a-bars.js"></script>
+<script src="mw-a-energy.js"></script>
+<script src="mw-a-grades.js"></script>
+<script src="mw-b-rpm.js"></script>
+<script src="mw-b-flow.js"></script>
+<script src="mw-b-temp.js"></script>
+<script src="mw-b-p0.js"></script>
+<script src="mw-b-origins.js"></script>
+<script src="mw-c-mmd.js"></script>
+<script src="mw-c-vr.js"></script>
+<script src="mw-c-scatter.js"></script>
+<script src="mw-c-mwip.js"></script>
+<script src="mw-c-blend.js"></script>
+<script src="mw-c-peptized.js"></script>
+<script src="mw-c-industrial.js"></script>
+<script src="mw-c-gstar.js"></script>
+<script src="mw-c-gstarvr.js"></script>
+<script src="mw-d-typical.js"></script>
+<script src="mw-d-models.js"></script>
+<script src="mw-d-r2.js"></script>
+<script src="mw-d-tmgel.js"></script>
+</body>
+</html>

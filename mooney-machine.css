@@ -1,0 +1,65 @@
+/* 木尼粘度計互動導覽圖——沿用 ctr-explainer.css 變數 */
+.mooney-machine { margin: 10px 0 4px; }
+.mooney-machine:focus { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
+
+.mm-card {
+  border: 1px solid var(--line);
+  background: var(--soft);
+  border-radius: 10px;
+  padding: 12px 14px 12px;
+}
+
+.mm-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mm-badge {
+  background: var(--tag-bg); color: var(--accent);
+  font-size: 12px; font-weight: 600; letter-spacing: .02em;
+  padding: 2px 9px; border-radius: 999px; white-space: nowrap;
+}
+.mm-stagename { font-size: 15px; font-weight: 700; color: var(--ink); }
+.mm-presenter .mm-stagename { font-size: 19px; }
+
+.mm-panels { display: flex; gap: 12px; margin-top: 10px; }
+.mm-svg {
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  display: block; width: 100%; height: auto;
+}
+.mm-machine-wrap { flex: 1.08; min-width: 0; }
+.mm-curve-wrap { flex: 1; min-width: 0; }
+.mm-curve-wrap svg { cursor: crosshair; }
+@media (max-width: 700px) { .mm-panels { flex-direction: column; } }
+
+.mm-guide { font-size: 14px; line-height: 1.6; color: var(--ink); margin-top: 10px; min-height: 2.8em; }
+.mm-presenter .mm-guide { font-size: 17px; }
+.mm-readout {
+  display: flex; gap: 22px; margin-top: 4px;
+  font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.mm-readout b { color: var(--ink); font-weight: 700; }
+.mm-presenter .mm-readout { font-size: 19px; }
+
+.mm-controls { display: flex; align-items: center; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
+.mm-btn {
+  font: inherit; font-size: 13px; line-height: 1.4;
+  padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px;
+  background: #fff; color: var(--ink); cursor: pointer;
+}
+.mm-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mm-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.mm-dots { display: flex; gap: 6px; margin: 0 4px; }
+.mm-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; background: #c6d2df; cursor: pointer; }
+.mm-dot.done { background: var(--accent2); }
+.mm-dot.on { background: var(--accent); transform: scale(1.25); }
+.mm-hint { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+/* 圖內元素 */
+.mm-svg text { font-family: inherit; }
+.mm-focus { animation: mmPulse 1.6s ease-in-out infinite; pointer-events: none; }
+@keyframes mmPulse { 0%,100% { opacity: .18; } 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .mm-focus { animation: none; opacity: .3; } }
+
+/* 靜態備援：JS 掛載後螢幕上藏起原圖；列印一律顯示原圖、藏互動 */
+.mm-live .mm-print { display: none; }
+@media print {
+  .mooney-machine { display: none !important; }
+  .mm-print { display: block !important; }
+}

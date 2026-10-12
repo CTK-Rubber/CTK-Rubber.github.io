@@ -1,0 +1,93 @@
+/* mw-widgets.css — 木尼互動教材 widget 共用樣式（沿用 ctr-explainer.css 變數） */
+.mw { margin: 10px 0 4px; }
+.mw:focus { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
+.mw-missing { font-size: 12px; color: var(--muted); border: 1px dashed var(--line); padding: 8px; border-radius: 8px; }
+
+.mw-card {
+  border: 1px solid var(--line);
+  background: var(--soft);
+  border-radius: 10px;
+  padding: 12px 14px 12px;
+  text-align: left;
+}
+.mw-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mw-badge {
+  background: var(--tag-bg); color: var(--accent);
+  font-size: 12px; font-weight: 600; letter-spacing: .02em;
+  padding: 2px 9px; border-radius: 999px; white-space: nowrap;
+}
+.mw-stagename { font-size: 15px; font-weight: 700; color: var(--ink); }
+.mw-presenter .mw-stagename { font-size: 19px; }
+
+.mw-panels { display: flex; gap: 12px; margin-top: 10px; }
+.mw-panel { flex: 1; min-width: 0; }
+.mw-svg {
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  display: block; width: 100%; height: auto;
+}
+@media (max-width: 700px) { .mw-panels { flex-direction: column; } }
+
+.mw-guide { font-size: 14px; line-height: 1.6; color: var(--ink); margin-top: 10px; min-height: 1.6em; }
+.mw-presenter .mw-guide { font-size: 17px; }
+.mw-readout {
+  display: flex; gap: 22px; margin-top: 4px; flex-wrap: wrap;
+  font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.mw-readout b { color: var(--ink); font-weight: 700; }
+.mw-presenter .mw-readout { font-size: 19px; }
+.mw-readout:empty { display: none; }
+
+.mw-params { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 10px; }
+.mw-params:empty { display: none; }
+.mw-param { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mw-plabel { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.mw-plabel b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.mw-param input[type=range] { width: 160px; accent-color: var(--accent); }
+.mw-choice { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.mw-cb.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.mw-presenter .mw-param { font-size: 16px; }
+.mw-presenter .mw-plabel { font-size: 16px; }
+
+.mw-controls { display: flex; align-items: center; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
+.mw-btn {
+  font: inherit; font-size: 13px; line-height: 1.4;
+  padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px;
+  background: #fff; color: var(--ink); cursor: pointer;
+}
+.mw-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mw-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.mw-dots { display: flex; gap: 6px; margin: 0 4px; }
+.mw-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; background: #c6d2df; cursor: pointer; }
+.mw-dot.done { background: var(--accent2); }
+.mw-dot.on { background: var(--accent); transform: scale(1.25); }
+.mw-hint { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+.mw-svg text { font-family: inherit; }
+.mw-focus { animation: mwPulse 1.6s ease-in-out infinite; pointer-events: none; }
+@keyframes mwPulse { 0%,100% { opacity: .18; } 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .mw-focus { animation: none; opacity: .3; } }
+
+/* 通用收合（§8 答案、FAQ） */
+.mw-reveal-body { display: none; }
+.mw-reveal.open .mw-reveal-body { display: block; }
+.mw-reveal-btn {
+  font: inherit; font-size: 13px; padding: 4px 14px; margin: 4px 0 6px;
+  border: 1px solid var(--accent); border-radius: 999px;
+  background: #fff; color: var(--accent); cursor: pointer;
+}
+.mw-reveal-btn:hover { background: var(--accent); color: #fff; }
+details.mw-faq { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; margin: 8px 0; background: #fff; }
+details.mw-faq summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+details.mw-faq summary:hover { text-decoration: underline; }
+details.mw-faq p { margin: 6px 0 4px; }
+
+/* 靜態備援：JS 掛載後螢幕藏原圖；列印一律顯示原圖、藏互動 */
+.mw-live .mw-print { display: none; }
+@media print {
+  .mw { display: none !important; }
+  .mw-print { display: block !important; }
+  details.mw-faq { border: none; padding: 0; }
+  details.mw-faq summary { font-weight: 600; }
+  .mw-reveal-body { display: block !important; }
+  .mw-reveal-btn { display: none; }
+}
