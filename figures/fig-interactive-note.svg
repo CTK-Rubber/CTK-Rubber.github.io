@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" font-family="sans-serif">
+  <rect width="520" height="120" fill="#fff"/>
+  <rect x="40" y="24" width="440" height="72" rx="10" fill="#f5f7fa" stroke="#d9e2ec" stroke-width="1.6" stroke-dasharray="6 5"/>
+  <text x="260" y="56" font-size="13" text-anchor="middle" fill="#52606d" font-weight="600">此處為互動演示——請見線上版</text>
+  <text x="260" y="78" font-size="12" text-anchor="middle" fill="#52606d">Interactive demo — see the web edition (ctk-rubber.github.io/mooney-interactive.html)</text>
+</svg>
