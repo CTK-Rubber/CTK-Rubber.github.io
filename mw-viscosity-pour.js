@@ -49,12 +49,15 @@ MW.register('viscosity-pour', {
       /* 杯體描線＋嘴 */
       U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: 'none', stroke: P.mut, 'stroke-width': 2.2 }, c.g);
       U.path('M30 -56 L46 -48 L33 -40', { fill: 'none', stroke: P.mut, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, c.g);
-      /* 杯內液面高光 */
-      c.sheen = U.el('line', { stroke: '#fff', 'stroke-width': 1.2, opacity: 0 }, svg);
-      /* 液線＋斷點滴 */
-      c.stream = U.path('', { fill: 'none', 'stroke-linecap': 'round', opacity: 0 }, svg);
+      /* 杯內液面高光（同 clip——液面線被杯內緣裁成水平線段） */
+      c.sheen = U.el('line', { stroke: '#fff', 'stroke-width': 1.2, opacity: 0,
+        'clip-path': 'url(#cupclip' + U.uid + cx + ')' }, svg);
+      /* 噴流：9 段短線逐段變細（連續性 v↑→截面↓，Mariotte 變細律）＋斷點滴＋捲繩 */
+      c.segs = [];
+      for (var si = 0; si < 9; si++) c.segs.push(U.el('line', { stroke: col, 'stroke-linecap': 'round', opacity: 0 }, svg));
       c.drops = [];
-      for (var i = 0; i < 3; i++) c.drops.push(U.el('circle', { r: 2.6, fill: col, opacity: 0 }, svg));
+      for (var i = 0; i < 4; i++) c.drops.push(U.el('circle', { r: 2.6, fill: col, opacity: 0 }, svg));
+      c.coil = U.path('', { fill: 'none', stroke: col, 'stroke-width': 2, 'stroke-linecap': 'round', opacity: 0 }, svg);
       c.puddle = U.el('ellipse', { cx: 0, cy: 259, rx: 5, ry: 2.4, fill: col, opacity: 0 }, svg);
       c.puddleIn = U.el('ellipse', { cx: 0, cy: 258, rx: 3, ry: 1.6, fill: col, opacity: 0 }, svg);
       c.blob = U.el('circle', { cx: 0, cy: 0, r: 4.5, fill: col, opacity: 0 }, svg);
@@ -96,7 +99,9 @@ MW.register('viscosity-pour', {
     var P = MW.PAL, v = ctx.params.visc;
     var elapsed = ctx.u * 8;
     var tu = Math.min(1, elapsed / 0.8);
-    var tilt = r.TILT * tu * (2 - tu);
+    /* 收尾回正：最後 1 秒杯身回直立，循環重播不是「兩個空杯掛半空」 */
+    var tiltMul = elapsed > 7 ? Math.max(0, 8 - elapsed) : 1;
+    var tilt = r.TILT * tu * (2 - tu) * tiltMul;
     var ptR = this._pourTime(v);
     var fl = this._fluid(v, P);
 
@@ -132,37 +137,72 @@ MW.register('viscosity-pour', {
       c.liquid.setAttribute('y', surfY.toFixed(1));
       c.liquid.setAttribute('height', (300 - surfY).toFixed(1));
       c.liquid.setAttribute('fill', col);
+      c.sheen.setAttribute('x1', (c.cx - 80).toFixed(1));
+      c.sheen.setAttribute('x2', (c.cx + 80).toFixed(1));
+      c.sheen.setAttribute('y1', surfY.toFixed(1));
+      c.sheen.setAttribute('y2', surfY.toFixed(1));
       c.sheen.setAttribute('opacity', f > 0.02 ? 0.5 : 0);
 
       /* 杯嘴出水點（世界座標） */
       var lip = this._w(c.cx, tilt, LIP[0], LIP[1]);
       var sx = lip[0], sy = lip[1];
 
-      /* 液線：出水→盤面；黏的粗而繩、稀的細而直；末段變細斷開 */
-      var fAll = pt === Infinity ? 0 : Math.min(1, p / 0.06);          /* 伸到盤面的進度 */
-      var wob = Math.sin(ctx.t * (vv > 60 ? 2.2 : 9) + c.cx) * (vv > 60 ? 1.2 : 3 * (1 - Math.min(1, vv / 110)));
-      var exx = sx + (tx - sx) * fAll, eyy = sy + (258 - sy) * fAll;
-      var mx = (sx + exx) / 2 + wob, my = (sy + eyy) / 2 + 6;
-      var taper = p < 0.06 ? p / 0.06 : (p > 0.88 ? Math.max(0, (1 - p) / 0.12) : 1);
-      var wbase = 1.6 + 4.2 * Math.min(1, vv / 100);                   /* 黏→繩狀粗流 */
-      c.stream.setAttribute('d', 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) +
-        ' Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + exx.toFixed(1) + ' ' + eyy.toFixed(1));
-      c.stream.setAttribute('stroke', col);
-      c.stream.setAttribute('stroke-width', (wbase * taper).toFixed(1));
-      c.stream.setAttribute('opacity', (p > 0 && p < 0.94 && pt !== Infinity) ? 0.92 : 0);
+      /* ── 噴流物理（AJP / PRL 正本）──
+         軌跡：離唇拋物線 x∝s、y∝s²（水平初速＋重力加速下彎）
+         粗細：連續性截面∝1/v——v(s)=√(vx²+(2g₂s)²)，黏的下限高、稀的細到幾乎斷
+         斷點：稀液 Rayleigh 半路散成滴；黏液柱拉長不斷（delayed capillary breakup）
+         落地：蜂蜜級在盤面捲繩（liquid rope coiling）——小圈擺動示意 */
+      var flowOn = pt !== Infinity && p > 0.005 && p < 0.985 && tilt > 30;
+      var sEnd = p > 0.9 ? Math.max(0.04, (1 - p) / 0.1) : Math.min(1, p / 0.06 + 0.15);
+      var breakS = vv >= 60 ? 2 : (vv < 25 ? 0.45 : 0.8);
+      var thick0 = 1.6 + 4.6 * Math.min(1, vv / 100);
+      var vx = tx - sx, g2 = 258 - sy, spd0 = Math.max(30, Math.abs(vx));
+      var minFrac = vv >= 60 ? 0.5 : 0.12;
+      for (var sj = 0; sj < 9; sj++) {
+        var seg = c.segs[sj];
+        if (!flowOn || sj / 9 >= Math.min(sEnd, breakS)) { seg.setAttribute('opacity', 0); continue; }
+        var sa = sj / 9 * sEnd, sb = (sj + 1) / 9 * sEnd;
+        var sm = (sa + sb) / 2;
+        var spd = Math.sqrt(vx * vx + (2 * g2 * sm) * (2 * g2 * sm));
+        var wseg = thick0 * Math.max(minFrac, spd0 / spd);
+        seg.setAttribute('x1', (sx + vx * sa).toFixed(1));
+        seg.setAttribute('y1', (sy + g2 * sa * sa).toFixed(1));
+        seg.setAttribute('x2', (sx + vx * sb).toFixed(1));
+        seg.setAttribute('y2', (sy + g2 * sb * sb).toFixed(1));
+        seg.setAttribute('stroke', col);
+        seg.setAttribute('stroke-width', wseg.toFixed(1));
+        seg.setAttribute('opacity', 0.92);
+      }
 
-      /* 末段斷點滴：沿落下路徑錯開墜落（黏的滴得慢） */
-      var dripPh = p > 0.86 && p < 1 && pt !== Infinity;
-      for (var di = 0; di < 3; di++) {
+      /* 斷點下段＋收尾回縮滴：稀液在 breakS 後散開成小滴（帶抖動）；
+         末段液線退回唇邊時，殘段化成慢滴（黏的拖長絲） */
+      var dripPh = flowOn && (p > 0.88 || breakS < sEnd);
+      for (var di = 0; di < 4; di++) {
         var dr = c.drops[di];
         if (dripPh) {
-          var ph = ((ctx.t * (vv > 60 ? 1.4 : 3.2)) + di * 0.37) % 1;
-          var px = sx + (tx - sx) * ph, py = sy + (258 - sy) * ph * ph;
-          dr.setAttribute('cx', px.toFixed(1)); dr.setAttribute('cy', py.toFixed(1));
-          dr.setAttribute('r', (2.6 + Math.min(1, vv / 100) * 1.4).toFixed(1));
-          dr.setAttribute('opacity', 0.85 * (1 - ph * 0.5)); dr.setAttribute('fill', col);
+          var span = p > 0.88 ? [0.5, sEnd] : [breakS, sEnd];
+          var ph = ((ctx.t * (vv > 60 ? 1.3 : 3.4)) + di * 0.29) % 1;
+          var ds = span[0] + (span[1] - span[0]) * ph;
+          var jit = vv > 60 ? 0 : Math.sin(di * 7 + ctx.t * 11) * 3;
+          dr.setAttribute('cx', (sx + vx * ds + jit).toFixed(1));
+          dr.setAttribute('cy', (sy + g2 * ds * ds).toFixed(1));
+          dr.setAttribute('r', (1.8 + Math.min(1, vv / 100) * 1.8 + ph).toFixed(1));
+          dr.setAttribute('opacity', (0.85 * (1 - ph * 0.45)).toFixed(2));
+          dr.setAttribute('fill', col);
         } else dr.setAttribute('opacity', 0);
       }
+
+      /* 蜂蜜捲繩：落點小圈左右擺（液繩在盤面盤卷的招牌外觀） */
+      var coilOn = flowOn && vv >= 60 && sEnd > 0.85;
+      if (coilOn) {
+        var cw = Math.sin(ctx.t * 9 + c.cx) * 5;
+        var cyT = 258 - (2.4 + Math.pow(Math.min(1, p), 0.8) * (2 + vv / 9));
+        c.coil.setAttribute('d', 'M' + (tx - 7 + cw * 0.3).toFixed(1) + ' ' + cyT.toFixed(1) +
+          ' q3.5 -4 7 0 q-3.5 4 -7 0 M' + (tx + cw * 0.6 - 5).toFixed(1) + ' ' + (cyT - 4.5).toFixed(1) +
+          ' q2.5 -3.5 5 0 q-2.5 3.5 -5 0');
+        c.coil.setAttribute('stroke', col);
+        c.coil.setAttribute('opacity', 0.65);
+      } else c.coil.setAttribute('opacity', 0);
 
       /* 盤中積液：水攤平薄、蜜堆高成丘 */
       var spread = 46 * Math.pow(p, 0.7) * (1 - Math.min(0.55, vv / 180));
@@ -179,8 +219,8 @@ MW.register('viscosity-pour', {
       c.puddleIn.setAttribute('opacity', Math.min(1, p * 5) * 0.35);
       c.puddleIn.setAttribute('fill', '#fff');
 
-      /* 橡膠：杯口掛一顆不走的膠 */
-      var hang = pt === Infinity && elapsed > 1.0;
+      /* 橡膠：杯口掛一顆不走的膠（回正後藏起——留在杯裡看起來像滿杯膠） */
+      var hang = pt === Infinity && elapsed > 1.0 && tilt > 20;
       c.blob.setAttribute('cx', sx.toFixed(1));
       c.blob.setAttribute('cy', (sy + 4).toFixed(1));
       c.blob.setAttribute('opacity', hang ? 0.9 : 0);
