@@ -46,8 +46,13 @@ MW.register('rotovisc', {
     r.spinArrow = U.path('M196 52 a9 9 0 1 1 -6 8', { fill: 'none', stroke: P.acc, 'stroke-width': 2 }, svg);
     U.path('M189 55 l-4 7 l8 -1 z', { fill: P.acc }, svg);
 
-    /* 主軸（頂到轉子盤面） */
+    /* 主軸（頂到轉子盤面）＋浸液刻線（真機主軸上有對齊液面的凹痕） */
     U.el('rect', { x: 158, y: 78, width: 6, height: 119, fill: '#8a9099', stroke: 'none' }, svg);
+    U.el('line', { x1: 156.5, y1: 160, x2: 165.5, y2: 160, stroke: '#fff', 'stroke-width': 2.6 }, svg);
+    U.el('line', { x1: 156.5, y1: 160, x2: 165.5, y2: 160, stroke: '#4b5563', 'stroke-width': 1 }, svg);
+    /* U 形護架（guard leg）——Brookfield 標配，ISO 2555 附錄 B 同型 */
+    U.path('M140 80 L140 212 Q140 224 152 224 L170 224 Q182 224 182 212 L182 80',
+      { fill: 'none', stroke: '#9aa3ad', 'stroke-width': 2.6, 'stroke-linecap': 'round', opacity: 0.85 }, svg);
     /* 轉子（圓盤＋轉向刻線，沉在液面下） */
     r.rotorG = U.el('g', {}, svg);
     r.rotorDisc = U.el('ellipse', { cx: 161, cy: 0, rx: 26, ry: 8, fill: '#6b7280', stroke: '#4b5563', 'stroke-width': 1.4 }, r.rotorG);
@@ -88,7 +93,7 @@ MW.register('rotovisc', {
     r.needle = U.el('line', { x1: GX, y1: GY, x2: GX + GR - 16, y2: GY, stroke: P.warn, 'stroke-width': 3, 'stroke-linecap': 'round' }, svg);
     U.el('circle', { cx: GX, cy: GY, r: 5, fill: P.warn }, svg);
     r.gaugeTxt = U.txt({ x: GX, y: GY + 34, 'font-size': 13, 'text-anchor': 'middle', fill: P.ink, 'font-weight': 700 }, '', svg);
-    U.bi({ x: GX, y: GY + 52, 'font-size': 10, 'text-anchor': 'middle', fill: P.mut }, '抗力讀數', 'drag reading', svg);
+    U.bi({ x: GX, y: GY + 52, 'font-size': 10, 'text-anchor': 'middle', fill: P.mut }, '扭矩 % torque', 'torque %', svg);
 
     /* 橡膠警示 */
     r.stall = U.el('g', { opacity: 0 }, svg);
@@ -152,7 +157,7 @@ MW.register('rotovisc', {
         : ['轉速 ≈ <b>' + (spin * 60).toFixed(0) + '</b> rpm', 'Rotor speed ≈ <b>' + (spin * 60).toFixed(0) + '</b> rpm'],
       v >= 99.5
         ? ['抗力讀數 <b>破表</b>——儀器吃不消', 'Drag reading <b>pegged</b> — beyond the instrument']
-        : ['抗力讀數 <b>' + Math.round(v) + '</b>', 'Drag reading <b>' + Math.round(v) + '</b>']
+        : ['抗力讀數 <b>' + Math.round(v) + '%</b>', 'Drag reading <b>' + Math.round(v) + '%</b>']
     ];
   },
 
@@ -161,6 +166,6 @@ MW.register('rotovisc', {
     if (v >= 99.5) return ['橡膠放進來：轉子原地抖、錶針打到紅區——這就是為什麼橡膠要用密閉模腔的木尼粘度計，不是這種開放式黏度計。',
       'Drop rubber in: the rotor just twitches and the needle pegs — that is why rubber needs the sealed-die Mooney, not an open viscometer.'];
     if (v < 8) return ['水幾乎沒有抗力——轉子飛轉、讀數貼零。一般流體用這台就夠。', 'Water gives almost no drag — the rotor spins freely and the reading hugs zero. An open viscometer is enough for ordinary fluids.'];
-    return ['黏一點的流體：轉子被拖慢、錶針爬高——抗力讀數就是粘度的量測。', 'A thicker fluid drags the rotor down and the needle climbs — the drag reading is the viscosity measurement.'];
+    return ['黏一點的流體：轉子被拖慢、錶針爬高——錶上是扭矩百分比，同樣轉速越黏抗力越大；真實儀器還要選轉子大小與轉速檔位。', 'A thicker fluid drags the rotor down and the needle climbs — the dial reads torque percent; more drag at the same speed means more viscosity. Real instruments also offer spindle and speed choices.'];
   }
 });
