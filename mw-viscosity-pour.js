@@ -31,19 +31,33 @@ MW.register('viscosity-pour', {
   },
 
   build: function (svgs, U) {
-    var svg = svgs[0], P = U.PAL, r = { TILT: 65 };
+    var svg = svgs[0], P = U.PAL, r = { TILT: 72, PIVX: 31, PIVY: 52 };
     U.el('rect', { x: 0, y: 0, width: 520, height: 300, fill: '#fff' }, svg);
 
-    /* 杯組：原點在杯中心，傾倒時整組繞原點順時針轉 TILT 度 */
-    function cup(cx) {
-      var g = U.el('g', { transform: 'translate(' + cx + ' 96)' }, svg);
-      var c = { g: g, cx: cx };
-      U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: '#fff', stroke: 'none' }, g);
-      c.liquid = U.el('rect', { x: -29, y: -40, width: 58, height: 88, fill: P.acc }, g);
-      U.path('M30 -56 L44 -49 L32 -42', { fill: 'none', stroke: P.mut, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, g); /* 杯嘴 */
-      U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: 'none', stroke: P.mut, 'stroke-width': 2.2 }, g);
+    /* 杯組：杯體繞右下緣（杯嘴側底部）傾倒——真實傾倒的支點在杯緣不在中心。
+       液面永遠水平：液體畫在「世界座標」裡、用旋轉後的杯內緣當 clip——
+       杯子斜、液面不斜（CT 2026-10-12 指出前版液面跟著杯斜＝物理錯誤）。 */
+    function cup(cx, col) {
+      var c = { cx: cx };
+      c.clip = U.el('clipPath', { id: 'cupclip' + U.uid + cx }, svg);
+      c.clipPath = U.path('', {}, c.clip);
+      c.g = U.el('g', {}, svg);
+      U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: '#fff', stroke: 'none', opacity: 0.85 }, c.g);
+      U.path('M30 -56 L46 -48 L33 -40', { fill: '#fff', opacity: 0.85 }, c.g);            /* 杯嘴體 */
+      /* 液體：世界座標水平面矩形，被旋轉杯內緣裁切 */
+      c.liquid = U.el('rect', { x: cx - 80, y: 0, width: 160, height: 0, fill: col, 'clip-path': 'url(#cupclip' + U.uid + cx + ')' }, svg);
+      /* 杯體描線＋嘴 */
+      U.el('rect', { x: -34, y: -56, width: 68, height: 108, rx: 9, fill: 'none', stroke: P.mut, 'stroke-width': 2.2 }, c.g);
+      U.path('M30 -56 L46 -48 L33 -40', { fill: 'none', stroke: P.mut, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, c.g);
+      /* 杯內液面高光 */
+      c.sheen = U.el('line', { stroke: '#fff', 'stroke-width': 1.2, opacity: 0 }, svg);
+      /* 液線＋斷點滴 */
       c.stream = U.path('', { fill: 'none', 'stroke-linecap': 'round', opacity: 0 }, svg);
-      c.blob = U.el('circle', { cx: 0, cy: 0, r: 4.5, fill: P.acc2, opacity: 0 }, svg);
+      c.drops = [];
+      for (var i = 0; i < 3; i++) c.drops.push(U.el('circle', { r: 2.6, fill: col, opacity: 0 }, svg));
+      c.puddle = U.el('ellipse', { cx: 0, cy: 259, rx: 5, ry: 2.4, fill: col, opacity: 0 }, svg);
+      c.puddleIn = U.el('ellipse', { cx: 0, cy: 258, rx: 3, ry: 1.6, fill: col, opacity: 0 }, svg);
+      c.blob = U.el('circle', { cx: 0, cy: 0, r: 4.5, fill: col, opacity: 0 }, svg);
       return c;
     }
 
@@ -55,9 +69,9 @@ MW.register('viscosity-pour', {
     r.txL = 203; r.txR = 423;
     tray(r.txL); tray(r.txR);
 
-    r.cupL = cup(135); r.cupR = cup(355);
-    r.cupL.puddle = U.el('ellipse', { cx: r.txL, cy: 259, rx: 5, ry: 2.4, fill: P.acc, opacity: 0 }, svg);
-    r.cupR.puddle = U.el('ellipse', { cx: r.txR, cy: 259, rx: 5, ry: 2.4, fill: P.rub, opacity: 0 }, svg);
+    r.cupL = cup(135, P.acc); r.cupR = cup(355, P.rub);
+    r.cupL.puddle.setAttribute('cx', r.txL); r.cupL.puddleIn.setAttribute('cx', r.txL);
+    r.cupR.puddle.setAttribute('cx', r.txR); r.cupR.puddleIn.setAttribute('cx', r.txR);
 
     /* 杯名 */
     U.bi({ x: 135, y: 26, 'font-size': 12.5, 'text-anchor': 'middle', fill: P.mut, 'font-weight': 600 }, '水', 'water', svg);
@@ -71,17 +85,27 @@ MW.register('viscosity-pour', {
     return r;
   },
 
+  /* 局部座標→世界座標（杯組 transform＝translate(cx,96)·rotate(tilt,31,52)） */
+  _w: function (cx, tilt, x, y) {
+    var rad = tilt * Math.PI / 180, cos = Math.cos(rad), sin = Math.sin(rad);
+    return [cx + 31 + (x - 31) * cos - (y - 52) * sin,
+            96 + 52 + (x - 31) * sin + (y - 52) * cos];
+  },
+
   apply: function (r, ctx) {
     var P = MW.PAL, v = ctx.params.visc;
-    var elapsed = ctx.u * 8;                                  /* 單段 8 秒＝傾倒總時長 */
-    var tu = Math.min(1, elapsed / 0.8);                      /* 前 0.8 秒完成傾斜 */
-    var tilt = r.TILT * tu * (2 - tu);                        /* ease-out */
-    var rad = tilt * Math.PI / 180, cos = Math.cos(rad), sin = Math.sin(rad);
+    var elapsed = ctx.u * 8;
+    var tu = Math.min(1, elapsed / 0.8);
+    var tilt = r.TILT * tu * (2 - tu);
     var ptR = this._pourTime(v);
     var fl = this._fluid(v, P);
 
     r.nmRzh.textContent = fl.nm[0]; r.nmRen.textContent = fl.nm[1];
     r.note.setAttribute('opacity', v >= 99.5 ? 1 : 0);
+
+    /* 杯內緣四角（局部）＋杯嘴出水點 */
+    var CORNERS = [[-29, -48], [28, -48], [28, 48], [-29, 48]];
+    var LIP = [40, -47];
 
     var cups = [
       [r.cupL, 1,   P.acc,  r.txL, 1],
@@ -89,36 +113,71 @@ MW.register('viscosity-pour', {
     ];
     for (var ci = 0; ci < 2; ci++) {
       var c = cups[ci][0], pt = cups[ci][1], col = cups[ci][2], tx = cups[ci][3], vv = cups[ci][4];
-      c.g.setAttribute('transform', 'translate(' + c.cx + ' 96) rotate(' + tilt.toFixed(1) + ')');
+      c.g.setAttribute('transform', 'translate(' + c.cx + ' 96) rotate(' + tilt.toFixed(1) + ' ' + r.PIVX + ' ' + r.PIVY + ')');
 
-      /* 液面：0.8 秒傾斜完成才開始流 */
+      /* 旋轉後杯內緣多邊形（世界座標）→ 更新 clip */
+      var dclip = '', minY = 1e9, maxY = -1e9;
+      for (var k = 0; k < 4; k++) {
+        var w = this._w(c.cx, tilt, CORNERS[k][0], CORNERS[k][1]);
+        dclip += (k ? 'L' : 'M') + w[0].toFixed(1) + ' ' + w[1].toFixed(1);
+        if (w[1] < minY) minY = w[1];
+        if (w[1] > maxY) maxY = w[1];
+      }
+      c.clipPath.setAttribute('d', dclip + 'Z');
+
+      /* 剩餘量 f → 世界水平液面 y（液面永遠水平，clip 決定它在杯內的形狀） */
       var p = pt === Infinity ? 0 : Math.max(0, Math.min(1, (elapsed - 0.8) / pt));
-      c.liquid.setAttribute('y', (-40 + 88 * p).toFixed(1));
-      c.liquid.setAttribute('height', Math.max(0, 88 * (1 - p)).toFixed(1));
+      var f = pt === Infinity ? 0.9 : Math.max(0, 1 - p * 0.97);
+      var surfY = maxY - f * (maxY - minY);
+      c.liquid.setAttribute('y', surfY.toFixed(1));
+      c.liquid.setAttribute('height', (300 - surfY).toFixed(1));
       c.liquid.setAttribute('fill', col);
+      c.sheen.setAttribute('opacity', f > 0.02 ? 0.5 : 0);
 
-      /* 杯嘴螢幕座標（局部 41,-50 旋轉 tilt 度） */
-      var sx = c.cx + 41 * cos + 50 * sin, sy = 96 + 41 * sin - 50 * cos;
+      /* 杯嘴出水點（世界座標） */
+      var lip = this._w(c.cx, tilt, LIP[0], LIP[1]);
+      var sx = lip[0], sy = lip[1];
 
-      /* 液線：前 8% 伸長到盤面；粗細、抖動跟粘度反比 */
-      var f = Math.min(1, p / 0.08);
-      var exx = sx + (tx - sx) * f, eyy = sy + (257 - sy) * f;
-      var amp = pt === Infinity ? 0 : 3 * (1 - Math.min(1, vv / 110));
-      var wob = Math.sin(ctx.t * 9 + c.cx) * amp;
-      var mx = (sx + exx) / 2 + wob, my = (sy + eyy) / 2 + 4;
+      /* 液線：出水→盤面；黏的粗而繩、稀的細而直；末段變細斷開 */
+      var fAll = pt === Infinity ? 0 : Math.min(1, p / 0.06);          /* 伸到盤面的進度 */
+      var wob = Math.sin(ctx.t * (vv > 60 ? 2.2 : 9) + c.cx) * (vv > 60 ? 1.2 : 3 * (1 - Math.min(1, vv / 110)));
+      var exx = sx + (tx - sx) * fAll, eyy = sy + (258 - sy) * fAll;
+      var mx = (sx + exx) / 2 + wob, my = (sy + eyy) / 2 + 6;
+      var taper = p < 0.06 ? p / 0.06 : (p > 0.88 ? Math.max(0, (1 - p) / 0.12) : 1);
+      var wbase = 1.6 + 4.2 * Math.min(1, vv / 100);                   /* 黏→繩狀粗流 */
       c.stream.setAttribute('d', 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) +
         ' Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + exx.toFixed(1) + ' ' + eyy.toFixed(1));
       c.stream.setAttribute('stroke', col);
-      var wbase = 1.4 + 3.4 * (1 - Math.min(1, vv / 105));
-      var wfac = p < 0.06 ? p / 0.06 : (p > 0.9 ? Math.max(0.2, (1 - p) / 0.1) : 1);
-      c.stream.setAttribute('stroke-width', (wbase * wfac).toFixed(1));
-      c.stream.setAttribute('opacity', (p > 0 && p < 0.998 && pt !== Infinity) ? 0.92 : 0);
+      c.stream.setAttribute('stroke-width', (wbase * taper).toFixed(1));
+      c.stream.setAttribute('opacity', (p > 0 && p < 0.94 && pt !== Infinity) ? 0.92 : 0);
 
-      /* 盤中積液 */
-      c.puddle.setAttribute('rx', (5 + 42 * Math.pow(p, 0.7)).toFixed(1));
-      c.puddle.setAttribute('ry', (2.4 + 4.2 * Math.pow(p, 0.9)).toFixed(1));
+      /* 末段斷點滴：沿落下路徑錯開墜落（黏的滴得慢） */
+      var dripPh = p > 0.86 && p < 1 && pt !== Infinity;
+      for (var di = 0; di < 3; di++) {
+        var dr = c.drops[di];
+        if (dripPh) {
+          var ph = ((ctx.t * (vv > 60 ? 1.4 : 3.2)) + di * 0.37) % 1;
+          var px = sx + (tx - sx) * ph, py = sy + (258 - sy) * ph * ph;
+          dr.setAttribute('cx', px.toFixed(1)); dr.setAttribute('cy', py.toFixed(1));
+          dr.setAttribute('r', (2.6 + Math.min(1, vv / 100) * 1.4).toFixed(1));
+          dr.setAttribute('opacity', 0.85 * (1 - ph * 0.5)); dr.setAttribute('fill', col);
+        } else dr.setAttribute('opacity', 0);
+      }
+
+      /* 盤中積液：水攤平薄、蜜堆高成丘 */
+      var spread = 46 * Math.pow(p, 0.7) * (1 - Math.min(0.55, vv / 180));
+      var mound = 2.4 + Math.pow(p, 0.8) * (2 + vv / 9);
+      c.puddle.setAttribute('rx', (5 + spread).toFixed(1));
+      c.puddle.setAttribute('ry', mound.toFixed(1));
+      c.puddle.setAttribute('cy', (261 - mound).toFixed(1));
       c.puddle.setAttribute('opacity', Math.min(1, p * 5) * 0.8);
       c.puddle.setAttribute('fill', col);
+      c.puddleIn.setAttribute('cx', tx);
+      c.puddleIn.setAttribute('rx', (3 + spread * 0.55).toFixed(1));
+      c.puddleIn.setAttribute('ry', (mound * 0.55).toFixed(1));
+      c.puddleIn.setAttribute('cy', (260 - mound).toFixed(1));
+      c.puddleIn.setAttribute('opacity', Math.min(1, p * 5) * 0.35);
+      c.puddleIn.setAttribute('fill', '#fff');
 
       /* 橡膠：杯口掛一顆不走的膠 */
       var hang = pt === Infinity && elapsed > 1.0;

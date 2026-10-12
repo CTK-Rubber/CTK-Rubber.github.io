@@ -1,17 +1,16 @@
 /* mw-relaxation.js — §4 應力鬆弛：轉子停後扭矩掉多快＝膠的彈性（雙面板）
    故事：左面板線性座標看衰減快慢，右面板同一段畫到 log–log 上變直線，斜率 a 即鬆弛指數。
-   互動：三階段敘事＋「彈性成分」拉桿——拖越快衰越慢（彈性強）、斜率越平。 */
+   互動：單段連續同步——同一個數據點在兩張圖同時長出來（CT 2026-10-12 裁示：兩圖同步跑不分段）；
+        「彈性成分」拉桿——拖越快衰越慢（彈性強）、斜率越平。 */
 MW.register('relaxation', {
   vb: [[360, 280], [360, 280]],
   hint: ['拖「彈性成分」看衰減快慢與 log–log 斜率怎麼連動', 'Drag the elasticity slider to see decay speed and the log–log slope move together'],
 
   stages: [
-    { dur: 2.4, zh: ['轉子停了', '第 5 分鐘轉子停止，扭矩開始往下掉——掉的快慢就是膠的「彈性」。'],
-             en: ['The rotor stops', 'At minute 5 the rotor stops and torque begins to decay — how fast it falls is the rubber’s "elasticity".'] },
-    { dur: 2.6, zh: ['快衰 vs 慢衰', '灰影是中間彈性的對照線。拖「彈性成分」拉桿：黏性膠快速掉到底、彈性膠撐著不散。'],
-             en: ['Fast vs slow decay', 'The gray shadow is a mid-elasticity reference. Drag the slider: viscous rubber drops fast, elastic rubber holds on.'] },
-    { dur: 2.6, zh: ['log–log 上的斜率', '同一段衰減畫到 log–log 座標上變成一條直線——斜率 a 就是鬆弛指數。'],
-             en: ['The slope on log–log', 'The same decay plotted on log–log axes becomes a straight line — its slope a is the relaxation index.'] }
+    { dur: 6.4, zh: ['兩種座標同步看', '同一個衰減：左邊線性座標往下掉、右邊 log–log 拉成直線——兩點是同一份數據同時長出來。'],
+             en: ['Two views in sync', 'The same decay: falling on linear axes (left), a straight line on log–log (right) — one dataset drawn live in both.'] },
+    { dur: 1.6, zh: ['換你試', '拖「彈性成分」拉桿：衰減快慢和 log–log 斜率一起變。'],
+             en: ['Your turn', 'Drag the elasticity slider — decay speed and the log–log slope move together.'] }
   ],
 
   params: [
@@ -64,6 +63,7 @@ MW.register('relaxation', {
     var clip = U.el('clipPath', { id: 'rxclip' + U.uid }, svgL);
     r.clipRect = U.el('rect', { x: PX0, y: 0, width: 0, height: 280 }, clip);
     r.curve = U.path('', { fill: 'none', stroke: P.acc, 'stroke-width': 2.4, 'clip-path': 'url(#rxclip' + U.uid + ')' }, svgL);
+    r.dotL = U.el('circle', { r: 4.5, fill: P.acc, stroke: '#fff', 'stroke-width': 1.6, opacity: 0 }, svgL);
 
     /* ---------- 右面板：log–log 直線 τ 1→240 s ---------- */
     var QX0 = 46, QX1 = 348, QY0 = 248, QY1 = 16;
@@ -91,6 +91,7 @@ MW.register('relaxation', {
     var clip2 = U.el('clipPath', { id: 'rxclip2' + U.uid }, svgR);
     r.clipRect2 = U.el('rect', { x: QX0, y: 0, width: 0, height: 280 }, clip2);
     r.line = U.el('line', { stroke: P.acc2, 'stroke-width': 2.4, 'clip-path': 'url(#rxclip2' + U.uid + ')' }, svgR);
+    r.dotR = U.el('circle', { r: 4.5, fill: P.acc2, stroke: '#fff', 'stroke-width': 1.6, opacity: 0 }, svgR);
     r.aLbl = U.txt({ 'font-size': 10, fill: P.acc2, 'font-weight': 700, opacity: 0 }, '', svgR);
 
     return r;
@@ -108,30 +109,50 @@ MW.register('relaxation', {
     var s = ctx.s, sp = ctx.sp, elas = ctx.params.elas;
     var lam = this._lam(elas), a = this._a(elas);
 
-    /* 左：第 1 段內畫完衰減曲線 */
-    var drawT = s === 0 ? 4.5 + Math.min(1, sp) * 4.5 : 9;
-    r.clipRect.setAttribute('width', Math.max(0, r.XL(drawT) - r.PX0));
+    /* 連續同步進度：兩張圖同一進度一起畫（不分段） */
+    var drawP = s === 0 ? Math.max(0, Math.min(1, sp)) : 1;
+    var tNow = 4.5 + drawP * 4.5;
+
     var d = '';
     for (var i = 0; i <= 220; i++) {
       var tt = 4.5 + i / 220 * 4.5;
       d += (i ? 'L' : 'M') + r.XL(tt).toFixed(1) + ' ' + r.YL(this._decay(tt, lam)).toFixed(1) + ' ';
     }
     r.curve.setAttribute('d', d);
+    r.clipRect.setAttribute('width', Math.max(0, r.XL(tNow) - r.PX0));
 
-    /* 轉子停標線＋對照影線 */
-    r.stop.setAttribute('opacity', s === 0 ? Math.min(1, sp * 2) : 1);
-    var ro = s > 1 ? 0.7 : (s === 1 ? Math.min(1, sp * 2) * 0.7 : 0);
-    r.ref.setAttribute('opacity', ro);
-    r.refLbl.setAttribute('opacity', ro > 0 ? 1 : 0);
-
-    /* 右：log–log 直線 M = 50·τ^a，第 3 段揭露 */
-    var lo = s >= 2 ? Math.min(1, sp * 2) : 0;
-    r.clipRect2.setAttribute('width', lo * (348 - r.QX0));
+    /* 右圖真同步：同一個 τ＝(t−5)·60 秒；轉子還沒停（t<5）右圖保持空 */
+    var tau = Math.max(1, Math.min(240, (tNow - 5) * 60));
+    r.clipRect2.setAttribute('width', Math.max(0, r.X2(tau) - r.QX0));
     r.line.setAttribute('x1', r.X2(1)); r.line.setAttribute('y1', r.Y2(50));
     r.line.setAttribute('x2', r.X2(240)); r.line.setAttribute('y2', r.Y2(50 * Math.pow(240, a)));
+
+    /* 雙點同行：同一個數據點在兩張圖同時移動 */
+    var drawing = s === 0 && drawP > 0.005 && drawP < 1;
+    r.dotL.setAttribute('cx', r.XL(tNow));
+    r.dotL.setAttribute('cy', r.YL(this._decay(tNow, lam)));
+    r.dotL.setAttribute('opacity', drawing ? 1 : 0);
+    r.dotR.setAttribute('cx', r.X2(tau));
+    r.dotR.setAttribute('cy', r.Y2(50 * Math.pow(tau, a)));
+    r.dotR.setAttribute('opacity', (drawing && tNow > 5.017) ? 1 : 0);
+
+    /* 轉子停標線開頭即現；對照影線中段淡入；a 標籤尾段浮出 */
+    r.stop.setAttribute('opacity', Math.min(1, drawP * 4));
+    var ro = Math.max(0, Math.min(0.7, (drawP - 0.42) * 2.2));
+    r.ref.setAttribute('opacity', ro);
+    r.refLbl.setAttribute('opacity', ro > 0 ? 1 : 0);
     r.aLbl.setAttribute('x', r.X2(30)); r.aLbl.setAttribute('y', r.Y2(50 * Math.pow(30, a)) - 10);
-    r.aLbl.setAttribute('opacity', lo);
+    r.aLbl.setAttribute('opacity', Math.max(0, Math.min(1, (drawP - 0.8) * 5)));
     r.aLbl.textContent = 'a = ' + a.toFixed(2);
+  },
+
+  guide: function (ctx) {
+    if (ctx.s === 0) {
+      if (ctx.sp < 0.3) return ['第 5 分鐘轉子停止，扭矩開始往下掉——掉的快慢就是膠的「彈性」。', 'At minute 5 the rotor stops and torque begins to decay — how fast it falls is the rubber’s "elasticity".'];
+      if (ctx.sp < 0.68) return ['灰影是彈性 50% 的對照線。看兩張圖的點——同一個數據在兩邊同時移動。', 'The gray shadow is a 50%-elasticity reference. Watch the dots — the same data point moves on both charts.'];
+      return ['線性座標的彎曲衰減，在 log–log 上是一條直線——斜率 a 就是鬆弛指數。', 'The curved decay on linear axes is a straight line on log–log — its slope a is the relaxation index.'];
+    }
+    return null;
   },
 
   readout: function (ctx) {
