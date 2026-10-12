@@ -514,6 +514,7 @@
 
     /* 曲線 hover → 機器狀態跟隨 */
     C.hit.addEventListener('pointermove', function (e) {
+      if (REDUCED) return;   /* 減少動態：曲線 scrub 不動畫面——完成態不被游標改寫 */
       if (state.playing && !e.buttons) return;   /* 播放中滑過不打斷；按住拖曳才算接管 */
       var b = cSvg.getBoundingClientRect();
       var t = (e.clientX - b.left) / b.width * 340;

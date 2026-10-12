@@ -281,6 +281,7 @@ window.MW = (function () {
       hit.style.touchAction = 'pan-y';   /* 垂直手勢讓給翻頁——scrub 只認水平拖曳 */
       svgEl.style.cursor = 'crosshair';
       hit.addEventListener('pointermove', function (e) {
+        if (REDUCED) return;   /* 減少動態：scrub 不動畫面——完成態不被游標改寫 */
         if (st.playing && !e.buttons) return;   /* 播放中滑過不打斷；按住拖曳才算接管 */
         var b = svgEl.getBoundingClientRect();
         if (!(b.width > 0)) return;   /* 隱藏語言副本寬度為 0，不算位移 */
