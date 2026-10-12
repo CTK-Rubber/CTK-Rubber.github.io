@@ -336,6 +336,7 @@ window.MW = (function () {
     var m = {
       tick: function (now) {
         var dt = Math.min(0.05, (now - (m._last || now)) / 1000); m._last = now;
+        if (!root.offsetParent) return;   /* 隱藏語言副本（display:none）整個略過——不重繪 */
         if (st.playing && now >= st.holdUntil) {
           var s = stageOf(st.u);
           var step = dt * st.speed / total;

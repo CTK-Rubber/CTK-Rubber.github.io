@@ -423,6 +423,8 @@
     function frame(now) {
       requestAnimationFrame(frame);
       var dt = Math.min(0.05, (now - lastNow) / 1000 || 0); lastNow = now;
+      if (!root.offsetParent) return;   /* 隱藏語言副本不重繪 */
+      var advanced = false;
       if (state.playing && now >= state.holdUntil) {
         var s = stageOf(state.t), stg = STAGES[s];
         var step = dt * state.speed * (stg.t1 - stg.t0) / stg.dur;
@@ -439,10 +441,13 @@
           else state.playing = false;
           syncPlay();
         }
+        advanced = true;
       }
-      if (spinning(state.t) && !REDUCED) {
+      if (state.playing && spinning(state.t) && !REDUCED) {
         state.rotor += dt * state.speed * 360 / 2.5; /* 視覺 2.5 秒一圈 */
+        advanced = true;
       }
+      if (!advanced) return;   /* 閒置不重繪——rAF 迴圈保留但零渲染成本 */
       applySpin();
       apply(state.t);
     }
