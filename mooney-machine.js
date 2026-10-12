@@ -425,22 +425,29 @@
       if (!root.offsetParent) return;   /* 隱藏語言副本不重繪 */
       var advanced = false;
       if (state.playing && now >= state.holdUntil) {
-        var s = stageOf(state.t), stg = STAGES[s];
-        var step = dt * state.speed * (stg.t1 - stg.t0) / stg.dur;
-        var nt = state.t + step;
-        var ns = stageOf(nt);
-        if (ns !== s && nt < T_END) {
-          state.t = STAGES[ns].t0;
-          state.holdUntil = now + 900 / state.speed;
-        } else {
-          state.t = Math.min(nt, T_END);
-        }
-        if (state.t >= T_END) {
+        if (state.atEnd) {
+          state.atEnd = false;
           if (state.loop) { state.t = -0.5; state.rotor = 0; }
-          else state.playing = false;
-          syncPlay();
+          else { state.playing = false; syncPlay(); }
         }
-        advanced = true;
+        if (state.playing) {
+          var s = stageOf(state.t), stg = STAGES[s];
+          var step = dt * state.speed * (stg.t1 - stg.t0) / stg.dur;
+          var nt = state.t + step;
+          var ns = stageOf(nt);
+          if (ns !== s && nt < T_END) {
+            state.t = STAGES[ns].t0;
+            state.holdUntil = now + 900 / state.speed;
+          } else {
+            state.t = Math.min(nt, T_END);
+          }
+          if (state.t >= T_END) {
+            if (state.loop) { state.holdUntil = now + 1200 / state.speed; state.atEnd = true; }
+            else state.playing = false;
+            syncPlay();
+          }
+          advanced = true;
+        }
       }
       if (state.playing && spinning(state.t) && !REDUCED) {
         state.rotor += dt * state.speed * 360 / 2.5; /* 視覺 2.5 秒一圈 */
@@ -539,6 +546,7 @@
 
     if (REDUCED) state.t = T_END;   /* 減少動態：直接停在完成態（全曲線＋開模） */
     apply(state.t);
+    root._mmst = state;   /* 驗收偵錯掛點（比照 mw-core 的 _mwst） */
     requestAnimationFrame(frame);
   }
 

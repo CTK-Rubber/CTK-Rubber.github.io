@@ -124,7 +124,7 @@ window.MW = (function () {
       u: hasStages ? 0 : 1, playing: false,
       started: false, holdUntil: 0, lastStage: -1, t: 0,
       params: {}, arg: arg, dirty: true,
-      speed: 1, loop: !!def.loop, autoOff: false, autoPlaying: false,
+      speed: 1, loop: true, autoOff: false, autoPlaying: false,
       wiggled: false, wig: null
     };
     (def.params || []).forEach(function (p) { st.params[p.key] = p.def; });
@@ -331,19 +331,27 @@ window.MW = (function () {
         var dt = Math.min(0.05, (now - (m._last || now)) / 1000); m._last = now;
         if (!root.offsetParent) return;   /* 隱藏語言副本（display:none）整個略過——不重繪 */
         if (st.playing && now >= st.holdUntil) {
-          var s = stageOf(st.u);
-          var step = dt * st.speed / total;
-          var nu = st.u + step;
-          var ns = stageOf(nu);
-          if (ns !== s && nu < 1) {
-            st.u = cum[ns] / total + 1e-4;
-            st.holdUntil = now + 900 / st.speed;
-          } else st.u = Math.min(nu, 1);
-          if (st.u >= 1) {
-            if (st.loop) st.u = 0; else st.playing = false;
-            syncPlay();
+          if (st.atEnd) {
+            st.atEnd = false;
+            if (st.loop) st.u = 0;
+            else { st.playing = false; syncPlay(); }
           }
-          st.dirty = true;
+          if (st.playing) {
+            var s = stageOf(st.u);
+            var step = dt * st.speed / total;
+            var nu = st.u + step;
+            var ns = stageOf(nu);
+            if (ns !== s && nu < 1) {
+              st.u = cum[ns] / total + 1e-4;
+              st.holdUntil = now + 900 / st.speed;
+            } else st.u = Math.min(nu, 1);
+            if (st.u >= 1) {
+              if (st.loop) { st.holdUntil = now + 1200 / st.speed; st.atEnd = true; }
+              else st.playing = false;
+              syncPlay();
+            }
+            st.dirty = true;
+          }
         }
         if (st.wig) {
           var w = st.wig; w.t += dt;
