@@ -224,7 +224,10 @@ window.MW = (function () {
       st.wiggled = true;
       st.wig = { key: p.key, p: p, t: 0, dur: 1.6, base: st.params[p.key], amp: (p.max - p.min) * 0.09 };
     }
-    root.addEventListener('pointerdown', userTouch);
+    root.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;   /* 觸控落下不算接管——可能只是翻頁起點；拖曳或按鈕才算 */
+      userTouch();
+    });
 
     /* buttons */
     var playBtn = root.querySelector('[data-a="play"]');
@@ -283,6 +286,7 @@ window.MW = (function () {
       var sx0 = (def.scrub.x0 !== undefined) ? def.scrub.x0 : 0;
       var sx1 = (def.scrub.x1 !== undefined) ? def.scrub.x1 : vb[0];
       var hit = el('rect', { x: 0, y: 0, width: vb[0], height: vb[1], fill: '#fff', opacity: 0 }, svgEl);
+      hit.style.touchAction = 'pan-y';   /* 垂直手勢讓給翻頁——scrub 只認水平拖曳 */
       svgEl.style.cursor = 'crosshair';
       hit.addEventListener('pointermove', function (e) {
         if (st.playing && !e.buttons) return;   /* 播放中滑過不打斷；按住拖曳才算接管 */

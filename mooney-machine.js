@@ -286,6 +286,7 @@
     r.curDot = el('circle', { cx: PX0, cy: PY0, r: 3.6, fill: C.acc, stroke: '#fff', 'stroke-width': 1.4 }, r.cursor);
 
     r.hit = el('rect', { x: PX0, y: PY1, width: PX1 - PX0, height: PY0 - PY1, fill: '#fff', opacity: 0 }, svg);
+    r.hit.style.touchAction = 'pan-y';   /* 垂直手勢讓給翻頁 */
     return r;
   }
 
@@ -502,7 +503,10 @@
       state.speed = SPEEDS[i];
       speedBtn.innerHTML = '<span class="lang-zh">' + UI.speed[0] + ' ' + state.speed + '×</span><span class="lang-en">' + UI.speed[1] + ' ' + state.speed + '×</span>';
     });
-    root.addEventListener('pointerdown', function () { state.autoOff = true; state.autoPlaying = false; });
+    root.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;   /* 觸控落下不算接管——可能只是翻頁起點 */
+      state.autoOff = true; state.autoPlaying = false;
+    });
     root.addEventListener('keydown', function (e) {
       state.autoOff = true; state.autoPlaying = false;
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); root.querySelector('[data-a="next"]').click(); }
