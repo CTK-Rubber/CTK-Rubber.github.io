@@ -31,9 +31,15 @@ body.show-en .lang-en { display: block; }
 body.show-en .lang-zh { display: none; }
 body.show-en span.lang-en, body.show-en td.lang-en, body.show-en th.lang-en, body.show-en li.lang-en { display: revert; }
 body.show-en span.lang-zh { display: none; }
-#langbar { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 0; text-align: right; max-width: 1150px; margin: 0 auto; padding-right: 48px; z-index: 10; }
+#langbar { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 0; max-width: 1150px; margin: 0 auto; padding-right: 48px; z-index: 10; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
 #langbar button { font-size: 0.9em; padding: 5px 16px; border: 1px solid var(--accent); background: var(--bg); color: var(--accent); border-radius: 4px; cursor: pointer; }
 #langbar button.on { background: var(--accent); color: #fff; }
+#langbar .lb-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#langbar .topicbtns { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 5px; }
+#langbar .topicbtns button { padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+#langbar .lb-right { display: flex; gap: 5px; align-items: center; }
+#langbar a.pbtn { font-size: 0.9em; padding: 5px 16px; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; text-decoration: none; }
+#langbar a.pbtn:hover { background: var(--soft); }
 .toc { background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 20px 28px; }
 .toc ol { padding-left: 1.4em; }
 .toc a { color: var(--ink); text-decoration: none; }
@@ -59,7 +65,13 @@ body.show-deep .deep { display: block; }
 .deep .tag { display: inline-block; background: var(--tag-bg); color: var(--accent2); font-size: 0.78em; padding: 1px 8px; border-radius: 10px; margin-right: 6px; }
 .deep .src { font-size: 0.82em; color: var(--muted); border-top: 1px dashed var(--line); margin-top: 1.4em; padding-top: 0.5em; }
 .deep .topicmeta { font-size: 0.85em; color: var(--muted); border-left: 3px solid var(--accent2); padding-left: 10px; margin: 0.3em 0 1em; }
-.deep .topicend { font-size: 0.82em; color: var(--muted); margin-top: 1.2em; }
+.deep .topic { border: 1px solid var(--line); border-top: 4px solid var(--accent2); border-radius: 6px; padding: 20px 28px 12px; margin: 2.2em 0; scroll-margin-top: 60px; }
+.deep .arthead { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 0.8em; flex-wrap: wrap; gap: 4px 14px; }
+.deep .artbadge { background: var(--accent2); color: #fff; font-size: 0.78em; font-weight: 600; padding: 3px 14px; border-radius: 10px; letter-spacing: 2px; }
+.deep .artcite { color: var(--muted); font-size: 0.82em; }
+.deep .topicend { font-size: 0.8em; color: var(--muted); margin-top: 2em; text-align: center; letter-spacing: 1px; border-top: 1px dashed var(--line); padding-top: 0.8em; }
+.deep .topicend a { color: var(--accent2); text-decoration: none; margin: 0 0.5em; }
+.deep .topicend a:hover { text-decoration: underline; }
 .topicnav { margin: 0.9em 0 0.3em; }
 .topicnav a { display: inline-block; border: 1px solid var(--accent2); color: var(--accent2); border-radius: 12px; padding: 2px 12px; margin: 0 5px 5px 0; text-decoration: none; font-size: 0.85em; }
 .topicnav a:hover { background: var(--accent2); color: #fff; }
@@ -71,6 +83,7 @@ body.show-deep .deep { display: block; }
   .cover { padding: 56px 20px 40px; }
   #langbar { padding-right: 20px; }
   #langbar button { padding: 4px 10px; font-size: 0.82em; }
+  #langbar .topicbtns { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); }
   table { font-size: 0.78em; }
   th, td { padding: 4px 5px; }
 }

@@ -12,9 +12,20 @@
 <body class="show-deep">
 
 <div id="langbar">
-  <button id="btn-deep" class="tb" onclick="setDeep()"><span class="lang-zh">深入專案討論</span><span class="lang-en">Deep Dive</span></button>
-  <button id="btn-zh" class="on" onclick="setLang('zh')">繁體中文</button>
-  <button id="btn-en" onclick="setLang('en')">English</button>
+  <div class="lb-left">
+    <span class="barlabel"><span class="lang-zh">專題文獻討論</span><span class="lang-en">Literature Topics</span></span>
+    <span class="topicbtns">
+      <button id="btn-ta" class="tb" onclick="goTopic('a')"><span class="lang-zh">彈性指數</span><span class="lang-en">Elasticity index</span></button>
+      <button id="btn-tb" class="tb" onclick="goTopic('b')"><span class="lang-zh">熔體破裂</span><span class="lang-en">Melt fracture</span></button>
+      <button id="btn-tc" class="tb" onclick="goTopic('c')"><span class="lang-zh">變速木尼</span><span class="lang-en">Variable speed</span></button>
+      <button id="btn-td" class="tb" onclick="goTopic('d')"><span class="lang-zh">鬆弛模型</span><span class="lang-en">Model compare</span></button>
+    </span>
+  </div>
+  <div class="lb-right">
+    <button id="btn-zh" class="on" onclick="setLang('zh')">繁體中文</button>
+    <button id="btn-en" onclick="setLang('en')">English</button>
+    <a class="pbtn" href="print.html" target="_blank" rel="noopener"><span class="lang-zh">列印 PDF</span><span class="lang-en">Print PDF</span></a>
+  </div>
 </div>
 
 <div class="page cover">
@@ -76,7 +87,7 @@
       <li><a href="#s7"><span class="lang-zh">那它做不到什麼？</span><span class="lang-en">What can't it do?</span></a></li>
       <li><a href="#s8"><span class="lang-zh">那三個問題，現在有答案了嗎？</span><span class="lang-en">Those three questions — do they have answers now?</span></a></li>
       <li><a href="#app"><span class="lang-zh">附錄：名詞對照・常見問答・參考文獻</span><span class="lang-en">Appendix: glossary, FAQ, references</span></a></li>
-      <li><a href="#deep"><span class="lang-zh">深入專案討論（四份專題文件）</span><span class="lang-en">Deep Project Discussions (four topic documents)</span></a></li>
+      <li><a href="#deep"><span class="lang-zh">專題文獻討論（四份專題文件）</span><span class="lang-en">Literature Topics (four topic documents)</span></a></li>
     </ol>
   </div>
 
@@ -588,7 +599,7 @@
     <ul>
       <li><strong>k</strong>：與木尼粘度高度相關——資訊重疊，不是新情報<sup class="ref">[3][5]</sup></li>
       <li><strong>斜率 a</strong>：鬆弛速率指數。越接近 0（衰減線越平）= 應力留得越久 = 彈性越強；越負（越陡）= 黏性越強</li>
-      <li><strong>彈性能量保持指數 (a+1)</strong>：由鬆弛指數 a 推出的彈性成分讀法（這個結構本就在 ASTM 面積公式裡，由來見深入專案討論的〈彈性指數〉篇），彈性越弱值越低——是粘度值看不到的獨立資訊<sup class="ref">[3][5]</sup></li>
+      <li><strong>彈性能量保持指數 (a+1)</strong>：由鬆弛指數 a 推出的彈性成分讀法（這個結構本就在 ASTM 面積公式裡，由來見專題文獻討論的〈彈性指數〉篇），彈性越弱值越低——是粘度值看不到的獨立資訊<sup class="ref">[3][5]</sup></li>
     </ul>
     <figure>
       <div class="mw" data-mw="power-law" tabindex="0"></div>
@@ -852,7 +863,7 @@
   </div>
 
   <div class="deep">
-    <h2 id="deep"><span class="lang-zh">深入專案討論</span><span class="lang-en">Deep Project Discussions</span></h2>
+    <h2 id="deep"><span class="lang-zh">專題文獻討論</span><span class="lang-en">Literature Topics</span></h2>
 
     <div class="lang-zh">
       <p>前面一路給的是「怎麼讀數字」——這一區收的是「這些讀法從哪裡來、還能走到哪裡」。以下四份是<strong>各自完整的專題文件</strong>：每份延伸本文的一段、對應一篇關鍵文獻，有獨立的標題、前言、數據、圖表與邊界討論，任何一份都可以單獨從頭讀完。文獻引用走本區自己的延伸文獻表（[E1]–[E6]，收在區塊最後），與主文文獻分開編號；每份專題也各自有獨立的 PDF。</p>
@@ -881,6 +892,7 @@
 
     <!-- ==================== 彈性指數 ==================== -->
     <div class="topic topic-a" id="topic-a">
+      <div class="arthead"><span class="artbadge"><span class="lang-zh">專題文獻 A</span><span class="lang-en">Literature Topic A</span></span><span class="artcite"><span class="lang-zh">Maláč 2011 [E1] · 補強本文「六、應力鬆弛」</span><span class="lang-en">Maláč 2011 [E1] · builds on §6 stress relaxation</span></span></div>
       <div class="lang-zh">
         <h3>「彈性指數 (a+1)」是怎麼來的？<span class="tag">Maláč 2011</span></h3>
         <p class="topicmeta">本篇延伸本文「停轉之後，曲線還在說話」的冪次定律段——那裡建立了 M = k·t<sup>a</sup> 與鬆弛指數 a 的讀法；這裡往下追一層：a 怎麼變成一個好用的彈性指標。</p>
@@ -948,7 +960,6 @@
         <p class="src">原文 Table 1 原值（扭矩單位 MU；各列冪次擬合相關係數 R ≈ −0.998~−0.999）；(a+1) 欄為依 a 值計算。<sup class="ref">[E1]</sup></p>
         <p><strong>邊界也要說清楚：</strong>(a+1) 建立在「儲能釋放率 ∝ 扭矩」這個經驗假設上，且只在天然膠品級上驗證；外推到合成膠或配方膠需要各自重新驗證。另外〈鬆弛模型比較〉一篇會看到，冪次定律在 Ehabe 的模型比較裡擬合度排倒數——但那是「曲線擬合品質」的問題；(a+1) 作為單一、跨廠可比的指標，在 ASTM 框架內仍然成立。兩件事不衝突：要擬合得漂亮，換模型；要一指標比對批次，(a+1) 的讀法依然實用。<sup class="ref">[E1][E4]</sup></p>
         <p class="src">本篇文獻：Maláč 2011 [E1]——原文 Fig. 1–11 與 Table 1 全數收錄於本篇（Fig. 1 為數位化描取的忠實重繪；Fig. 2/3/5/7/9/10 見六格圖；Fig. 4/6/8 見三幅散點；Fig. 11 見排序長條圖；推導見 Eq. 8）；ASTM 面積公式與報告項見 D1646 §12.3.3、§13.1.3 [E5]。</p>
-        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
       </div>
       <div class="lang-en">
         <h3>Where does the elasticity index (a+1) come from? <span class="tag">Maláč 2011</span></h3>
@@ -1017,12 +1028,13 @@
         <p class="src">Original values from the paper's Table 1 (torque in MU; power-law fit R ≈ −0.998 to −0.999 for every grade); the (a+1) column is computed from a.<sup class="ref">[E1]</sup></p>
         <p><strong>The boundaries deserve equal clarity:</strong> (a+1) rests on the empirical assumption that stored-energy release rate is proportional to torque, and it was verified only on natural rubber grades — extrapolating to synthetics or compounds needs revalidation. The model-comparison piece will show the power law ranks last in Ehabe's fit comparison — but that is a question of curve-fitting quality; (a+1) as a single, cross-plant-comparable index within the ASTM framework still stands. The two are not in conflict: for a beautiful fit, change the model; for a one-number batch comparison, (a+1) remains practical.<sup class="ref">[E1][E4]</sup></p>
         <p class="src">Sources for this topic: Maláč 2011 [E1] — all of Figs. 1–11 and Table 1 are reproduced in this piece (Fig. 1 is a faithful redraw digitized from the original; Figs. 2/3/5/7/9/10 in the six-panel figure; Figs. 4/6/8 in the three scatter panels; Fig. 11 in the ranked bars; derivation in Eq. 8); ASTM area formula and report items in D1646 §12.3.3, §13.1.3 [E5].</p>
-        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
       </div>
+      <p class="topicend"><span class="lang-zh">—— 本篇完 · 專題 A　<a href="#deep">回專題目錄</a>　<a href="#topic-b">下一篇：熔體破裂 →</a></span><span class="lang-en">—— End of Topic A　<a href="#deep">Topic index</a>　<a href="#topic-b">Next: Melt fracture →</a></span></p>
     </div>
 
     <!-- ==================== 熔體破裂 ==================== -->
     <div class="topic topic-b" id="topic-b">
+      <div class="arthead"><span class="artbadge"><span class="lang-zh">專題文獻 B</span><span class="lang-en">Literature Topic B</span></span><span class="artcite"><span class="lang-zh">Cantaloube &amp; Cocard 2004 [E2] · 補強本文「四、同一團膠」＋「七、做不到什麼」</span><span class="lang-en">Cantaloube &amp; Cocard 2004 [E2] · builds on §4 and §7</span></span></div>
       <div class="lang-zh">
         <h3>標準規定 2 rpm，為什麼量到的可能不是粘度？<span class="tag">Cantaloube &amp; Cocard 2004</span></h3>
         <p class="topicmeta">本篇延伸本文的三種測試與「那它做不到什麼」的邊界清單——那裡列出木尼儀的能力邊界，這裡追邊界背後的機制：為什麼照標準 2 rpm 做，天然膠量到的可能已經不是粘度。</p>
@@ -1083,7 +1095,6 @@
         <p><strong>兩個「上限」要分開：</strong>打滑（slippage）是儀器層的上限——膠在轉子下滑動、扭矩讀不進去，鋸齒模面就是為了壓它；熔體破裂是材料層的上限——膠還咬著轉子，但膠本身撕裂了。機制不同，結果一樣：2 rpm 的讀值失真。作者建議 NR 的木尼量測改在 ≤0.2 rpm 進行。<sup class="ref">[E2]</sup></p>
         <p><strong>範圍要說清楚：</strong>這個結論建立在天然膠上（含老化與不同產地）——合成膠、配方膠的臨界轉速各不相同，不能直接套用 0.2 rpm；而且破裂支線上的讀值並非「錯誤數據」，它對微結構與老化仍然敏感，只是量的不再是「流動粘度」這個量。<sup class="ref">[E2]</sup></p>
         <p class="src">本篇文獻：Cantaloube &amp; Cocard 2004 [E2]——原文 Fig. 1–5 全為數位化描取的忠實重繪，Table 1/Table 2 數據表照原值轉載；低速端量測的後續發展見 Kim et al. [E3]（〈變速木尼〉篇）。</p>
-        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
       </div>
       <div class="lang-en">
         <h3>The standard says 2 rpm — why might it not be measuring viscosity? <span class="tag">Cantaloube &amp; Cocard 2004</span></h3>
@@ -1145,12 +1156,13 @@
         <p><strong>Keep two "ceilings" apart:</strong> slippage is an instrument-level limit — the rubber slides under the rotor and torque cannot be read into it, which is what the serrated dies are for; melt fracture is a material-level limit — the rubber still grips the rotor, but the rubber itself tears. Different mechanisms, same outcome: the 2 rpm reading distorts. The authors recommend measuring NR at rotor speeds not greater than 0.2 rpm.<sup class="ref">[E2]</sup></p>
         <p><strong>Scope deserves honesty:</strong> the conclusion was established on natural rubber (aged and of different origins) — critical speeds differ for synthetics and compounds, so 0.2 rpm cannot be transplanted as a universal number; and a reading on the fracture branch is not "wrong data" — it still responds to microstructure and aging, it just no longer measures "flow viscosity."<sup class="ref">[E2]</sup></p>
         <p class="src">Sources: Cantaloube &amp; Cocard 2004 [E2] — Figs. 1–5 are all faithful digitized redraws, Tables 1–2 transcribed with original values; the low-speed measurement development continues in Kim et al. [E3] (see the variable-speed piece).</p>
-        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
       </div>
+      <p class="topicend"><span class="lang-zh">—— 本篇完 · 專題 B　<a href="#deep">回專題目錄</a>　<a href="#topic-c">下一篇：變速木尼 →</a></span><span class="lang-en">—— End of Topic B　<a href="#deep">Topic index</a>　<a href="#topic-c">Next: Variable speed →</a></span></p>
     </div>
 
     <!-- ==================== 變速木尼 ==================== -->
     <div class="topic topic-c" id="topic-c">
+      <div class="arthead"><span class="artbadge"><span class="lang-zh">專題文獻 C</span><span class="lang-en">Literature Topic C</span></span><span class="artcite"><span class="lang-zh">Kim et al. 2010 [E3] · 補強本文「七、做不到什麼」</span><span class="lang-en">Kim et al. 2010 [E3] · builds on §7</span></span></div>
       <div class="lang-zh">
         <h3>轉速一變、讀值就變——變速木尼（MVS）各段在看什麼？<span class="tag">Kim et al. 2010</span></h3>
         <p class="topicmeta">本篇延伸本文邊界清單中「用單一固定條件模擬真實加工」那一條——〈熔體破裂〉證明標準轉速可能落在失效區，這裡把同一個事實反過來用：既然轉速會改變量到的東西，各段轉速分別看到分子結構的哪一部分？</p>
@@ -1255,7 +1267,6 @@
         <p class="src">原文 Table 1 原值（Mn、Mw 單位 kg/mol；VR 單位 MU）。對照看：塑解族 VR2 與單株族同階（60–61），VR0.05 卻只剩 18–20；工業 IB/IC 的 Mn、Mw 都接近塑解族——規格相同的膠，低速端把結構差異攤開。<sup class="ref">[E3]</sup></p>
         <p><strong>實務與邊界：</strong>建議做法是雙點法——同時記錄 VR2 與 VR0.05：VR2 守規格門、VR0.05 專門攔「規格合格但長鏈已被破壞」的樣品。為什麼選 0.05 不再更低？因為再低的轉速要等更久才到平穩值，測試時間失去實務性。邊界也要說：這些相關性建立在天然膠模型膠與工業 NR 上，不同膠種的流動區間與失效臨界不同，不能直接搬公式；VR 讀的是「對結構敏感的指標」，不是分子量本身。<sup class="ref">[E3]</sup></p>
         <p class="src">本篇文獻：Kim et al. 2010 [E3]——Fig. 1/4/8/9（SEC-MALS 色譜）為數位化描取的忠實重繪，Fig. 2/5/10 由 Table 1 原值重繪，Fig. 7 為逐點描取的忠實重繪（R² 照原文標示），Fig. 3 為逐站位描取頻帶與標記群的忠實重繪（疊合標記依原樣呈現），Fig. 6/11 由 VR–Mn/Mw 實測散點圖涵蓋、Fig. 12 由 Mw·Ip<sup>−1/2</sup> 修正圖涵蓋（皆 Table 1 原值重繪），Table 1/Table 2 照原值轉載；熔體破裂背景見 Cantaloube &amp; Cocard [E2]（〈熔體破裂〉篇）。</p>
-        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
       </div>
       <div class="lang-en">
         <h3>Same rubber, different speed, different answer — what is variable-speed Mooney (MVS) looking at? <span class="tag">Kim et al. 2010</span></h3>
@@ -1361,12 +1372,13 @@
         <p class="src">Original Table 1 values (Mn, Mw in kg/mol; VR in MU). For contrast: the peptized family's VR2 sits in the same band as the monoclonals (60–61) while VR0.05 collapses to 18–20; industrial IB/IC have Mn and Mw close to the peptized family — the low-speed end lays bare the structural differences inside same-spec rubber.<sup class="ref">[E3]</sup></p>
         <p><strong>Practice and boundaries:</strong> the recommended protocol is two-point — record both VR2 and VR0.05: VR2 guards the spec gate, VR0.05 catches samples that pass spec but have lost their long chains. Why 0.05 and not lower? Below that, reaching the plateau takes longer and the test loses practicality. The boundaries also deserve statement: these correlations were built on NR model rubbers and industrial NR — other rubber families have different flow regimes and failure thresholds, so the equations do not transplant directly; VR reads a structure-sensitive index, not molecular weight itself.<sup class="ref">[E3]</sup></p>
         <p class="src">Sources: Kim et al. 2010 [E3] — Figs. 1/4/8/9 (SEC-MALS chromatograms) are faithful digitized redraws; Figs. 2/5/10 are redrawn from Table 1 values; Fig. 7 is a faithful point-by-point digitized redraw (R² as printed); Fig. 3 is a faithful redraw with bands and marker groups digitized station-by-station (overlapping markers rendered as in the original); Figs. 6/11 covered by the VR–Mn/Mw measured scatter and Fig. 12 by the Mw·Ip<sup>−1/2</sup> correction plot (both redrawn from Table 1 values); Tables 1–2 transcribed with original values; melt-fracture background in Cantaloube &amp; Cocard [E2] (see the melt-fracture piece).</p>
-        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
       </div>
+      <p class="topicend"><span class="lang-zh">—— 本篇完 · 專題 C　<a href="#deep">回專題目錄</a>　<a href="#topic-d">下一篇：鬆弛模型 →</a></span><span class="lang-en">—— End of Topic C　<a href="#deep">Topic index</a>　<a href="#topic-d">Next: Model comparison →</a></span></p>
     </div>
 
     <!-- ==================== 鬆弛模型 ==================== -->
     <div class="topic topic-d" id="topic-d">
+      <div class="arthead"><span class="artbadge"><span class="lang-zh">專題文獻 D</span><span class="lang-en">Literature Topic D</span></span><span class="artcite"><span class="lang-zh">Ehabe et al. 2005 [E4] · 補強本文「六、應力鬆弛」</span><span class="lang-en">Ehabe et al. 2005 [E4] · builds on §6</span></span></div>
       <div class="lang-zh">
         <h3>鬆弛曲線只能用冪次定律擬合嗎？<span class="tag">Ehabe et al. 2005</span></h3>
         <p class="topicmeta">本篇延伸本文「停轉之後，曲線還在說話」的冪次定律擬合段——那裡用 M = k·t<sup>a</sup>，是因為它是 ASTM 判讀框架的標配；這裡把四個候選模型放上同一批數據同場比試，看「標配」的代價是什麼、換模型能多得什麼。</p>
@@ -1472,7 +1484,6 @@
         <p class="src">原文 Table 3：各參數的變異係數 CV（每樣品三次重複的平均）。粘度讀值本身很穩，鬆弛模型參數的變異整整大一個數量級——這是「當趨勢指標用」的直接依據。<sup class="ref">[E4]</sup></p>
         <p><strong>跟前文的關係要說清楚：</strong>前文用冪次定律，是因為 ASTM 的判讀體系與 Maláč 的 (a+1) 都建立在其上——單一參數、跨廠可比、接得上標準；Ehabe 顯示冪次定律在四個模型裡擬合度倒數、指數 a 也對不上具體結構量。兩者不矛盾，是分工不同：要跨廠比對、接標準，用冪次指數；要從鬆弛曲線挖結構情報，Maxwell 的 tm 能挖到凝膠含量這一層。<sup class="ref">[E4]</sup></p>
         <p class="src">本篇文獻：Ehabe et al. 2005 [E4]——Fig. 1–6 為自原圖描線的忠實重繪、Fig. 7/8 由 Table 1/2 原值重繪涵蓋，Table 1/2/3 照原值轉載；冪次框架見 ASTM D1646 [E5] 與〈彈性指數〉篇 [E1]。</p>
-        <p class="topicend">—— 本篇完　<a href="#deep">↑ 回到深入專案討論導讀</a></p>
       </div>
       <div class="lang-en">
         <h3>Is the power law the only way to fit a relaxation curve? <span class="tag">Ehabe et al. 2005</span></h3>
@@ -1579,13 +1590,13 @@
         <p class="src">The paper's Table 3: coefficient of variation for each parameter (mean of three replicates per sample). The viscosity reading itself is stable, while the relaxation-model parameters are a full order of magnitude rougher — the direct basis for "use them as trend indicators."<sup class="ref">[E4]</sup></p>
         <p><strong>The relation to the main text should be stated plainly:</strong> the power law was used because ASTM's reading framework and Maláč's (a+1) are built on it — a single comparable parameter that plugs into the standard; Ehabe shows the power law is among the weakest of the four fits, and its exponent a maps to no specific structural quantity. There is no contradiction, only a division of labor: for cross-plant comparison and standard compliance, use the power-law index; for mining structural information out of the relaxation curve, Maxwell's tm reaches the gel-content layer.<sup class="ref">[E4]</sup></p>
         <p class="src">Sources: Ehabe et al. 2005 [E4] — Figs. 1–6 are faithful redraws traced from the originals; Figs. 7/8 are covered by a redraw from Table 1/2 values; Tables 1–3 transcribed with original values; the power-law framework in ASTM D1646 [E5] and the elasticity-index piece [E1].</p>
-        <p class="topicend">—— End　<a href="#deep">↑ Back to the deep-dive guide</a></p>
       </div>
+      <p class="topicend"><span class="lang-zh">—— 本篇完 · 專題 D　<a href="#deep">回專題目錄</a>　<a href="#deeprefs">延伸文獻 →</a></span><span class="lang-en">—— End of Topic D　<a href="#deep">Topic index</a>　<a href="#deeprefs">References →</a></span></p>
     </div>
 
     <div class="refs deeprefs" id="deeprefs">
       <div class="lang-zh">
-        <p><strong>深入專案討論　延伸文獻</strong></p>
+        <p><strong>專題文獻討論　延伸文獻</strong></p>
         <ol style="list-style:none; padding-left:0;">
           <li>[E1]J. Maláč, "Mooney Viscosity, Mooney Elasticity and Processability of Raw Natural Rubber", <em>Journal of Materials Science and Engineering with Advanced Technology</em>, 3(1), 67–87, 2011（期刊未指派 DOI）— 〈彈性指數〉篇：冪次定律 M=k·tᵃ、彈性指數 (a+1) 的推導與 18 品級實測。</li>
           <li>[E2]B. Cantaloube &amp; S. Cocard (Michelin), "Revisiting the Rheological Characterization of NR Using a Mooney Viscometer", <em>KGK Kautschuk Gummi Kunststoffe</em>, 57(4), 168–171, 2004（期刊未指派 DOI）— 〈熔體破裂〉篇：變速掃描證明 NR 在 &lt;2 rpm 即進入熔體破裂。</li>
@@ -1619,10 +1630,23 @@ function setLang(l) {
   document.getElementById('btn-en').classList.toggle('on', l === 'en');
   document.documentElement.lang = l === 'en' ? 'en' : 'zh-Hant';
 }
-function setDeep() {
+function goTopic(k) {
+  var btn = document.getElementById('btn-t' + k);
+  var wasOn = btn.classList.contains('on') && document.body.classList.contains('show-deep');
+  ['a', 'b', 'c', 'd'].forEach(function (x) {
+    document.getElementById('btn-t' + x).classList.remove('on');
+  });
+  if (wasOn) { document.body.classList.remove('show-deep'); return; }
   document.body.classList.add('show-deep');
-  document.getElementById('deep').scrollIntoView({ behavior: 'smooth' });
+  btn.classList.add('on');
+  var t = document.getElementById('topic-' + k);
+  if (t) t.scrollIntoView({ behavior: 'smooth' });
 }
+window.addEventListener('hashchange', function () {
+  if (/^#(deep|deeprefs)$/.test(location.hash)) document.body.classList.add('show-deep');
+  var m = location.hash.match(/^#topic-([a-z])$/);
+  if (m) goTopic(m[1]);
+});
 (function () {
   /* 語言自動偵測：瀏覽器首選語言不是中文 → 預設英文（讀者可隨時手動切回） */
   var langs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'zh']);
